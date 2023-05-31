@@ -101,42 +101,39 @@ needed during these windows.
 
 # RRDP Repository
 
-In this section we will elaborate on the following recommendations:
+In this section, we will elaborate on the following recommendations:
 
-- Use unique hostname (do not share fate with rsync)
-- Use CDN if possible
-- Use randomized paths for Snapshot and Delta Files
-- Limit size of Notification File
-- Combine deltas to limit size of Notification File
-- Timing of publication of Notification File
+  - Use a separate hostname: do not share fate with rsync or the Publication Server.
+  - Use a CDN if possible
+  - Use randomized filenames for Snapshot and Delta Files
+  - Limit the size of the Notification File
+  - Combine deltas to limit the size of the Notification File
+  - Timing of publication of Notification File
 
 ## Unique Hostname
 
-It is RECOMMENDED that the public RRDP Repository URIs use a hostname
-that is different from both the [@!RFC8181] service_uri used by publishers,
-and the hostname used in rsync URIs (sia_base).
+It is RECOMMENDED that the public RRDP Repository URIs use a hostname different
+from both the [@!RFC8181] service_uri used by publishers, and the hostname used
+in rsync URIs (`sia_base`).
 
-Using a unique hostname will allow the operator to use dedicated
-infrastructure and/or a Content Delivery Network for its RRDP content
-without interfering with the other functions.
+Using a unique hostname will allow the operator to use dedicated infrastructure
+and/or a Content Delivery Network for its RRDP content without interfering with
+the other functions.
 
 ## Content Delivery Network
 
-If possible, it is strongly RECOMMENDED that a Content Delivery Network
-is used to serve the RRDP content. Care MUST BE taken to ensure that
-the Notification File is not cached for longer than 5 minutes, unless
-the back-end RRDP Repository is unavailable, in which case it is RECOMMENDED
-that stale files are served.
+If possible, it is strongly RECOMMENDED that a Content Delivery Network is used
+to serve the RRDP content. Care MUST BE taken to ensure that the Notification
+File is not cached for longer than 1 minute unless the back-end RRDP Repository
+is unavailable, in which case it is RECOMMENDED that stale files are served.
 
-If a CDN is used, then it is likely that it will cache 404s for files that
-are not found on the back-end server. Because of this the Publication
-Server SHOULD use randomized, unpredictable, paths for Snapshot and Delta
-Files to avoid that the CDN can be tricked into caching such 404s for
-future updates.
+When using a CDN, it will likely cache 404s for files not found on the back-end
+server. Because of this, the Publication Server SHOULD use randomized,
+unpredictable paths for Snapshot and Delta Files to avoid the CDN caching such
+404s for future updates.
 
-Alternatively, the Publication Server can clear the CDN cache for any
-new files that it publishes.
-
+Alternatively, the Publication Server can delay writing the notification file
+for this duration or clear the CDN cache for any new files it publishes.
 
 ## Limit Size Notification File
 
