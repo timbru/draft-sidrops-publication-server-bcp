@@ -51,14 +51,14 @@ this document are to be interpreted as described in BCP 14 [@!RFC2119]
 
 # Introduction
 
-[@!RFC8181] describes the RPKI Publication Protocol that is used between
+[@!RFC8181] describes the RPKI Publication Protocol used between
 RPKI Certificate Authorities (CAs) and their Publication Repository server.
 The server is responsible for handling publication requests sent by the
 CAs, called Publishers in this context, and ensuring that their data is
-made available to RPKI Relying Parties (RPs) in in public rsync and RRDP
+made available to RPKI Relying Parties (RPs) in (public) rsync and RRDP
 [@!RFC8182] publication points.
 
-In this document we will describe best current practices based on the
+In this document, we will describe best current practices based on the
 operational experience of several implementers and operators.
 
 # Glossary
@@ -72,33 +72,32 @@ Rsync Repository   | Public facing rsync server
 
 # Publication Server
 
-The Publication Server is responsible for handling the server side of
-the [@!RFC8181] Publication Protocol. It is responsible for generating
-the content for the public facing RRDP and Rsync Repositories. It is
-strongly RECOMMENDED that these functions are separated from serving the
-repository content.
+The Publication Server handles the server side of the [@!RFC8181] Publication
+Protocol. The Publication Server generates the content for the public-facing
+RRDP and Rsync Repositories. It is strongly RECOMMENDED that these functions
+are separated from serving the repository content.
 
 ## Availability
 
-While the repository content MUST be made highly available to any RP in
-the world, the Publication Server only needs to be accessible by its
-publishers. Dependent on the specific setup this may allow for additional
-access restrictions in this context. For example, access could be limited
-to known source IP addresses and rate limits may be imposed.
+The Publication Server and repository content have different demands on their
+availability and reachability. While the repository content MUST be highly
+available to any RP worldwide, only publishers need to access the Publication
+Server. Dependent on the specific setup, this may allow for additional access
+restrictions in this context. For example, the Publication Server can limit
+access to known source IP addresses or apply rate limits.
 
-If the Publication Server is not available for some reason, then this will
-impact Publishers in that they will not be able to publish any updated
-RPKI objects in that time. The most immediate impact of this is that the
-publisher will not be able to update its ROAs, ASPAs or BGPSec Router
-Certificates during this outage. Thus, it will not be able to authorise
-changes in its routing operations at this time. If the outage persists
-for a longer period, then the RPKI manifests and CRLs published will
-expire, resulting in the rejecting of CA publication points by RPs.
+If the Publication Server is unavailable for some reason, this will prevent
+Publishers from publishing any updated RPKI objects. The most immediate impact
+of this is that the publisher cannot update their ROAs, ASPAs or BGPSec Router
+Certificates during this outage. Thus, it cannot authorise changes in its
+routing operations. If the outage persists for a more extended period, then the
+RPKI manifests and CRLs published will expire, resulting in the RPs rejecting
+CA publication points.
 
-For this reason the Publication Server MUST be operated in a highly
-available fashion. Maintenance windows SHOULD be planned and communicated
-to publishers, so that they can avoid - if possible - that changes in
-published RPKI objects will be needed during these windows.
+For this reason, the Publication Server MUST be operated in a highly available
+fashion. Maintenance windows SHOULD be planned and communicated to publishers,
+so they can avoid - if possible - that changes in published RPKI objects are
+needed during these windows.
 
 # RRDP Repository
 
