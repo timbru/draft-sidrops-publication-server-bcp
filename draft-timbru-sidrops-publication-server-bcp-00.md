@@ -135,125 +135,132 @@ unpredictable paths for Snapshot and Delta Files to avoid the CDN caching such
 Alternatively, the Publication Server can delay writing the notification file
 for this duration or clear the CDN cache for any new files it publishes.
 
-## Limit Size Notification File
+## Limit Notification File Size
 
-The size of the RRDP Notification File can have a big impact on RRDP
+The size of the RRDP Notification File can significantly impact RRDP
 operations. If this file becomes too large, then it can easily result in
-network congestion if the RRDP Repository does not use any CDN, or in
-high costs if it does.
+significant traffic if the RRDP Repository does not use any CDN or in high
+costs if it does.
 
-[@!RFC8182] stipulated that any deltas that, when combined with all more
-recent delta, will result in the total size of deltas exceeding the size
-of the snapshot MUST be excluded to avoid that Relying Parties download
-more data than necessary.
+[@!RFC8182] stipulated that any deltas that, combined with all more recent
+delta, will result in the total size of deltas exceeding the snapshot size MUST
+be excluded to avoid Relying Parties downloading more data than necessary.
 
-In addition to the restriction described above we RECOMMEND that the
-Notification File size is limited by removing access delta files that
-have been available for more than 30 minutes. As RP typically refresh
-their caches every 10 minutes, this will ensure that deltas are available
-for vast majority of RPs, while limiting the size of the Notification
-File.
+In addition to the restriction described above, we RECOMMEND that the
+Notification File size is reduced by removing delta files that have been
+available for more than 75 minutes. As RP typically refresh their caches every
+10 minutes, this will ensure that deltas are available for the vast majority of
+RPs, while limiting the size of the Notification File.
 
-Furthermore, we RECOMMEND that Publication Servers with many, e.g. 1000s
-of, Publishers ensure that they do not produce Delta Files more frequently
-than once per minute. A possible approach for this is that any publication
-request sent by a Publisher to the Server SHOULD be published immediately
-if the last delta was produced more than one minute ago. Otherwise the
-request can be handled by server immediately, but the content change is
-staged for up to 1 minute and combined with changes from other Publishers
-in a single RRDP Delta File.
+Furthermore, we RECOMMEND that Publication Servers with many, e.g. 1000s of,
+Publishers ensure they do not produce Delta Files more frequently than once per
+minute. A possible approach for this is that the Publication Server SHOULD
+publish changes at a regular (one-minute) interval. The Publication Server then
+publishes the updates received from all Publishers in this interval in a single
+RRDP Delta File.
 
-## Sticky Balancing and Notification File Timing
+## Consistent load-balancing and Notification File Timing
 
-Notification Files SHOULD NOT be available to RPs before the referenced
-snapshot and delta files are available.
+Notification Files MUST NOT be available to RPs before the referenced snapshot
+and delta files are available.
 
-This means that in case a load balancing setup is used, then care SHOULD
-be taken to either ensure that RPs that fetch a Notification File from
-one node, will also be served from the same node where the referenced
-snapshot and delta files are available. Alternatively, snapshot and delta
-files can be pushed out to all nodes first, and notification files are
-pushed out second.
+As a result, when using a load-balancing setup, care SHOULD be taken to ensure
+that RPs that make multiple subsequent requests receive content from the same
+node. This way, clients view the timeline on one node where the referenced
+snapshot and delta files are available. Alternatively, publication
+infrastructure SHOULD ensure a particular ordering of the visibility of the
+snapshot plus delta and notification file. All nodes should receive the new
+snapshot and delta files before any node receives the new notification file.
 
 # Rsync Repository
 
-In this section we will elaborate on the following recommendations:
+In this section, we will elaborate on the following recommendations:
 
-- Use symlinks to provide consistent content
-- Use deterministic timestamps for files
-- Load balancing and testing
+  - Use symlinks to provide consistent content
+  - Use deterministic timestamps for files
+  - Load balancing and testing
 
 ## Consistent Content
 
-A naive implementation of the Rsync Repository could lead to the contents
-of the repository being changed while RPs are transferring files. This
-can lead to unpredictable, and inconsistent results. While modern RPs will
-treat such inconsistencies as a "Failed Fetch" ([@!RFC9286]), this
-situation is best avoided.
+A naive implementation of the Rsync Repository can change the repository
+content while RPs transfer files. Even when the repository is consistent from
+the repository server's point of view, clients may read an inconsistent set of
+files. Clients may get a combination of newer and older files. This "phantom
+read" can lead to unpredictable and unreliable results. While modern RPs will
+treat such inconsistencies as a "Failed Fetch" ([@!RFC9286]), it is best to
+avoid this situation since a failed fetch for one repository can cause the
+rejection of the publication point for a sub-CA when resources change.
 
-One way to ensure that rsyncd serves connected clients (RPs) a consistent
-view of the repository, is by configuring the rsyncd 'module' path to map
-a symlink that has the current state of the repository.
+One way to ensure that rsyncd serves connected clients (RPs) with a consistent
+view of the repository is by configuring the rsyncd 'module' path to a path
+that contains a symlink that the repository-writing process updates for every
+repository publication.
 
 Whenever there is an update:
 
-- write the complete updated repository into a new directory
-- fix the timestamps of files (see next section)
-- change the symlink to point to the new directory
+  - write the complete updated repository into a new directory
+  - fix the timestamps of files (see next section)
+  - change the symlink to point to the new directory
 
-This way rsyncd does not need to be restarted, and since symlinks are
-resolved when clients connect, any connected RPs will get the content
-from the old directory containing the consistent, but previous, state.
+This way, rsyncd does not need to restart, and since rsyncd resolves this
+symlink when it `chdir`s into the module directory when a client connects, any
+connected RPs will be able to read a consistent state.
 
-The old directories can then be removed when no more RP are fetching that
-data. Because it's hard to determine this in practice, Rsync Repositories
-MAY assume that it is safe to do so after 1 HOUR.
+The repository can remove old directories when no RP fetching at a reasonable
+rate is reading that data. It's hard to determine this in practice. Empirical
+data suggests that Rsync Repositories MAY assume that it is safe to do so after
+one hour. We recommend repository operators monitor for "file has vanished"
+lines in the rsync log file to detect how many clients are affected by these
+deletions.
 
 ## Deterministic Timestamps
 
-Timestamps can be used in recursive rsync fetches to determine which
-files have changed. Therefore, it's important that timestamps do not
-change for files that did not change in content.
+By default, rsyncd uses the modification time and file size to determine if a
+file has changed. Therefore, the modification time SHOULD not change for files
+that did not change in content.
 
-We therefore RECOMMEND that the following deterministic heuristics are
-used to set the timestamps of objects in case they are re-written to
-disk:
+We RECOMMEND the following deterministic heuristics for objects' timestamps
+when written to disk. These heuristics assume that a CA is compliant with
+[@!RFC9286] and uses "one-time-use" EE certificates:
 
-- For CRLs use the value of "this update".
-- For manifests use the value of "this update".
-- For other RPKI Signed Objects use "not before" from the embedded EE
-  Certificate. Note that "signing time" could in theory be a more
-  accurate value for this, but since this is optional it cannot be
-  assumed to be present. And a preference for "signing time" with a
-  fallback to "not before" would result in inconsistencies between
-  objects that could be surprising.
-- For CA and BGPSec Router Certificates use "not before"
+  - For CRLs, use the value of "this update".
+  - For manifests, use the value of "this update". Note that "signing time"
+    could, in theory, be a more accurate value for this, but since this
+    attribute is optional, it cannot be assumed to be present. A preference for
+    "signing time" with a fallback to "not before" can result in
+    inconsistencies between a manifest and its corresponding CRL.
+  - For RPKI Signed Objects, use "not before" from the embedded EE Certificate.
+  - For CA and BGPSec Router Certificates, use "not before"
+  - For directories, use any constant value.
 
 ## Load Balancing and Testing
 
-It is RECOMMENDED that the Rsync Repository is load tested to ensure that
-it can handle the requests by all RPs in case they need to fall back from
-using RRDP (as is currently preferred).
+It is RECOMMENDED that the Rsync Repository is load tested to ensure that it
+can handle the requests by all RPs in case they need to fall back from using
+RRDP (as is currently preferred).
 
-Because Rsync exchanges rely on sessions over TCP there is no need for
-'sticky' load balancing in case multiple rsyncd servers are used. As long
-as they each provide a consistent view, and are updated more frequently
-than the typical refresh rate for rsync repositories used by RPs.
+Because Rsync exchanges rely on sessions over TCP, there is no need for
+consistent load-balancing between multiple rsyncd servers as long as they (1)
+each provide a consistent view and (2) are updated more frequently than the
+typical refresh rate for rsync repositories used by RPs.
 
-It is RECOMMENDED to set the "max connections" to a value that a single
-node can handle, and that this value is re-evaluated as the repository
-changes in size over time.
+We RECOMMEND serving rsync repositories from a local disk. The IO cache of the
+host operating system prevents IO from backing storage. Using NFS to store
+rsync content is not recommended because NFS can not cache the stat operations
+to list the repository content.
 
-The number of rsyncd servers needed is a function of the number of RPs,
-their refresh rate, and the "max connections" used. All of these values
-are subject to change over time so we cannot give clear recommendations
-here, except to restate the we RECOMMEND the load testing is done and
-these values are re-evaluated over time.
+We RECOMMENDED setting the "max connections" to a value that a single node can
+handle within the time an RP allows for rsync to fetch data and re-evaluate as
+the repository changes in size over time.
+
+The number of rsyncd servers needed depends on the number of RPs, their refresh
+rate, and the "max connections" used. These values are subject to change over
+time, so we cannot give clear recommendations here except to restate that we
+RECOMMEND load-testing rsync and re-evaluating these parameters over time.
 
 # Acknowledgements
 
-This document is the result of many informal discussions between
-implementers. Proper acknowledgements will follow.
-
+This document is the result of many informal discussions between implementers.
+Proper acknowledgements will follow.
 
 {backmatter}
