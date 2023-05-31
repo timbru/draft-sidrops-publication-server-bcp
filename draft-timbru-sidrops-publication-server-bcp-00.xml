@@ -41,6 +41,139 @@ made available to RPKI Relying Parties (RPs) in in public rsync and RRDP
 operational experience of several implementers and operators.</t>
 </section>
 
+<section anchor="glossary"><name>Glossary</name>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Publication Server</td>
+<td><xref target="RFC8181"></xref> Publication Repository server</td>
+</tr>
+
+<tr>
+<td>Publishers</td>
+<td><xref target="RFC8181"></xref> Publishers (Certificate Authorities)</td>
+</tr>
+
+<tr>
+<td>RRDP Repository</td>
+<td>Public facing <xref target="RFC8182"></xref> RRDP repository</td>
+</tr>
+
+<tr>
+<td>Rsync Repository</td>
+<td>Public facing rsync server</td>
+</tr>
+</tbody>
+</table></section>
+
+<section anchor="publication-server"><name>Publication Server</name>
+<t>The Publication Server is responsible for handling the server side of
+the <xref target="RFC8181"></xref> Publication Protocol. It is responsible for generating
+the content for the public facing RRDP and Rsync Repositories. It is
+strongly RECOMMENDED that these functions are separated from serving the
+repository content.</t>
+
+<section anchor="availability"><name>Availability</name>
+<t>While the repository content MUST be made highly available to any RP in
+the world, the Publication Server only needs to be accessible by its
+publishers. Dependent on the specific setup this may allow for additional
+access restrictions in this context. For example, access could be limited
+to known source IP addresses and rate limits may be imposed.</t>
+<t>If the Publication Server is not available for some reason, then this will
+impact Publishers in that they will not be able to publish any updated
+RPKI objects in that time. The most immediate impact of this is that the
+publisher will not be able to update its ROAs, ASPAs or BGPSec Router
+Certificates during this outage. Thus, it will not be able to authorise
+changes in its routing operations at this time. If the outage persists
+for a longer period, then the RPKI manifests and CRLs published will
+expire, resulting in the rejecting of CA publication points by RPs.</t>
+<t>For this reason the Publication Server MUST be operated in a highly
+available fashion. Maintenance windows SHOULD be planned and communicated
+to publishers, so that they can avoid - if possible - that changes in
+published RPKI objects will be needed during these windows.</t>
+</section>
+</section>
+
+<section anchor="rrdp-repository"><name>RRDP Repository</name>
+<t>In this section we will elaborate on the following recommendations:</t>
+
+<ul>
+<li>Use unique hostname (do not share fate with rsync)</li>
+<li>Use CDN if possible</li>
+<li>Use randomized paths for Snapshot and Delta Files</li>
+<li>Limit size of Notification File</li>
+<li>Combine deltas to limit size of Notification File</li>
+<li>Timing of publication of Notification File</li>
+</ul>
+
+<section anchor="unique-hostname"><name>Unique Hostname</name>
+<t>It is RECOMMENDED that the public RRDP Repository URIs use a hostname
+that is different from both the <xref target="RFC8181"></xref> service<em>uri used by publishers,
+and the hostname used in rsync URIs (sia</em>base).</t>
+<t>Using a unique hostname will allow the operator to use dedicated
+infrastructure and/or a Content Delivery Network for its RRDP content
+without interfering with the other functions.</t>
+</section>
+
+<section anchor="content-delivery-network"><name>Content Delivery Network</name>
+<t>If possible, it is strongly RECOMMENDED that a Content Delivery Network
+is used to serve the RRDP content. Care MUST BE taken to ensure that
+the Notification File is not cached for longer than 5 minutes, unless
+the back-end RRDP Repository is unavailable, in which case it is RECOMMENDED
+that stale files are served.</t>
+<t>If a CDN is used, then it is likely that it will cache 404s for files that
+are not found on the back-end server. Because of this the Publication
+Server SHOULD use randomized, unpredictable, paths for Snapshot and Delta
+Files to avoid that the CDN can be tricked into caching such 404s for
+future updates.</t>
+<t>Alternatively, the Publication Server can clear the CDN cache for any
+new files that it publishes.</t>
+</section>
+
+<section anchor="limit-size-notification-file"><name>Limit Size Notification File</name>
+<t>The size of the RRDP Notification File can have a big impact on RRDP
+operations. If this file becomes too large, then it can easily result in
+network congestion if the RRDP Repository does not use any CDN, or in
+high costs if it does.</t>
+<t><xref target="RFC8182"></xref> stipulated that any deltas that, when combined with all more
+recent delta, will result in the total size of deltas exceeding the size
+of the snapshot MUST be excluded to avoid that Relying Parties download
+more data than necessary.</t>
+<t>In addition to the restriction described above we RECOMMEND that the
+Notification File size is limited by removing access delta files that
+have been available for more than 30 minutes. As RP typically refresh
+their caches every 10 minutes, this will ensure that deltas are available
+for vast majority of RPs, while limiting the size of the Notification
+File.</t>
+<t>Furthermore, we RECOMMEND that Publication Servers with many, e.g. 1000s
+of, Publishers ensure that they do not produce Delta Files more frequently
+than once per minute. A possible approach for this is that any publication
+request sent by a Publisher to the Server SHOULD be published immediately
+if the last delta was produced more than one minute ago. Otherwise the
+request can be handled by server immediately, but the content change is
+staged for up to 1 minute and combined with changes from other Publishers
+in a single RRDP Delta File.</t>
+</section>
+
+<section anchor="sticky-balancing-and-notification-file-timing"><name>Sticky Balancing and Notification File Timing</name>
+<t>Notification Files SHOULD NOT be available to RPs before the referenced
+snapshot and delta files are available.</t>
+<t>This means that in case a load balancing setup is used, then care SHOULD
+be taken to either ensure that RPs that fetch a Notification File from
+one node, will also be served from the same node where the referenced
+snapshot and delta files are available. Alternatively, snapshot and delta
+files can be pushed out to all nodes first, and notification files are
+pushed out second.</t>
+</section>
+</section>
+
 <section anchor="acknowledgements"><name>Acknowledgements</name>
 <t>This document is the result of many informal discussions between
 implementers. Proper acknowledgements will follow.</t>
