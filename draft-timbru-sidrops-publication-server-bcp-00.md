@@ -179,6 +179,80 @@ snapshot and delta files are available. Alternatively, snapshot and delta
 files can be pushed out to all nodes first, and notification files are
 pushed out second.
 
+# Rsync Repository
+
+In this section we will elaborate on the following recommendations:
+
+- Use symlinks to provide consistent content
+- Use deterministic timestamps for files
+- Load balancing and testing
+
+## Consistent Content
+
+A naive implementation of the Rsync Repository could lead to the contents
+of the repository being changed while RPs are transferring files. This
+can lead to unpredictable, and inconsistent results. While modern RPs will
+treat such inconsistencies as a "Failed Fetch" ([@!RFC9286]), this
+situation is best avoided.
+
+One way to ensure that rsyncd serves connected clients (RPs) a consistent
+view of the repository, is by configuring the rsyncd 'module' path to map
+a symlink that has the current state of the repository.
+
+Whenever there is an update:
+
+- write the complete updated repository into a new directory
+- fix the timestamps of files (see next section)
+- change the symlink to point to the new directory
+
+This way rsyncd does not need to be restarted, and since symlinks are
+resolved when clients connect, any connected RPs will get the content
+from the old directory containing the consistent, but previous, state.
+
+The old directories can then be removed when no more RP are fetching that
+data. Because it's hard to determine this in practice, Rsync Repositories
+MAY assume that it is safe to do so after 1 HOUR.
+
+## Deterministic Timestamps
+
+Timestamps can be used in recursive rsync fetches to determine which
+files have changed. Therefore, it's important that timestamps do not
+change for files that did not change in content.
+
+We therefore RECOMMEND that the following deterministic heuristics are
+used to set the timestamps of objects in case they are re-written to
+disk:
+
+- For CRLs use the value of "this update".
+- For manifests use the value of "this update".
+- For other RPKI Signed Objects use "not before" from the embedded EE
+  Certificate. Note that "signing time" could in theory be a more
+  accurate value for this, but since this is optional it cannot be
+  assumed to be present. And a preference for "signing time" with a
+  fallback to "not before" would result in inconsistencies between
+  objects that could be surprising.
+- For CA and BGPSec Router Certificates use "not before"
+
+## Load Balancing and Testing
+
+It is RECOMMENDED that the Rsync Repository is load tested to ensure that
+it can handle the requests by all RPs in case they need to fall back from
+using RRDP (as is currently preferred).
+
+Because Rsync exchanges rely on sessions over TCP there is no need for
+'sticky' load balancing in case multiple rsyncd servers are used. As long
+as they each provide a consistent view, and are updated more frequently
+than the typical refresh rate for rsync repositories used by RPs.
+
+It is RECOMMENDED to set the "max connections" to a value that a single
+node can handle, and that this value is re-evaluated as the repository
+changes in size over time.
+
+The number of rsyncd servers needed is a function of the number of RPs,
+their refresh rate, and the "max connections" used. All of these values
+are subject to change over time so we cannot give clear recommendations
+here, except to restate the we RECOMMEND the load testing is done and
+these values are re-evaluated over time.
 
 # Acknowledgements
 
