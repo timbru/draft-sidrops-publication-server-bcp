@@ -244,10 +244,11 @@ consistent load-balancing between multiple rsyncd servers as long as they (1)
 each provide a consistent view and (2) are updated more frequently than the
 typical refresh rate for rsync repositories used by RPs.
 
-We RECOMMEND serving rsync repositories from a local disk. The IO cache of the
-host operating system prevents IO from backing storage. Using NFS to store
-rsync content is not recommended because NFS can not cache the stat operations
-to list the repository content.
+We RECOMMEND serving rsync repositories from local storage so the host
+operating system can optimally use its I/O cache. Using network storage
+is NOT RECOMMENDED because it may not benefit from this cache. For
+example, the operating system cannot cache stat operations to list the
+repository content if NFS is used.
 
 We RECOMMENDED setting the "max connections" to a value that a single node can
 handle within the time an RP allows for rsync to fetch data and re-evaluate as
