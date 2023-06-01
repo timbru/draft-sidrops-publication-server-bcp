@@ -216,7 +216,7 @@ deletions.
 ## Deterministic Timestamps
 
 By default, rsyncd uses the modification time and file size to determine if a
-file has changed. Therefore, the modification time SHOULD not change for files
+file has changed. Therefore, the modification time SHOULD NOT change for files
 that did not change in content.
 
 We RECOMMEND the following deterministic heuristics for objects' timestamps
