@@ -37,7 +37,7 @@ organization = "RIPE NCC"
 .# Abstract
 
 This document describes best current practices for operating an RFC 8181
-RPKI Publication Server and its rsync and RRDP (RFC 8182) public
+RPKI Publication Server and its rsync (RFC 5781) and RRDP (RFC 8182) public
 repositories.
 
 {mainmatter}
@@ -182,14 +182,15 @@ In this section, we will elaborate on the following recommendations:
 
 ## Consistent Content
 
-A naive implementation of the Rsync Repository can change the repository
-content while RPs transfer files. Even when the repository is consistent from
-the repository server's point of view, clients may read an inconsistent set of
-files. Clients may get a combination of newer and older files. This "phantom
-read" can lead to unpredictable and unreliable results. While modern RPs will
-treat such inconsistencies as a "Failed Fetch" ([@!RFC9286]), it is best to
-avoid this situation since a failed fetch for one repository can cause the
-rejection of the publication point for a sub-CA when resources change.
+A naive implementation of the Rsync Repository might change the repository
+content mid-flight while RPs transfer files. Even when the repository is
+consistent from the repository server's point of view, clients may read an
+inconsistent set of files. Clients may get a combination of newer and older
+files. This "phantom read" can lead to unpredictable and unreliable results.
+While modern RPs will treat such inconsistencies as a "Failed Fetch"
+([@!RFC9286]), it is best to avoid this situation since a failed fetch for one
+repository can cause the rejection of the publication point for a sub-CA when
+resources change.
 
 One way to ensure that rsyncd serves connected clients (RPs) with a consistent
 view of the repository is by configuring the rsyncd 'module' path to a path
@@ -202,6 +203,9 @@ Whenever there is an update:
   - fix the timestamps of files (see next section)
   - change the symlink to point to the new directory
 
+An example implementation of the above steps is available as a POSIX
+shellscript [@rsync-move].
+
 This way, rsyncd does not need to restart, and since rsyncd resolves this
 symlink when it `chdir`s into the module directory when a client connects, any
 connected RPs will be able to read a consistent state.
@@ -209,28 +213,24 @@ connected RPs will be able to read a consistent state.
 The repository can remove old directories when no RP fetching at a reasonable
 rate is reading that data. It's hard to determine this in practice. Empirical
 data suggests that Rsync Repositories MAY assume that it is safe to do so after
-one hour. We recommend repository operators monitor for "file has vanished"
-lines in the rsync log file to detect how many clients are affected by these
-deletions.
+one hour or two hours. We recommend repository operators monitor for "file has
+vanished" lines in the rsync log file to detect how many clients are affected
+by these deletions.
 
 ## Deterministic Timestamps
 
 By default, rsyncd uses the modification time and file size to determine if a
-file has changed. Therefore, the modification time SHOULD NOT change for files
-that did not change in content.
+file should be added to the transfer-list. Therefore, over the course of a
+file's lifetime, the modification time SHOULD NOT be change, unless the file's
+content changed.
 
 We RECOMMEND the following deterministic heuristics for objects' timestamps
 when written to disk. These heuristics assume that a CA is compliant with
 [@!RFC9286] and uses "one-time-use" EE certificates:
 
-  - For CRLs, use the value of "this update".
-  - For manifests, use the value of "this update". Note that "signing time"
-    could, in theory, be a more accurate value for this, but since this
-    attribute is optional, it cannot be assumed to be present. A preference for
-    "signing time" with a fallback to "not before" can result in
-    inconsistencies between a manifest and its corresponding CRL.
-  - For RPKI Signed Objects, use "not before" from the embedded EE Certificate.
-  - For CA and BGPSec Router Certificates, use "not before"
+  - For CRLs, use the value of thisUpdate.
+  - For RPKI Signed Objects, use the CMS signing-time (see ([@!I-D.spaghetti-sidrops-cms-signing-time]))
+  - For CA and BGPSec Router Certificates, use notBbefore
   - For directories, use any constant value.
 
 ## Load Balancing and Testing
@@ -262,6 +262,20 @@ RECOMMEND load-testing rsync and re-evaluating these parameters over time.
 # Acknowledgements
 
 This document is the result of many informal discussions between implementers.
-Proper acknowledgements will follow.
+
+The authors would like to thank Job Snijders for their helpful review of this document.
 
 {backmatter}
+
+<reference anchor='rsync-move' target=' http://sobornost.net/~job/rpki-rsync-move.sh.txt'>
+    <front>
+        <title>rpki-rsync-move.sh.txt</title>
+        <author initials='J.' surname='Snijders' fullname='Job Snijders'>
+            <organization>Fastly</organization>
+            <address>
+                <email>job@fastly.com</email>
+            </address>
+        </author>
+        <date year='2023'/>
+    </front>
+</reference>
