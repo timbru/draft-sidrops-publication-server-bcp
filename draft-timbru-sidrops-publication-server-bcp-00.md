@@ -230,7 +230,7 @@ when written to disk. These heuristics assume that a CA is compliant with
 
   - For CRLs, use the value of thisUpdate.
   - For RPKI Signed Objects, use the CMS signing-time (see ([@!I-D.spaghetti-sidrops-cms-signing-time]))
-  - For CA and BGPSec Router Certificates, use the value of notBbefore
+  - For CA and BGPSec Router Certificates, use the value of notBefore
   - For directories, use any constant value.
 
 ## Load Balancing and Testing
