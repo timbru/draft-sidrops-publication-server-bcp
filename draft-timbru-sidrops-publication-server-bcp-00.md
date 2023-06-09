@@ -210,12 +210,16 @@ This way, rsyncd does not need to restart, and since rsyncd resolves this
 symlink when it `chdir`s into the module directory when a client connects, any
 connected RPs will be able to read a consistent state.
 
-The repository can remove old directories when no more RPs are reading the data
-fetching at a reasonable rate. It's hard to determine this in practice.
-Empirical data suggests that Rsync Repositories MAY assume that it is safe to
-do so after two hours. Repository operators are RECOMMENDED to monitor for
-"file has vanished" lines in the rsyncd log file to detect how many clients are
-affected by deletion previous spool directories.
+At some point in time Repository Operators need to remove old spool directories
+to conserve disk space. However, removal of a spool directory from which one or
+more (slow) RPs still are reading data, can result in a misfetch for those RPs.
+
+Empirical data suggests to store previous spool directories for a RECOMMENDED
+minimum of two hours.
+
+Repository operators are RECOMMENDED to monitor for "file has vanished" lines
+in the rsyncd log file to detect if and how many clients are affected by
+untimely removal of previous spool directories.
 
 ## Deterministic Timestamps
 
