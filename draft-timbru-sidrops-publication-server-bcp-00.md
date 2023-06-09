@@ -210,12 +210,12 @@ This way, rsyncd does not need to restart, and since rsyncd resolves this
 symlink when it `chdir`s into the module directory when a client connects, any
 connected RPs will be able to read a consistent state.
 
-The repository can remove old directories when no RP fetching at a reasonable
-rate is reading that data. It's hard to determine this in practice. Empirical
-data suggests that Rsync Repositories MAY assume that it is safe to do so after
-one hour or two hours. We recommend repository operators monitor for "file has
-vanished" lines in the rsync log file to detect how many clients are affected
-by these deletions.
+The repository can remove old directories when no more RPs are reading the data
+fetching at a reasonable rate. It's hard to determine this in practice.
+Empirical data suggests that Rsync Repositories MAY assume that it is safe to
+do so after two hours. Repository operators are RECOMMENDED to monitor for
+"file has vanished" lines in the rsyncd log file to detect how many clients are
+affected by deletion previous spool directories.
 
 ## Deterministic Timestamps
 
@@ -230,7 +230,7 @@ when written to disk. These heuristics assume that a CA is compliant with
 
   - For CRLs, use the value of thisUpdate.
   - For RPKI Signed Objects, use the CMS signing-time (see ([@!I-D.spaghetti-sidrops-cms-signing-time]))
-  - For CA and BGPSec Router Certificates, use notBbefore
+  - For CA and BGPSec Router Certificates, use the value of notBbefore
   - For directories, use any constant value.
 
 ## Load Balancing and Testing
