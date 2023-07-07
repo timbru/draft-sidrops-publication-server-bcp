@@ -183,57 +183,56 @@ In this section, we will elaborate on the following recommendations:
 ## Consistent Content
 
 A naive implementation of the Rsync Repository might change the repository
-content mid-flight while RPs transfer files. Even when the repository is
-consistent from the repository server's point of view, clients may read an
-inconsistent set of files. Clients may get a combination of newer and older
-files. This "phantom read" can lead to unpredictable and unreliable results.
-While modern RPs will treat such inconsistencies as a "Failed Fetch"
-([@!RFC9286]), it is best to avoid this situation since a failed fetch for one
-repository can cause the rejection of the publication point for a sub-CA when
-resources change.
+content while RPs transfer files. Even when the repository is consistent from
+the repository server's point of view, clients may read an inconsistent set of
+files. Clients may get a combination of newer and older files. This "phantom
+read" can lead to unpredictable and unreliable results. While modern RPs will
+treat such inconsistencies as a "Failed Fetch" ([@!RFC9286]), it is best to
+avoid this situation since a failed fetch for one repository can cause the
+rejection of the publication point for a sub-CA when resources change.
 
 One way to ensure that rsyncd serves connected clients (RPs) with a consistent
 view of the repository is by configuring the rsyncd 'module' path to a path
 that contains a symlink that the repository-writing process updates for every
 repository publication.
 
-Whenever there is an update:
+Following this process, when an update is published:
 
-  - write the complete updated repository into a new directory
-  - fix the timestamps of files (see next section)
-  - change the symlink to point to the new directory
+  1. write the complete updated repository into a new directory
+  2. fix the timestamps of files (see next section)
+  3. change the symlink to point to the new directory
 
-An example implementation of the above steps is available as a POSIX
-shellscript [@rsync-move].
+Multiple implementations implement this behavior (krill, krill-sync, rpki-core,
+rsyncit, a supporting shellscript [@rsync-move]).
 
-This way, rsyncd does not need to restart, and since rsyncd resolves this
-symlink when it `chdir`s into the module directory when a client connects, any
-connected RPs will be able to read a consistent state.
+Because rsyncd resolves this symlink when it `chdir`s into the module directory
+when a client connects, any connected RPs can read a consistent state. To limit
+the amount of disk space a repository uses, a Rsync Repository must clean up
+copies of the repository; this is a trade-off between providing service to slow
+clients and disk space.
 
-At some point in time Repository Operators need to remove old spool directories
-to conserve disk space. However, removal of a spool directory from which one or
-more (slow) RPs still are reading data, can result in a misfetch for those RPs.
+A repository can safely remove old directories when no RP fetching at a
+reasonable rate is reading that data. Since the last moment an RP can start
+reading from a copy is when it last "current", the time a client has to read a
+copy begins when it was last current (c.f. since written).
 
-Empirical data suggests to store previous spool directories for a RECOMMENDED
-minimum of two hours.
-
-Repository operators are RECOMMENDED to monitor for "file has vanished" lines
-in the rsyncd log file to detect if and how many clients are affected by
-untimely removal of previous spool directories.
+Empirical data suggests that Rsync Repositories MAY assume it is safe to do so
+after one hour. We recommend monitoring for "file has vanished" lines in the
+rsync log file to detect how many clients are affected by this cleanup process.
 
 ## Deterministic Timestamps
 
-By default, rsyncd uses the modification time and file size to determine if a
-file should be added to the transfer-list. Therefore, over the course of a
-file's lifetime, the modification time SHOULD NOT be change, unless the file's
-content changed.
+By default, rsync uses the modification time and file size to determine if it
+should transfer a file. Therefore, throughout a file's lifetime, the
+modification time SHOULD NOT change unless the file's content changes.
 
 We RECOMMEND the following deterministic heuristics for objects' timestamps
 when written to disk. These heuristics assume that a CA is compliant with
 [@!RFC9286] and uses "one-time-use" EE certificates:
 
   - For CRLs, use the value of thisUpdate.
-  - For RPKI Signed Objects, use the CMS signing-time (see ([@!I-D.spaghetti-sidrops-cms-signing-time]))
+  - For RPKI Signed Objects, use the CMS signing-time (see
+    ([@!I-D.spaghetti-sidrops-cms-signing-time]))
   - For CA and BGPSec Router Certificates, use the value of notBefore
   - For directories, use any constant value.
 
@@ -249,21 +248,22 @@ each provide a consistent view and (2) are updated more frequently than the
 typical refresh rate for rsync repositories used by RPs.
 
 We RECOMMEND serving rsync repositories from local storage so the host
-operating system can optimally use its I/O cache. Using network storage
-is NOT RECOMMENDED because it may not benefit from this cache. For
-example, the operating system cannot cache stat operations to list the
-repository content if NFS is used.
+operating system can optimally use its I/O cache. Using network storage is NOT
+RECOMMENDED because it may not benefit from this cache. For example, when using
+NFS, the operating system cannot cache the directory listing(s) of the repository.
 
 We RECOMMENDED setting the "max connections" to a value that a single node can
-handle within the time an RP allows for rsync to fetch data and re-evaluate as
-the repository changes in size over time.
+handle with (1) the available memory and (2) the IO performance available to
+be able to serve this number of connections in the time RPs allow for rsync to
+fetch data. Load-testing results show that machine memory is likely the limiting
+factor for large repositories that are not IO limited.
 
 The number of rsyncd servers needed depends on the number of RPs, their refresh
 rate, and the "max connections" used. These values are subject to change over
 time, so we cannot give clear recommendations here except to restate that we
 RECOMMEND load-testing rsync and re-evaluating these parameters over time.
 
-# Acknowledgements
+# Acknowledgments
 
 This document is the result of many informal discussions between implementers.
 
@@ -271,7 +271,7 @@ The authors would like to thank Job Snijders for their helpful review of this do
 
 {backmatter}
 
-<reference anchor='rsync-move' target=' http://sobornost.net/~job/rpki-rsync-move.sh.txt'>
+<reference anchor='rsync-move' target='http://sobornost.net/~job/rpki-rsync-move.sh.txt'>
     <front>
         <title>rpki-rsync-move.sh.txt</title>
         <author initials='J.' surname='Snijders' fullname='Job Snijders'>
