@@ -166,11 +166,40 @@ and delta files are available.
 
 As a result, when using a load-balancing setup, care SHOULD be taken to ensure
 that RPs that make multiple subsequent requests receive content from the same
-node. This way, clients view the timeline on one node where the referenced
-snapshot and delta files are available. Alternatively, publication
-infrastructure SHOULD ensure a particular ordering of the visibility of the
-snapshot plus delta and notification file. All nodes should receive the new
-snapshot and delta files before any node receives the new notification file.
+node (e.g. consistent hashing). This way, clients view the timeline on one node
+where the referenced snapshot and delta files are available. Alternatively,
+publication infrastructure SHOULD ensure a particular ordering of the
+visibility of the snapshot plus delta and notification file. All nodes should
+receive the new snapshot and delta files before any node receives the new
+notification file.
+
+When using a load-balancing setup with multiple backends, each backend MUST
+provide a consistent view and MUST update more frequently than the typical
+refresh rate for rsync repositories used by RPs. When these conditions hold,
+RPs observe the same RRDP session with the serial monotonically increasing. If
+this is violated, RRDP behaviour will degrade; RPs will download the snapshot
+to re-sync if they observe a regression of the serial.
+
+## L4 load-balancing
+
+If an RRDP repository uses L4 load-balancing, some load-balancer
+implementations will keep connections to a node in the pool that is no longer
+active (e.g. disabled because of maintenance). Due to HTTP keepalive, requests
+from an RP (or CDN) may continue to use the disabled node for an extended
+period. This issue is especially prominent with CDNs that use HTTP proxies
+internally when connecting to the origin while also load-balancing over
+multiple proxies. As a result, some requests may use a connection to the
+disabled server and retrieve stale content, while other connections load data
+from another server. Depending on the exact configuration – for example, nodes
+behind the LB may have different RRDP sessions – this can lead to an
+inconsistent RRDP repository.
+
+Because of this issue, we RECOMMEND to (1) limit HTTP keepalive to a short
+period on the webservers in the pool and (2) limit the number of HTTP requests
+per connection. When applying these recommendations, this issue is limited (and
+effectively less impactful when using a CDN due to caching) to a fail-over
+between RRDP sessions, where clients also risk reading a notification file for
+which some of the content is unavailable.
 
 # Rsync Repository
 
@@ -238,14 +267,20 @@ when written to disk. These heuristics assume that a CA is compliant with
 
 ## Load Balancing and Testing
 
+To increase availability, during both regular maintenance and exceptional
+situations, a rsync repository that strives for high availability should be
+deployed on multiple nodes load-balanced by an L4 load-balancer.  Because Rsync
+sessions use a single TCP connection per session, there is no need for
+consistent load-balancing between multiple rsyncd servers as long as they each
+provide a consistent view. While it is RECOMMENDED that repositories are
+updated more frequently than the typical refresh rate for rsync repositories
+used by RPs to ensure that the repository continuously moves forward from a
+client's point of view, breaking not holding this constraint does not cause
+degraded behavior.
+
 It is RECOMMENDED that the Rsync Repository is load tested to ensure that it
 can handle the requests by all RPs in case they need to fall back from using
 RRDP (as is currently preferred).
-
-Because Rsync exchanges rely on sessions over TCP, there is no need for
-consistent load-balancing between multiple rsyncd servers as long as they (1)
-each provide a consistent view and (2) are updated more frequently than the
-typical refresh rate for rsync repositories used by RPs.
 
 We RECOMMEND serving rsync repositories from local storage so the host
 operating system can optimally use its I/O cache. Using network storage is NOT
