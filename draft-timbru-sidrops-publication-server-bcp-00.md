@@ -352,9 +352,6 @@ The authors would like to thank Job Snijders for their helpful review of this do
         <title>rpki-rsync-move.sh.txt</title>
         <author initials='J.' surname='Snijders' fullname='Job Snijders'>
             <organization>Fastly</organization>
-            <address>
-                <email>job@fastly.com</email>
-            </address>
         </author>
         <date year='2023'/>
     </front>
@@ -363,6 +360,9 @@ The authors would like to thank Job Snijders for their helpful review of this do
 <reference anchor='krill-sync' target='https://github.com/NLnetLabs/krill-sync'>
     <front>
         <title>krill-sync</title>
+        <author initials='T.' surname='Bruijnzeels' fullname='Tim Bruijnzeels'>
+            <organization>NLnet Labs</organization>
+        </author>
         <date year='2023'/>
     </front>
 </reference>
@@ -370,6 +370,9 @@ The authors would like to thank Job Snijders for their helpful review of this do
 <reference anchor='rpki-core' target='https://github.com/RIPE-NCC/rpki-core'>
     <front>
         <title>rpki-core</title>
+        <author fullname='RPKI Team'>
+            <organization>RIPE NCC</organization>
+        </author>
         <date year='2023'/>
     </front>
 </reference>
@@ -377,6 +380,9 @@ The authors would like to thank Job Snijders for their helpful review of this do
 <reference anchor='rsyncit' target='https://github.com/RIPE-NCC/rsyncit'>
     <front>
         <title>rpki-core</title>
+        <author fullname='RPKI Team'>
+            <organization>RIPE NCC</organization>
+        </author>
         <date year='2023'/>
     </front>
 </reference>
