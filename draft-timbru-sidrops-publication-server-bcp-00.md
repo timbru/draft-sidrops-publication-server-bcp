@@ -299,6 +299,29 @@ rate, and the "max connections" used. These values are subject to change over
 time, so we cannot give clear recommendations here except to restate that we
 RECOMMEND load-testing rsync and re-evaluating these parameters over time.
 
+# Single CA Repositories
+
+Some delegated CAs in the RPKI use their own dedicated Repository.
+
+Operating a small repository is much easier than operating a large one.
+There may not be a need to use a CDN for RRDP because the notification,
+snapshot and delta are relatively small. Also, the performance issues of
+rscynd for recursive fetches are far less of a problem for small and flat
+repositories.
+
+Because RPs will use cached data, short outages don't need to cause
+immediate issues if CAs fix their Repository before objects expire and
+ensure that their Publication Server (RFC 8181) is available when there
+is a need to update RPKI objects such as ROAs.
+
+However, availability issues with such repositories are frequent, which
+can negatively impact Relying Party software. Therefore, it is strongly
+RECOMMENDED that CAs use a publication service provided by their RIR,
+NIR or other parent as much as possible. And it is RECOMMENDED that CAs
+that act as a parent make a Publication Service available to their
+children.
+
+
 # Acknowledgments
 
 This document is the result of many informal discussions between implementers.
