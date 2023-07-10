@@ -177,7 +177,7 @@ When using a load-balancing setup with multiple backends, each backend MUST
 provide a consistent view and MUST update more frequently than the typical
 refresh rate for rsync repositories used by RPs. When these conditions hold,
 RPs observe the same RRDP session with the serial monotonically increasing.
-Unfortunately, RFC 8182 does not specify RP behavior if the serial regresses. A
+Unfortunately, [@!RFC8182] does not specify RP behavior if the serial regresses. A
 s a result, some RPs download the snapshot to re-sync if they observe a serial
 regression.
 
@@ -232,8 +232,8 @@ Following this process, when an update is published:
   2. fix the timestamps of files (see next section)
   3. change the symlink to point to the new directory
 
-Multiple implementations implement this behavior (krill, krill-sync, rpki-core,
-rsyncit, a supporting shellscript [@rsync-move]).
+Multiple implementations implement this behavior ([@krill-sync], [@rpki-core],
+[@rsyncit], a supporting shellscript [@rsync-move]).
 
 Because rsyncd resolves this symlink when it `chdir`s into the module directory
 when a client connects, any connected RPs can read a consistent state. To limit
@@ -311,7 +311,7 @@ repositories.
 
 Because RPs will use cached data, short outages don't need to cause
 immediate issues if CAs fix their Repository before objects expire and
-ensure that their Publication Server (RFC 8181) is available when there
+ensure that their Publication Server ([@!RFC8181]) is available when there
 is a need to update RPKI objects such as ROAs.
 
 However, availability issues with such repositories are frequent, which
@@ -339,6 +339,27 @@ The authors would like to thank Job Snijders for their helpful review of this do
                 <email>job@fastly.com</email>
             </address>
         </author>
+        <date year='2023'/>
+    </front>
+</reference>
+
+<reference anchor='krill-sync' target='https://github.com/NLnetLabs/krill-sync'>
+    <front>
+        <title>krill-sync</title>
+        <date year='2023'/>
+    </front>
+</reference>
+
+<reference anchor='rpki-core' target='https://github.com/RIPE-NCC/rpki-core'>
+    <front>
+        <title>rpki-core</title>
+        <date year='2023'/>
+    </front>
+</reference>
+
+<reference anchor='rsyncit' target='https://github.com/RIPE-NCC/rsyncit'>
+    <front>
+        <title>rpki-core</title>
         <date year='2023'/>
     </front>
 </reference>
