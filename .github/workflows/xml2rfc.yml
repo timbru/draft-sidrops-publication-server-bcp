@@ -23,23 +23,23 @@ jobs:
       - name: create output dir
         run: |
           mkdir output
-      
+
       - name: build XML
         uses: addnab/docker-run-action@v3
         with:
           image: paulej/rfctools
-          options: -v ${{ github.workspace }}:/rfc -v ${{ github.workspace }}/.cache-xml2rfc:/var/cache/xml2rfc -w /rfc 
+          options: -v ${{ github.workspace }}:/rfc -v ${{ github.workspace }}/.cache-xml2rfc:/var/cache/xml2rfc -w /rfc
           run: |
-            mmark draft-timbru-sidrops-publication-server-bcp-00.md > output/draft-timbru-sidrops-publication-server-bcp-00.xml
+            mmark draft-timbru-sidrops-publication-server-bcp-01.md > output/draft-timbru-sidrops-publication-server-bcp-01.xml
 
       - name: build html
         uses: addnab/docker-run-action@v3
         with:
           image: paulej/rfctools
-          options: -v ${{ github.workspace }}:/rfc -v ${{ github.workspace }}/.cache-xml2rfc:/var/cache/xml2rfc -w /rfc 
+          options: -v ${{ github.workspace }}:/rfc -v ${{ github.workspace }}/.cache-xml2rfc:/var/cache/xml2rfc -w /rfc
           run: |
-            xml2rfc -p output --text --html output/draft-timbru-sidrops-publication-server-bcp-00.xml
-      
+            xml2rfc -p output --text --html output/draft-timbru-sidrops-publication-server-bcp-01.xml
+
       - name: Archive output
         uses: actions/upload-artifact@v2
         with:
