@@ -26,6 +26,23 @@ organization = "RIPE NCC"
   [author.address]
   email = "tdekock@ripe.net"
 
+[[author]]
+initials="F."
+surname="Hill"
+fullname="Frank Hill"
+organization = "ARIN"
+  [author.address]
+  email = "frank@arin.net"
+
+[[author]]
+initials="T."
+surname="Harrison"
+fullname="Tom Harrison"
+organization = "APNIC"
+  [author.address]
+  email = "tomh@apnic.net"
+
+
 [pi]
  toc = "yes"
  compact = "yes"
