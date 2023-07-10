@@ -176,9 +176,10 @@ notification file.
 When using a load-balancing setup with multiple backends, each backend MUST
 provide a consistent view and MUST update more frequently than the typical
 refresh rate for rsync repositories used by RPs. When these conditions hold,
-RPs observe the same RRDP session with the serial monotonically increasing. If
-this is violated, RRDP behaviour will degrade; RPs will download the snapshot
-to re-sync if they observe a regression of the serial.
+RPs observe the same RRDP session with the serial monotonically increasing.
+Unfortunately, RFC 8182 does not specify RP behavior if the serial regresses. A
+s a result, some RPs download the snapshot to re-sync if they observe a serial
+regression.
 
 ## L4 load-balancing
 
