@@ -250,7 +250,7 @@ Following this process, when an update is published:
   3. change the symlink to point to the new directory
 
 Multiple implementations implement this behavior ([@krill-sync], [@rpki-core],
-[@rscyncit], the rpki.apnic.net repositories
+[@rsyncit], the rpki.apnic.net repositories
 (T. Harrison, personal communication, September 22, 2023), a supporting
 shellscript [@rsync-move]).
 
