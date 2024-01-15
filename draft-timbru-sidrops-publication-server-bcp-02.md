@@ -250,9 +250,7 @@ Following this process, when an update is published:
   3. change the symlink to point to the new directory
 
 Multiple implementations implement this behavior ([@krill-sync], [@rpki-core],
-[@rsyncit], the rpki.apnic.net repositories
-(T. Harrison, personal communication, September 22, 2023), a supporting
-shellscript [@rsync-move]).
+[@rsyncit], the rpki.apnic.net repositories, a supporting shellscript [@rsync-move]).
 
 Because rsyncd resolves this symlink when it `chdir`s into the module directory
 when a client connects, any connected RPs can read a consistent state. To limit
