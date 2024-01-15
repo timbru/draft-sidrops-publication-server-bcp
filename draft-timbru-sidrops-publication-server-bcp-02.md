@@ -120,12 +120,35 @@ needed during these windows.
 
 In this section, we will elaborate on the following recommendations:
 
+  - Bandwidth
   - Use a separate hostname: do not share fate with rsync or the Publication Server.
   - Use a CDN if possible
   - Use randomized filenames for Snapshot and Delta Files
   - Limit the size of the Notification File
   - Combine deltas to limit the size of the Notification File
   - Timing of publication of Notification File
+
+## Bandwidth
+
+The amount of bandwidth needed for RRDP evolves over time, and depends on the
+size of the notification, full snaphot and average delta files, the frequency
+and average size of updates to the repository, as well as the number of RPs, the
+RP update frequency and whether RPs use the "If-Modified-Since" header as
+instructed in section 3.4.4 of [@!RFC8182].
+
+If the RRDP server does not have enough bandwidth then this can result in
+RPs being unable to download updated notification files and thus missing
+updates. Furthermore, if the link is fully saturated, this can also lead
+to RPs being unable to download delta files, and ultimately, falling back to
+retrieving snapshot files. As snapshots are generally large files this can
+put even more load on the link.
+
+Because the amount of bandwidth needed varies between repositories and is not
+constant over time we cannot give strict guidelines here. It is RECOMMENDED that
+bandwidth usage is monitored over time and is adjusted if needed.
+
+Note that bandwidth requirements can be mitigated by limiting the size of
+RRDP notification files and/or using a Content Delivery Network (CDN).
 
 ## Unique Hostname
 
