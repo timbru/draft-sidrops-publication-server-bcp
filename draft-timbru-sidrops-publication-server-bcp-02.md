@@ -7,15 +7,15 @@ obsoletes = [ 8416 ]
 [seriesInfo]
 status = "bcp"
 name = "Internet-Draft"
-value = "draft-timbru-sidrops-publication-server-bcp-01"
+value = "draft-timbru-sidrops-publication-server-bcp-02"
 
 [[author]]
 initials="T."
 surname="Bruijnzeels"
 fullname="Tim Bruijnzeels"
-organization = "NLnet Labs"
+organization = "RIPE NCC"
   [author.address]
-  email = "tim@nlnetlabs.nl"
+  email = "tim@ripe.net"
   uri = "https://www.nlnetlabs.nl/"
 
 [[author]]
