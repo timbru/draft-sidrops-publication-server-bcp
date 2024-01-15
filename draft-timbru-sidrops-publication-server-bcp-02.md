@@ -127,6 +127,34 @@ In this section, we will elaborate on the following recommendations:
   - Combine deltas to limit the size of the Notification File
   - Timing of publication of Notification File
 
+## RRDP bandwidth
+
+The bandwidth needed for RRDP evolves and depends on many parameters. These
+consist of three main groups:
+
+  1. RRDP-specific repository properties, such as the size of notification-,
+     delta-, and snapshot files.
+  2. Properties of the CAs publishing in a repository, such as the number of
+     updates, number of objects, and size of objects.
+  3. Relying party behaviour, e.g. using HTTP compression or not, timeouts or
+     minimum transfer speed for downloads, using conditional HTTP requests for
+     `notification.xml`.
+
+The bandwidth demand of an RRDP repository increases if requests for the
+notification file succeed, but other requests fail. When an RP attempts to
+download one or more delta files, and one fails, this causes an RP to try to
+download the snapshot. If this also fails (or times out), an RP falls back to
+rsync. As a result, the efficiency of RRDP degrades significantly once a
+fraction of requests fails.
+
+It is RECOMMENDED that the size of the notification file be tuned so it does
+not dominate the total traffic used. Depending on the difference in size
+between the notification file and the snapshot, notification files can have
+many entries before they significantly impact traffic volume. For example, for
+a large repository, with a notification file with 144 deltas covering 14 hours,
+the requests for the notification file used 251GB out of 55.5TB/less than 0.5%
+of total traffic during a period.
+
 ## Unique Hostname
 
 It is RECOMMENDED that the public RRDP Repository URIs use a hostname different
