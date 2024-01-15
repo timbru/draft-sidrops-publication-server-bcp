@@ -120,6 +120,7 @@ needed during these windows.
 
 In this section, we will elaborate on the following recommendations:
 
+  - Bandwidth
   - Use a separate hostname: do not share fate with rsync or the Publication Server.
   - Use a CDN if possible
   - Use randomized filenames for Snapshot and Delta Files
