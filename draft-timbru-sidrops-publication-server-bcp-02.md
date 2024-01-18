@@ -16,7 +16,6 @@ fullname="Tim Bruijnzeels"
 organization = "RIPE NCC"
   [author.address]
   email = "tim@ripe.net"
-  uri = "https://www.nlnetlabs.nl/"
 
 [[author]]
 initials="T."
