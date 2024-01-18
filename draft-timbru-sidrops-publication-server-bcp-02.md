@@ -140,22 +140,21 @@ consist of three main groups:
    3. Relying party behaviour, e.g. using HTTP compression or not, timeouts or
       minimum transfer speed for downloads, using conditional HTTP requests for
       `notification.xml`.
+      
+When an RRDP repository server is overloaded, for example, if the bandwidth
+demands exceed capacity, this causes a negative feedback loop (i.e. the
+aggregate load increases), and the efficiency of RRDP degrades. For example,
+when an RP attempts to download one or more delta files, and one fails, it
+causes them to try to download the snapshot (larger than the sum of the size of
+the deltas). If this also fails, the RP falls back to rsync. Furthermore, when
+the RP tries to use RRDP again on the next run, it typically starts by
+downloading the snapshot.
 
-If the bandwidth demands exceed capacity then it can be expected that a fraction
-of requests will start failing. In this case the efficiency of RRDP degrades
-significantly. When an RP attempts to download one or more delta files, and one
-fails, this causes them to try to download the snapshot, which is typically
-bigger in size. If this also fails (or times out), it falls back to rsync. The RP
-may then try to use RRDP again, but having been out-of-sync, they will then
-typically attempt to download the snapshot.
-
-Thus, capacity issues can lead to an increase in capacity demands. Making it
-difficult for Publication Servers to effectively recover.
-
-A Publication Server SHOULD attempt to prevent these issues by closely monitoring
-bandwidth usage over time. Besides increasing the capacity, we will discuss a
-number of measures that server can take to reduce bandwidth demands. Which
-measures are most effective is situational.
+A Publication Server SHOULD attempt to prevent these issues by closely
+monitoring performance (e.g. bandwidth, performance on an RP outside their
+network, unexpected fallback to snapshot). Besides increasing the capacity, we
+will discuss several other measures to reduce bandwidth demands. Which measures
+are most effective is situational.
 
 ### Content Delivery Network
 
@@ -174,34 +173,36 @@ for this duration or clear the CDN cache for any new files it publishes.
 
 ### Limit Notification File Size
 
-Nowadays, most RPs implement conditional fetching of notification files and
-therefore the size of notification file is usually not a big factor in the
-total bandwidth usage. For example, for a large repository in January 2024,
-with a notification file with 144 deltas covering 14 hours, the requests for
-the notification file used 251GB out of 55.5TB/less than 0.5% of total traffic
-during a period.
+Nowadays, most RPs use conditional requests for notification files, which
+reduces the traffic for repositories that do not often relative to the update
+frequency of RPs. On the other hand, for repositories that update frequently,
+the content uses the most traffic. For example, for a large repository in
+January 2024, with a notification file with 144 deltas covering 14 hours, the
+requests for the notification file used 251GB out of 55.5TB/less than 0.5% of
+total traffic during a period.
 
-However, for some servers this ratio may be different. [@!RFC8182] stipulated
-that any deltas that, combined with all more recent delta, will result in the
-total size of deltas exceeding the snapshot size MUST be excluded to avoid
-Relying Parties downloading more data than necessary. If a publication server
-includes *all* such deltas then this could result in huge notification files.
-In such cases it is RECOMMENDED that that the Notification File size is reduced
-by removing delta files that have been available for a long time. Because some
-RPs will only update every 1-2 hours (in 2024) the Publication Server SHOULD
-include deltas for at least 4 hours.
+However, for some servers, this ratio may be different. [@!RFC8182] stipulated
+that the sum of the size of deltas MUST not exceed the snapshot size to avoid
+Relying Parties downloading more data than necessary. However, this does not
+account for the size of the notification file all RPs download. Keeping many
+deltas present may allow RPs to recover more efficiently if they are
+significantly out of sync. Still, including _all_ such deltas can also increase
+the total data transfer because it increases the size of the notification file. 
 
-Furthermore, we RECOMMEND that Publication Servers with many, e.g. 1000s of,
-Publishers ensure they do not produce Delta Files more frequently than once per
-minute. A possible approach for this is that the Publication Server SHOULD
-publish changes at a regular (one-minute) interval. The Publication Server then
-publishes the updates received from all Publishers in this interval in a single
-RRDP Delta File.
+The Notification File size SHOULD be reduced by removing delta files that have
+been available for a long time to prevent this situation. Because some RPs will
+only update every 1-2 hours (in 2024), the Publication Server SHOULD include
+deltas for at least 4 hours.
+
+Furthermore, we RECOMMEND that Publication Servers do not produce Delta Files
+more frequently than once per minute. A possible approach for this is that the
+Publication Server SHOULD publish changes at a regular (one-minute) interval.
+The Publication Server then publishes the updates received from all Publishers
+in this interval in a single RRDP Delta File.
 
 While, the latter may not reduce the amount of data due to changed objects,
-this will result in shorter notification files, and may result in fewer conditional
-downloads of the file, and will reduce the number of delta files that RPs need
-to fetch.
+this will result in shorter notification files, and will reduce the number of
+delta files that RPs need to fetch and process.
 
 ### Manifest and CRL Update Times
 
