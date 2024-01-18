@@ -118,15 +118,6 @@ needed during these windows.
 
 # RRDP Repository
 
-In this section, we will elaborate on the following recommendations:
-
-  - Use a separate hostname: do not share fate with rsync or the Publication Server.
-  - Use a CDN if possible
-  - Use randomized filenames for Snapshot and Delta Files
-  - Limit the size of the Notification File
-  - Combine deltas to limit the size of the Notification File
-  - Timing of publication of Notification File
-
 ## Unique Hostname
 
 It is RECOMMENDED that the public RRDP Repository URIs use a hostname different
@@ -137,7 +128,35 @@ Using a unique hostname will allow the operator to use dedicated infrastructure
 and/or a Content Delivery Network for its RRDP content without interfering with
 the other functions.
 
-## Content Delivery Network
+## Bandwidth and Data Usage
+
+The bandwidth needed for RRDP evolves and depends on many parameters. These
+consist of three main groups:
+
+   1. RRDP-specific repository properties, such as the size of notification-,
+      delta-, and snapshot files.
+   2. Properties of the CAs publishing in a repository, such as the number of
+      updates, number of objects, and size of objects.
+   3. Relying party behaviour, e.g. using HTTP compression or not, timeouts or
+      minimum transfer speed for downloads, using conditional HTTP requests for
+      `notification.xml`.
+      
+When an RRDP repository server is overloaded, for example, if the bandwidth
+demands exceed capacity, this causes a negative feedback loop (i.e. the
+aggregate load increases), and the efficiency of RRDP degrades. For example,
+when an RP attempts to download one or more delta files, and one fails, it
+causes them to try to download the snapshot (larger than the sum of the size of
+the deltas). If this also fails, the RP falls back to rsync. Furthermore, when
+the RP tries to use RRDP again on the next run, it typically starts by
+downloading the snapshot.
+
+A Publication Server SHOULD attempt to prevent these issues by closely
+monitoring performance (e.g. bandwidth, performance on an RP outside their
+network, unexpected fallback to snapshot). Besides increasing the capacity, we
+will discuss several other measures to reduce bandwidth demands. Which measures
+are most effective is situational.
+
+### Content Delivery Network
 
 If possible, it is strongly RECOMMENDED that a Content Delivery Network is used
 to serve the RRDP content. Care MUST BE taken to ensure that the Notification
@@ -152,31 +171,62 @@ unpredictable paths for Snapshot and Delta Files to avoid the CDN caching such
 Alternatively, the Publication Server can delay writing the notification file
 for this duration or clear the CDN cache for any new files it publishes.
 
-## Limit Notification File Size
+### Limit Notification File Size
 
-The size of the RRDP Notification File can significantly impact RRDP
-operations. If this file becomes too large, then it can easily result in
-significant traffic if the RRDP Repository does not use any CDN or in high
-costs if it does.
+Nowadays, most RPs use conditional requests for notification files, which
+reduces the traffic for repositories that do not often relative to the update
+frequency of RPs. On the other hand, for repositories that update frequently,
+the content uses the most traffic. For example, for a large repository in
+January 2024, with a notification file with 144 deltas covering 14 hours, the
+requests for the notification file used 251GB out of 55.5TB/less than 0.5% of
+total traffic during a period.
 
-[@!RFC8182] stipulated that any deltas that, combined with all more recent
-delta, will result in the total size of deltas exceeding the snapshot size MUST
-be excluded to avoid Relying Parties downloading more data than necessary.
+However, for some servers, this ratio may be different. [@!RFC8182] stipulated
+that the sum of the size of deltas MUST not exceed the snapshot size to avoid
+Relying Parties downloading more data than necessary. However, this does not
+account for the size of the notification file all RPs download. Keeping many
+deltas present may allow RPs to recover more efficiently if they are
+significantly out of sync. Still, including _all_ such deltas can also increase
+the total data transfer because it increases the size of the notification file. 
 
-In addition to the restriction described above, we RECOMMEND that the
-Notification File size is reduced by removing delta files that have been
-available for more than 75 minutes. As RP typically refresh their caches every
-10 minutes, this will ensure that deltas are available for the vast majority of
-RPs, while limiting the size of the Notification File.
+The Notification File size SHOULD be reduced by removing delta files that have
+been available for a long time to prevent this situation. Because some RPs will
+only update every 1-2 hours (in 2024), the Publication Server SHOULD include
+deltas for at least 4 hours.
 
-Furthermore, we RECOMMEND that Publication Servers with many, e.g. 1000s of,
-Publishers ensure they do not produce Delta Files more frequently than once per
-minute. A possible approach for this is that the Publication Server SHOULD
-publish changes at a regular (one-minute) interval. The Publication Server then
-publishes the updates received from all Publishers in this interval in a single
-RRDP Delta File.
+Furthermore, we RECOMMEND that Publication Servers do not produce Delta Files
+more frequently than once per minute. A possible approach for this is that the
+Publication Server SHOULD publish changes at a regular (one-minute) interval.
+The Publication Server then publishes the updates received from all Publishers
+in this interval in a single RRDP Delta File.
 
-## Consistent load-balancing and Notification File Timing
+While, the latter may not reduce the amount of data due to changed objects,
+this will result in shorter notification files, and will reduce the number of
+delta files that RPs need to fetch and process.
+
+### Manifest and CRL Update Times
+
+The manifest and CRL next update time and expiry are determined by the issuing
+CA rather than the Publication Server.
+
+From the CA's point of view a longer period used between scheduled Manifest and
+CRL re-issuance ensures that they will have more time to resolve unforeseen
+operational issues. Their current RPKI objects would still remain valid. On
+the other hand, CAs may wish to avoid using excessive periods because it would
+make them vulnerable to RPKI data replay attacks.
+
+From the Publication Server's point of view shorter update times result in
+more data churn due to manifest and CRL refreshes only. As said, the choice
+is made by the CAs, but in certain setups - particularly hosted RPKI services -
+it may be possible to tweak the manifest and CRL re-signing timing. One large
+repository has found that increasing the re-signing cycle from once every 24
+hours, to once every 48 hours (still deemed acceptable) reduced the data
+usage with approximately 50% as most changes in the system are due to re-signing
+rather than e.g. ROA changes.
+
+## Consistent load-balancing
+
+### Notification File Timing
 
 Notification Files MUST NOT be available to RPs before the referenced snapshot
 and delta files are available.
@@ -198,7 +248,7 @@ Unfortunately, [@!RFC8182] does not specify RP behavior if the serial regresses.
 s a result, some RPs download the snapshot to re-sync if they observe a serial
 regression.
 
-## L4 load-balancing
+### L4 load-balancing
 
 If an RRDP repository uses L4 load-balancing, some load-balancer
 implementations will keep connections to a node in the pool that is no longer
