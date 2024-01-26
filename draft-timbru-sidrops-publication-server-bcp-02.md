@@ -173,7 +173,7 @@ for this duration or clear the CDN cache for any new files it publishes.
 ### Limit Notification File Size
 
 Nowadays, most RPs use conditional requests for notification files, which
-reduces the traffic for repositories that do not often relative to the update
+reduces the traffic for repositories that do not often update relative to the update
 frequency of RPs. On the other hand, for repositories that update frequently,
 the content uses the most traffic. For example, for a large repository in
 January 2024, with a notification file with 144 deltas covering 14 hours, the
