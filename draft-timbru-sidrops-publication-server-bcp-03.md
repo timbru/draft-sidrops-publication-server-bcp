@@ -68,7 +68,7 @@ this document are to be interpreted as described in BCP 14 [@!RFC2119]
 # Introduction
 
 [@!RFC8181] describes the RPKI Publication Protocol used between
-RPKI Certificate Authorities (CAs) and their Publication Repository server.
+RPKI Certification Authorities (CAs) and their Publication Repository server.
 The server is responsible for handling publication requests sent by the
 CAs, called Publishers in this context, and ensuring that their data is
 made available to RPKI Relying Parties (RPs) in (public) rsync and RRDP
@@ -82,7 +82,7 @@ operational experience of several implementers and operators.
 Term               | Description
 -------------------|----------------------------------------------------
 Publication Server | [@!RFC8181] Publication Repository server
-Publishers         | [@!RFC8181] Publishers (Certificate Authorities)
+Publishers         | [@!RFC8181] Publishers (Certification Authorities)
 RRDP Repository    | Public facing [@!RFC8182] RRDP repository
 Rsync Repository   | Public facing rsync server
 
@@ -117,11 +117,11 @@ needed during these windows.
 
 # RRDP Repository
 
-## Unique Hostname
+## Distinct Hostnames
 
-It is RECOMMENDED that the public RRDP Repository URIs use a hostname different
-from both the [@!RFC8181] service_uri used by publishers, and the hostname used
-in rsync URIs (`sia_base`).
+It is RECOMMENDED that the public RRDP Repository URI uses a different
+hostname from both the [@!RFC8181] service_uri used by publishers and the
+hostname used in rsync URIs (`sia_base`).
 
 Using a unique hostname will allow the operator to use dedicated infrastructure
 and/or a Content Delivery Network for its RRDP content without interfering with
@@ -205,7 +205,11 @@ delta files that RPs need to fetch and process.
 
 ### Manifest and CRL Update Times
 
+<<<<<<< Updated upstream
 The manifest and CRL next update time and expiry are determined by the issuing
+=======
+The manifest and CRL nextUpdate time and expiry are determined by the issuing
+>>>>>>> Stashed changes
 CA rather than the Publication Server.
 
 From the CA's point of view a longer period used between scheduled Manifest and
