@@ -110,10 +110,13 @@ routing operations. If the outage persists for a more extended period, then the
 RPKI manifests and CRLs published will expire, resulting in the RPs rejecting
 CA publication points.
 
-For this reason, the Publication Server MUST be operated in a highly available
-fashion. Maintenance windows SHOULD be planned and communicated to publishers,
-so they can avoid - if possible - that changes in published RPKI objects are
-needed during these windows.
+For this reason, the Publication Server MUST have a high availability.
+Measuring the availability of the Publication Server in a round-trip fashion is
+recommended by monitoring the publication of objects. Maintenance windows
+SHOULD be planned and communicated to publishers. This makes publishers aware
+of the root cause for disruption in the Publication Server that effectively is
+part of their infrastructure, and helps publishers avoid - if possible -
+changes in published RPKI objects that are needed during these windows.
 
 # RRDP Repository
 
