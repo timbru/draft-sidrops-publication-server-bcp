@@ -1,5 +1,5 @@
 #!/bin/bash
-DRAFT="draft-timbru-sidrops-publication-server-bcp-02"
+DRAFT="draft-timbru-sidrops-publication-server-bcp-03"
 
 docker run --rm \
     -v $(pwd):/rfc \
