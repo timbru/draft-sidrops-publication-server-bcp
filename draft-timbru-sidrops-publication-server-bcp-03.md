@@ -205,11 +205,7 @@ delta files that RPs need to fetch and process.
 
 ### Manifest and CRL Update Times
 
-<<<<<<< Updated upstream
-The manifest and CRL next update time and expiry are determined by the issuing
-=======
 The manifest and CRL nextUpdate time and expiry are determined by the issuing
->>>>>>> Stashed changes
 CA rather than the Publication Server.
 
 From the CA's point of view a longer period used between scheduled Manifest and
