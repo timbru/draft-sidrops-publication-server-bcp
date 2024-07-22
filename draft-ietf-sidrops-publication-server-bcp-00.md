@@ -7,7 +7,7 @@ obsoletes = [ 8416 ]
 [seriesInfo]
 status = "bcp"
 name = "Internet-Draft"
-value = "draft-timbru-sidrops-publication-server-bcp-02"
+value = "draft-ietf-sidrops-publication-server-bcp-00"
 
 [[author]]
 initials="T."
