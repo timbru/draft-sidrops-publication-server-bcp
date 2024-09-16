@@ -173,12 +173,12 @@ for this duration or clear the CDN cache for any new files it publishes.
 ### Limit Notification File Size
 
 Nowadays, most RPs use conditional requests for notification files, which
-reduces the traffic for repositories that do not often update relative to the update
-frequency of RPs. On the other hand, for repositories that update frequently,
-the content uses the most traffic. For example, for a large repository in
-January 2024, with a notification file with 144 deltas covering 14 hours, the
-requests for the notification file used 251GB out of 55.5TB/less than 0.5% of
-total traffic during a period.
+reduces the traffic for repositories that do not often update relative to the
+update frequency of RPs. On the other hand, for repositories that update
+frequently, the content uses the most traffic. For example, for a large
+repository in January 2024, with a notification file with 144 deltas covering 14
+hours, the requests for the notification file used 251GB out of 55.5TB/less than
+0.5% of total traffic during a period.
 
 However, for some servers, this ratio may be different. [@!RFC8182] stipulated
 that the sum of the size of deltas MUST not exceed the snapshot size to avoid
@@ -243,8 +243,8 @@ When using a load-balancing setup with multiple backends, each backend MUST
 provide a consistent view and MUST update more frequently than the typical
 refresh rate for rsync repositories used by RPs. When these conditions hold,
 RPs observe the same RRDP session with the serial monotonically increasing.
-Unfortunately, [@!RFC8182] does not specify RP behavior if the serial regresses. A
-s a result, some RPs download the snapshot to re-sync if they observe a serial
+Unfortunately, [@!RFC8182] does not specify RP behavior if the serial regresses.
+As a result, some RPs download the snapshot to re-sync if they observe a serial
 regression.
 
 ### L4 load-balancing
@@ -299,7 +299,8 @@ Following this process, when an update is published:
   3. change the symlink to point to the new directory
 
 Multiple implementations implement this behavior ([@krill-sync], [@rpki-core],
-[@rsyncit], the rpki.apnic.net repositories, a supporting shellscript [@rsync-move]).
+[@rsyncit], the rpki.apnic.net repositories, a supporting shellscript
+[@rsync-move]).
 
 Because rsyncd resolves this symlink when it `chdir`s into the module directory
 when a client connects, any connected RPs can read a consistent state. To limit
@@ -352,7 +353,8 @@ RRDP (as is currently preferred).
 We RECOMMEND serving rsync repositories from local storage so the host
 operating system can optimally use its I/O cache. Using network storage is NOT
 RECOMMENDED because it may not benefit from this cache. For example, when using
-NFS, the operating system cannot cache the directory listing(s) of the repository.
+NFS, the operating system cannot cache the directory listing(s) of the
+repository.
 
 We RECOMMENDED setting the "max connections" to a value that a single node can
 handle with (1) the available memory and (2) the IO performance available to
@@ -392,7 +394,8 @@ children.
 
 This document is the result of many informal discussions between implementers.
 
-The authors would like to thank Job Snijders for their helpful review of this document.
+The authors would like to thank Job Snijders for their helpful review of this
+document.
 
 {backmatter}
 
