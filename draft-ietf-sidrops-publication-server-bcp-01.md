@@ -2,7 +2,6 @@
 Title = "RPKI Publication Server Best Current Practices"
 abbrev = "RPKI Publication Server Operations"
 ipr = "trust200902"
-obsoletes = [ 8416 ]
 
 [seriesInfo]
 status = "bcp"
