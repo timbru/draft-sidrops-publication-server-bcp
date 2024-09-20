@@ -132,7 +132,7 @@ the other functions.
 ## Same Origin URIs
 
 Publication Servers MUST follow the normative requirements documented in section
-3.1 of [@!ID.ietf-sidrops-rrdp-same-origin]. In short this means that URIs must
+3.1 of [@!I-D.ietf-sidrops-rrdp-same-origin]. In short this means that URIs must
 all use the same host and redirects are not allowed.
 
 ## Bandwidth and Data Usage
