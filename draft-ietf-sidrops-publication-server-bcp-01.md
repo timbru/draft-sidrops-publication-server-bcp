@@ -157,7 +157,7 @@ network, unexpected fallback to snapshot). Besides increasing the capacity, we
 will discuss several other measures to reduce bandwidth demands. Which measures
 are most effective is situational.
 
-### Content Delivery Network
+## Content Delivery Network
 
 If possible, it is strongly RECOMMENDED that a Content Delivery Network is used
 to serve the RRDP content. Care MUST BE taken to ensure that the Notification
@@ -172,7 +172,7 @@ unpredictable paths for Snapshot and Delta Files to avoid the CDN caching such
 Alternatively, the Publication Server can delay writing the notification file
 for this duration or clear the CDN cache for any new files it publishes.
 
-### Limit Notification File Size
+## Limit Notification File Size
 
 Nowadays, most RPs use conditional requests for notification files, which
 reduces the traffic for repositories that do not often update relative to the
@@ -205,7 +205,7 @@ While, the latter may not reduce the amount of data due to changed objects,
 this will result in shorter notification files, and will reduce the number of
 delta files that RPs need to fetch and process.
 
-### Manifest and CRL Update Times
+## Manifest and CRL Update Times
 
 The manifest and CRL nextUpdate time and expiry are determined by the issuing
 CA rather than the Publication Server.
