@@ -106,8 +106,8 @@ that their Publication Server ([@!RFC8181]) is available when there is a need to
 update RPKI objects such as ROAs.
 
 However, availability issues with such repositories are frequent and negatively
-impact RP software. Therefore, it is strongly RECOMMENDED that organistions use
-a publication service provided by their RIR, NIR or other parent as much as
+impact RPs. Therefore, it is strongly RECOMMENDED that organistions use a
+publication service provided by their RIR, NIR or other parent as much as
 possible.
 
 Furthermore, it is RECOMMENDED that CAs that act as a parent and which operate
