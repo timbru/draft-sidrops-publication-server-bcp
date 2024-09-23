@@ -157,6 +157,9 @@ network, unexpected fallback to snapshot). Besides increasing the capacity, we
 will discuss several other measures to reduce bandwidth demands. Which measures
 are most effective is situational.
 
+Publication Servers SHOULD support compression using deflate or gzip content
+encoding as described in sections 8.4.1.2 and 8.4.1.3 of [@!RFC9110].
+
 ## Content Delivery Network
 
 If possible, it is strongly RECOMMENDED that a Content Delivery Network is used
