@@ -11,11 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: cache xml2rfc cache
         id: xml2rfc-cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: xml2rfc-cache
           path: .cache-xml2rfc
@@ -30,7 +30,7 @@ jobs:
           image: paulej/rfctools
           options: -v ${{ github.workspace }}:/rfc -v ${{ github.workspace }}/.cache-xml2rfc:/var/cache/xml2rfc -w /rfc
           run: |
-            mmark draft-timbru-sidrops-publication-server-bcp-03.md > output/draft-timbru-sidrops-publication-server-bcp-03.xml
+            mmark draft-ietf-sidrops-publication-server-bcp-01.md > output/draft-ietf-sidrops-publication-server-bcp-01.xml
 
       - name: build html
         uses: addnab/docker-run-action@v3
@@ -38,10 +38,10 @@ jobs:
           image: paulej/rfctools
           options: -v ${{ github.workspace }}:/rfc -v ${{ github.workspace }}/.cache-xml2rfc:/var/cache/xml2rfc -w /rfc
           run: |
-            xml2rfc -p output --text --html output/draft-timbru-sidrops-publication-server-bcp-03.xml
+            xml2rfc -p output --text --html output/draft-ietf-sidrops-publication-server-bcp-01.xml
 
       - name: Archive output
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: xml2rfc-output
           path: output/
