@@ -129,6 +129,13 @@ Using a unique hostname will allow the operator to use dedicated infrastructure
 and/or a Content Delivery Network for its RRDP content without interfering with
 the other functions.
 
+## URI Query Usage
+
+The URIs for the RRDP files MUST NOT use any query as described in section 4.2.2
+of [@!RFC9110]. If a CDN or caching server is used to serve the RRDP repository,
+then it MUST ignore any query included by the client.
+
+
 ## Bandwidth and Data Usage
 
 The bandwidth needed for RRDP evolves and depends on many parameters. These
