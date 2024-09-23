@@ -158,7 +158,8 @@ will discuss several other measures to reduce bandwidth demands. Which measures
 are most effective is situational.
 
 Publication Servers SHOULD support compression using deflate or gzip content
-encoding as described in sections 8.4.1.2 and 8.4.1.3 of [@!RFC9110].
+encoding as described in sections 8.4.1.2 and 8.4.1.3 of [@!RFC9110], as in most
+cases this reduces transferred data by about 50%.
 
 ## Content Delivery Network
 
