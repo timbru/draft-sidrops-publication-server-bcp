@@ -202,6 +202,12 @@ network, unexpected fallback to snapshot). Besides increasing the capacity, we
 will discuss several other measures to reduce bandwidth demands. Which measures
 are most effective is situational.
 
+Publication Servers SHOULD support compression. As the RRDP XML and
+embedded base64 content is highly compressible, this can reduce transferred
+data by about 50%. Servers SHOULD at least support either deflate or gzip content
+encoding as described in sections 8.4.1.2 and 8.4.1.3 of [@!RFC9110] in addition
+to any other popular compression types that the server can support.
+
 ## Content Availability
 
 Publication Servers MUST ensure the high availability of their RRDP repository
@@ -232,7 +238,6 @@ and CRL expire. This may be acceptable to the CA operator, however, because this
 can negatively impact RPs it is RECOMMENDED that these CAs use a Publication
 Server that is provided as a service, e.g. by their RIR or NIR, instead if they
 can.
-
 
 ## Limit Notification File Size
 
