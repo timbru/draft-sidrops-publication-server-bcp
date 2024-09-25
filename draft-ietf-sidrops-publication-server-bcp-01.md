@@ -174,6 +174,12 @@ Using a unique hostname will allow the operator to use dedicated infrastructure
 and/or a Content Delivery Network for its RRDP content without interfering with
 the other functions.
 
+## Same Origin URIs
+
+Publication Servers need to take note of the normative updates to [@!RFC8182] in
+section 3.1 of [@!I-D.ietf-sidrops-rrdp-same-origin]. In short this means that
+all URIs need to use the same host and redirects are not allowed.
+
 ## Endpoint Protection
 
 Repository operators SHOULD use access control to protect the RRDP endpoints.
