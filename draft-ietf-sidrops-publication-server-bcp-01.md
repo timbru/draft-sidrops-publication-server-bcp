@@ -105,14 +105,37 @@ if these organisations fix their repositories before objects expire and ensure
 that their Publication Server ([@!RFC8181]) is available when there is a need to
 update RPKI objects such as ROAs.
 
-However, availability issues with such repositories are frequent and negatively
-impact RPs. Therefore, it is strongly RECOMMENDED that organistions use a
-publication service provided by their RIR, NIR or other parent as much as
-possible.
+However, availability issues with such repositories are frequent
+and negatively impact RPs, and the greater the number of separate
+repositories, the greater the chance of such problems.  Therefore, CAs
+that act as parents of other CAs are RECOMMENDED to provide a
+publication service for their child CAs, and CAs with a parent who
+offers a publication service are RECOMMENDED to use that service,
+instead of running their own.
 
-Furthermore, it is RECOMMENDED that CAs that act as a parent and which operate
-a Publication Server offer publication as a service to CAs under their CA
-hierarchy, i.e. direct child CAs, grandchildren, great grandchildren, etc.
+For the case of a 'grandchild' CA, where CA1 is a TA, CA2 is a child
+CA of CA1, and CA3 is a child CA of CA2, there are several options for
+providing publication service to CA3:
+
+ 1. RFC 8183 defines a 'referral' mechanism as part of the out-of-band
+ CA setup protocol.  If supported by CA1 and CA2, then this simplifies
+ the process of registering CA3 as a direct publication client of CA1.  
+
+ 2. CA1 may support the registration of multiple publishers by CA2, by
+ using the publisher_request/repository_response XML exchange defined
+ in RFC 8183.  CA2 would then be able to register a separate publisher
+ on behalf of CA3.
+ 
+ 3. CA2 may operate a publication proxy service (per e.g.
+ [@rpki-publication-proxy]), which acts as the publication server for
+ CA3.  This proxy would set aside part of CA2's namespace at CA1 for
+ the publication of CA3's objects, adjusting and forwarding requests
+ from CA3 to CA1 accordingly.
+ 
+For options 1 and 2, CAs operating as CA1 should consider the
+implications of providing direct publication service to CA3 in this
+way: for example, CA3 may expect publication service technical support
+from CA1 directly.
 
 ## Publication Server as a Service
 
@@ -455,5 +478,15 @@ document.
             <organization>RIPE NCC</organization>
         </author>
         <date year='2023'/>
+    </front>
+</reference>
+
+<reference anchor='rpki-publication-proxy' target='https://github.com/APNIC-net/rpki-publication-proxy'>
+    <front>
+        <title>rpki-publication-proxy</title>
+        <author fullname='APNIC'>
+            <organization>APNIC</organization>
+        </author>
+        <date year='2018'/>
     </front>
 </reference>
