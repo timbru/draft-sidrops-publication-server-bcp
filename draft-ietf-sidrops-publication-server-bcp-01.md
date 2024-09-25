@@ -174,12 +174,11 @@ Using a unique hostname will allow the operator to use dedicated infrastructure
 and/or a Content Delivery Network for its RRDP content without interfering with
 the other functions.
 
-## URI Query Usage
+## Endpoint Protection
 
-The URIs for the RRDP files MUST NOT use any query as described in section 4.2.2
-of [@!RFC9110]. If a CDN or caching server is used to serve the RRDP repository,
-then it MUST ignore any query included by the client.
-
+Repository operators SHOULD use access control to protect the RRDP endpoints.
+E.g. if the repository operator knows HTTP GET parameters are not in use, then
+all requests containing GET parameters can be blocked.
 
 ## Bandwidth and Data Usage
 
