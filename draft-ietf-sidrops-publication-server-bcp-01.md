@@ -157,9 +157,11 @@ network, unexpected fallback to snapshot). Besides increasing the capacity, we
 will discuss several other measures to reduce bandwidth demands. Which measures
 are most effective is situational.
 
-Publication Servers SHOULD support compression using deflate or gzip content
-encoding as described in sections 8.4.1.2 and 8.4.1.3 of [@!RFC9110], as in most
-cases this reduces transferred data by about 50%.
+Publication Servers SHOULD support compression. As the RRDP XML and
+embedded base64 content is highly compressible, this can reduce transferred
+data by about 50%. Servers SHOULD at least support either deflate or gzip content
+encoding as described in sections 8.4.1.2 and 8.4.1.3 of [@!RFC9110] in addition
+to any other popular compression types that the server can support.
 
 ## Content Delivery Network
 
