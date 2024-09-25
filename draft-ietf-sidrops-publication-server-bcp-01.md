@@ -174,6 +174,12 @@ Using a unique hostname will allow the operator to use dedicated infrastructure
 and/or a Content Delivery Network for its RRDP content without interfering with
 the other functions.
 
+## Endpoint Protection
+
+Repository operators SHOULD use access control to protect the RRDP endpoints.
+E.g. if the repository operator knows HTTP GET parameters are not in use, then
+all requests containing GET parameters can be blocked.
+
 ## Bandwidth and Data Usage
 
 The bandwidth needed for RRDP evolves and depends on many parameters. These
