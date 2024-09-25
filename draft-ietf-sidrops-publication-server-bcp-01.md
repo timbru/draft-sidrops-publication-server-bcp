@@ -92,7 +92,52 @@ Protocol. The Publication Server generates the content for the public-facing
 RRDP and Rsync Repositories. It is strongly RECOMMENDED that these functions
 are separated from serving the repository content.
 
-## Availability
+## Self Hosted Publication Server
+
+Some organisations that use a self-hosted CA, rather than for example a hosted
+CA as service provided by their RIR or NIR, also run a self-hosted Publication
+Server for their CA. In this case, the organisation is responsible for ensuring
+the availability of the RRDP and rsync content as described in section 5 and 6
+of this document.
+
+Because RPs use cached data, short outages don't need to cause immediate issues
+if these organisations fix their repositories before objects expire and ensure
+that their Publication Server ([@!RFC8181]) is available when there is a need to
+update RPKI objects such as ROAs.
+
+However, availability issues with such repositories are frequent
+and negatively impact RPs, and the greater the number of separate
+repositories, the greater the chance of such problems.  Therefore, CAs
+that act as parents of other CAs are RECOMMENDED to provide a
+publication service for their child CAs, and CAs with a parent who
+offers a publication service are RECOMMENDED to use that service,
+instead of running their own.
+
+For the case of a 'grandchild' CA, where CA1 is a TA, CA2 is a child
+CA of CA1, and CA3 is a child CA of CA2, there are several options for
+providing publication service to CA3:
+
+ 1. RFC 8183 defines a 'referral' mechanism as part of the out-of-band
+ CA setup protocol.  If supported by CA1 and CA2, then this simplifies
+ the process of registering CA3 as a direct publication client of CA1.  
+
+ 2. CA1 may support the registration of multiple publishers by CA2, by
+ using the publisher_request/repository_response XML exchange defined
+ in RFC 8183.  CA2 would then be able to register a separate publisher
+ on behalf of CA3.
+ 
+ 3. CA2 may operate a publication proxy service (per e.g.
+ [@rpki-publication-proxy]), which acts as the publication server for
+ CA3.  This proxy would set aside part of CA2's namespace at CA1 for
+ the publication of CA3's objects, adjusting and forwarding requests
+ from CA3 to CA1 accordingly.
+ 
+For options 1 and 2, CAs operating as CA1 should consider the
+implications of providing direct publication service to CA3 in this
+way: for example, CA3 may expect publication service technical support
+from CA1 directly.
+
+## Publication Server as a Service
 
 The Publication Server and repository content have different demands on their
 availability and reachability. While the repository content MUST be highly
@@ -135,6 +180,12 @@ Publication Servers need to take note of the normative updates to [@!RFC8182] in
 section 3.1 of [@!I-D.ietf-sidrops-rrdp-same-origin]. In short this means that
 all URIs need to use the same host and redirects are not allowed.
 
+## Endpoint Protection
+
+Repository operators SHOULD use access control to protect the RRDP endpoints.
+E.g. if the repository operator knows HTTP GET parameters are not in use, then
+all requests containing GET parameters can be blocked.
+
 ## Bandwidth and Data Usage
 
 The bandwidth needed for RRDP evolves and depends on many parameters. These
@@ -163,20 +214,42 @@ network, unexpected fallback to snapshot). Besides increasing the capacity, we
 will discuss several other measures to reduce bandwidth demands. Which measures
 are most effective is situational.
 
-## Content Delivery Network
+Publication Servers SHOULD support compression. As the RRDP XML and
+embedded base64 content is highly compressible, this can reduce transferred
+data by about 50%. Servers SHOULD at least support either deflate or gzip content
+encoding as described in sections 8.4.1.2 and 8.4.1.3 of [@!RFC9110] in addition
+to any other popular compression types that the server can support.
 
-If possible, it is strongly RECOMMENDED that a Content Delivery Network is used
-to serve the RRDP content. Care MUST BE taken to ensure that the Notification
-File is not cached for longer than 1 minute unless the back-end RRDP Repository
-is unavailable, in which case it is RECOMMENDED that stale files are served.
+## Content Availability
 
-When using a CDN, it will likely cache 404s for files not found on the back-end
-server. Because of this, the Publication Server SHOULD use randomized,
-unpredictable paths for Snapshot and Delta Files to avoid the CDN caching such
-404s for future updates.
+Publication Servers MUST ensure the high availability of their RRDP repository
+content.
 
-Alternatively, the Publication Server can delay writing the notification file
-for this duration or clear the CDN cache for any new files it publishes.
+If possible, it is strongly RECOMMENDED that a Content Delivery Network (CDN) is
+used to serve the RRDP content. Care MUST be taken to ensure that the
+Notification File is not cached for longer than 1 minute unless the back-end
+RRDP Repository is unavailable, in which case it is RECOMMENDED that stale files
+are served.
+
+A CDN will likely cache 404s for files not found on the back-end server. Because
+of this, the Publication Server SHOULD use randomized, unpredictable paths for
+Snapshot and Delta Files to avoid the CDN caching such 404s for future updates.
+Alternatively, the Publication Server can clear the CDN cache for any new files
+it publishes.
+
+Note that some organisations that run a Publication Server may be able to attain
+a similar level of availability themselves without the use of a third-party CDN.
+This document makes no specific recommendations on achieving this, as this is
+highly dependent on local circumstances and operational preferences.
+
+Also note that small repositories that serve a single CA, and which serve a
+small amount of data that does not change frequently, may attain high
+availability using a modest setup. Short downtime would not lead to immediate
+issues for the CA, provided that the issues get resolved before their manifest
+and CRL expire. This may be acceptable to the CA operator, however, because this
+can negatively impact RPs it is RECOMMENDED that these CAs use a Publication
+Server that is provided as a service, e.g. by their RIR or NIR, instead if they
+can.
 
 ## Limit Notification File Size
 
@@ -375,28 +448,6 @@ rate, and the "max connections" used. These values are subject to change over
 time, so we cannot give clear recommendations here except to restate that we
 RECOMMEND load-testing rsync and re-evaluating these parameters over time.
 
-# Single CA Repositories
-
-Some delegated CAs in the RPKI use their own dedicated Repository.
-
-Operating a small repository is much easier than operating a large one.
-There may not be a need to use a CDN for RRDP because the notification,
-snapshot and delta are relatively small. Also, the performance issues of
-rscynd for recursive fetches are far less of a problem for small and flat
-repositories.
-
-Because RPs will use cached data, short outages don't need to cause
-immediate issues if CAs fix their Repository before objects expire and
-ensure that their Publication Server ([@!RFC8181]) is available when there
-is a need to update RPKI objects such as ROAs.
-
-However, availability issues with such repositories are frequent, which
-can negatively impact Relying Party software. Therefore, it is strongly
-RECOMMENDED that CAs use a publication service provided by their RIR,
-NIR or other parent as much as possible. And it is RECOMMENDED that CAs
-that act as a parent make a Publication Service available to their
-children.
-
 
 # Acknowledgments
 
@@ -444,5 +495,15 @@ document.
             <organization>RIPE NCC</organization>
         </author>
         <date year='2023'/>
+    </front>
+</reference>
+
+<reference anchor='rpki-publication-proxy' target='https://github.com/APNIC-net/rpki-publication-proxy'>
+    <front>
+        <title>rpki-publication-proxy</title>
+        <author fullname='APNIC'>
+            <organization>APNIC</organization>
+        </author>
+        <date year='2018'/>
     </front>
 </reference>
