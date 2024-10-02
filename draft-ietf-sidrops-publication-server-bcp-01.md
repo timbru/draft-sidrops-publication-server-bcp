@@ -219,12 +219,14 @@ Server's RRDP repository to verify that the objects it expects are updated in
 a timely manner. Because this would rely on conditional retrieval of the RRDP
 Notification file the CA MAY perform this verification every minute.
 
-If the expected files are not found to be published within a reasonable time
-(let's say 5 minutes?), or if the CA recognises that there is a regression in
-the files seen at the repository (e.g. previous manifest number), then it
-SHOULD perform a Full Synchronisation as described above in section 4.4.1 of
-this document.
-
+If the expected files are not found to be published within 5 minutes, or a
+regression is observed, then the CA SHOULD send the Publiczation Server an
+[@!RFC8181] list query. In case the list reply differs from the expected set
+of files, then the Publication Server and CA have become desynchronized and the
+CA SHOULD send an [@!RFC8181] multi-element publication query to update its
+content. If the list reply matches the expected set of files, but they are
+consistently not seen in the RRDP repository then this points at an operational
+issue at the Publication Server.
 
 # RRDP Repository
 
