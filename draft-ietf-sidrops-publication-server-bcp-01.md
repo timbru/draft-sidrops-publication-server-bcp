@@ -198,9 +198,9 @@ it needs to publish.
 
 In addition to this the publishing CA MAY perform regular planned
 synchronisation events where it issues an [@!RFC8181] list query even if it has
-no new content to publish. Because this interaction requires that the
-Publication Server signs an [@!RFC8181] list reply, this operation can be costly
-for Publication Servers that serve a large number of publishers. Therefore,
+no new content to publish. For Publication Server that serve a large number,
+i.e. 1000s, of publishers this operation could become costly, and unfortunately
+the [@!RFC8181] protocol has no clean support for rate limiting. Therefore,
 publishers SHOULD NOT perform this resynchronisation more frequently than once
 every 10 minutes.
 
