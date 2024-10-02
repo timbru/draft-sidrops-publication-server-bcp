@@ -162,6 +162,72 @@ of the root cause for disruption in the Publication Server that effectively is
 part of their infrastructure, and helps publishers avoid - if possible -
 changes in published RPKI objects that are needed during these windows.
 
+## Availability and Data Loss
+
+The Publication Server MUST ensure high availability of the [@!RFC8181]
+publication protocol. If this protocol is not available then this will prevent
+publishers from updating their ROAs and renewing their manifests and CRLs.
+
+Publication Servers MUST aim to minimise data loss in case of severe server
+outages. If a server restore is needed and a content regression has occured due
+to data loss then the server MUST perform an RRDP session reset.
+
+Publishing CAs typically only check in with their Publication Server when they
+have changes that need to be published. As a result they may not be aware if the
+server performed a restore and their content regressed to an earlier state. This
+could result in two problems:
+
+ - The ROAs may not reflect what the publisher intended
+ - The publisher may not renew their manifest or CRL in time, because they
+   assume that their current manifest and CRL have not yet expired or become
+   stale
+
+Therefore, the Publication Server SHOULD notify publishing CAs about this issue
+if it occurs, so that a full manually triggered resynchronisation can then be
+initiated by CAs.
+
+## Publisher Repository Synchronisation
+
+### Full Synchronisation
+
+It is RECOMMENDED that publishing CAs always perform a list query as described
+in section 2.3 of [@!RFC8181] before sending all their changes using multiple
+PDUs as described in section 2.2 of [@!RFC8181]. This way any desynchronisation
+issue can be resolved at least as soon as the publisher is aware of updates that
+it needs to publish.
+
+In addition to this the publishing CA MAY perform regular planned
+synchronisation events where it issues an [@!RFC8181] list query even if it has
+no new content to publish. For Publication Server that serve a large number,
+i.e. 1000s, of publishers this operation could become costly, and unfortunately
+the [@!RFC8181] protocol has no clean support for rate limiting. Therefore,
+publishers SHOULD NOT perform this resynchronisation more frequently than once
+every 10 minutes.
+
+### Monitoring Repository Content
+
+It should be noted that the [@!RFC8181] list reply returned by a Publication
+Server can differ from the actual set of objects that are published. This is
+because the Publication Server needs time between accepting updates from one
+of their publishers and updating the content of the public repositories, or it
+may be because the Publication Server chooses to limit the number of deltas that
+it publishes to a maximum of 1 delta per minute as described in section 5.4 of
+this document.
+
+In either case, the publishing CA can monitor the content of their Publication
+Server's RRDP repository to verify that the objects it expects are updated in
+a timely manner. Because this would rely on conditional retrieval of the RRDP
+Notification file the CA MAY perform this verification every minute.
+
+If the expected files are not found to be published within 5 minutes, or a
+regression is observed, then the CA SHOULD send the Publiczation Server an
+[@!RFC8181] list query. In case the list reply differs from the expected set
+of files, then the Publication Server and CA have become desynchronized and the
+CA SHOULD send an [@!RFC8181] multi-element publication query to update its
+content. If the list reply matches the expected set of files, but they are
+consistently not seen in the RRDP repository then this points at an operational
+issue at the Publication Server.
+
 # RRDP Repository
 
 ## Distinct Hostnames
