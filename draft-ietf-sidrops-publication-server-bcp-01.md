@@ -105,14 +105,37 @@ if these organisations fix their repositories before objects expire and ensure
 that their Publication Server ([@!RFC8181]) is available when there is a need to
 update RPKI objects such as ROAs.
 
-However, availability issues with such repositories are frequent and negatively
-impact RPs. Therefore, it is strongly RECOMMENDED that organistions use a
-publication service provided by their RIR, NIR or other parent as much as
-possible.
+However, availability issues with such repositories are frequent
+and negatively impact RPs, and the greater the number of separate
+repositories, the greater the chance of such problems.  Therefore, CAs
+that act as parents of other CAs are RECOMMENDED to provide a
+publication service for their child CAs, and CAs with a parent who
+offers a publication service are RECOMMENDED to use that service,
+instead of running their own.
 
-Furthermore, it is RECOMMENDED that CAs that act as a parent and which operate
-a Publication Server offer publication as a service to CAs under their CA
-hierarchy, i.e. direct child CAs, grandchildren, great grandchildren, etc.
+For the case of a 'grandchild' CA, where CA1 is a TA, CA2 is a child
+CA of CA1, and CA3 is a child CA of CA2, there are several options for
+providing publication service to CA3:
+
+ 1. RFC 8183 defines a 'referral' mechanism as part of the out-of-band
+ CA setup protocol.  If supported by CA1 and CA2, then this simplifies
+ the process of registering CA3 as a direct publication client of CA1.  
+
+ 2. CA1 may support the registration of multiple publishers by CA2, by
+ using the publisher_request/repository_response XML exchange defined
+ in RFC 8183.  CA2 would then be able to register a separate publisher
+ on behalf of CA3.
+ 
+ 3. CA2 may operate a publication proxy service (per e.g.
+ [@rpki-publication-proxy]), which acts as the publication server for
+ CA3.  This proxy would set aside part of CA2's namespace at CA1 for
+ the publication of CA3's objects, adjusting and forwarding requests
+ from CA3 to CA1 accordingly.
+ 
+For options 1 and 2, CAs operating as CA1 should consider the
+implications of providing direct publication service to CA3 in this
+way: for example, CA3 may expect publication service technical support
+from CA1 directly.
 
 ## Publication Server as a Service
 
@@ -215,6 +238,18 @@ Using a unique hostname will allow the operator to use dedicated infrastructure
 and/or a Content Delivery Network for its RRDP content without interfering with
 the other functions.
 
+## Same Origin URIs
+
+Publication Servers need to take note of the normative updates to [@!RFC8182] in
+section 3.1 of [@!I-D.ietf-sidrops-rrdp-same-origin]. In short this means that
+all URIs need to use the same host and redirects are not allowed.
+
+## Endpoint Protection
+
+Repository operators SHOULD use access control to protect the RRDP endpoints.
+E.g. if the repository operator knows HTTP GET parameters are not in use, then
+all requests containing GET parameters can be blocked.
+
 ## Bandwidth and Data Usage
 
 The bandwidth needed for RRDP evolves and depends on many parameters. These
@@ -242,6 +277,12 @@ monitoring performance (e.g. bandwidth, performance on an RP outside their
 network, unexpected fallback to snapshot). Besides increasing the capacity, we
 will discuss several other measures to reduce bandwidth demands. Which measures
 are most effective is situational.
+
+Publication Servers SHOULD support compression. As the RRDP XML and
+embedded base64 content is highly compressible, this can reduce transferred
+data by about 50%. Servers SHOULD at least support either deflate or gzip content
+encoding as described in sections 8.4.1.2 and 8.4.1.3 of [@!RFC9110] in addition
+to any other popular compression types that the server can support.
 
 ## Content Availability
 
@@ -273,7 +314,6 @@ and CRL expire. This may be acceptable to the CA operator, however, because this
 can negatively impact RPs it is RECOMMENDED that these CAs use a Publication
 Server that is provided as a service, e.g. by their RIR or NIR, instead if they
 can.
-
 
 ## Limit Notification File Size
 
@@ -519,5 +559,15 @@ document.
             <organization>RIPE NCC</organization>
         </author>
         <date year='2023'/>
+    </front>
+</reference>
+
+<reference anchor='rpki-publication-proxy' target='https://github.com/APNIC-net/rpki-publication-proxy'>
+    <front>
+        <title>rpki-publication-proxy</title>
+        <author fullname='APNIC'>
+            <organization>APNIC</organization>
+        </author>
+        <date year='2018'/>
     </front>
 </reference>
