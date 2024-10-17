@@ -162,11 +162,23 @@ of the root cause for disruption in the Publication Server that effectively is
 part of their infrastructure, and helps publishers avoid - if possible -
 changes in published RPKI objects that are needed during these windows.
 
-## Availability and Data Loss
+## Availability
 
-The Publication Server MUST ensure high availability of the [@!RFC8181]
-publication protocol. If this protocol is not available then this will prevent
-publishers from updating their ROAs and renewing their manifests and CRLs.
+Short outages of an [@!RFC8181] publication server will not affect RPs as long
+as the corresponding RRDP and RSYNC repositories remain available. However, such
+outages prevent publishers from updating their ROAs and renewing their manifests
+and CRLs in a timely manner. 
+
+The propagation time between CA ROA generation and the ultimate use of resulting
+VRPs in routers is described in table 2 of [@rpki-time-in-flight] and varies
+between 15 and 95 minutes for the repositories that were the subject of this
+study. As seen in this study, the delay between signing and publication can be a
+major contributant to long propogation times.
+
+Publication Servers SHOULD therefore aim for high availability of the [@!RFC8181]
+publication protocol.
+
+## Data Loss
 
 Publication Servers MUST aim to minimise data loss in case of severe server
 outages. If a server restore is needed and a content regression has occured due
@@ -177,13 +189,13 @@ have changes that need to be published. As a result they may not be aware if the
 server performed a restore and their content regressed to an earlier state. This
 could result in two problems:
 
- - The ROAs may not reflect what the publisher intended
+ - The ROAs may not reflect what the publisher intended.
  - The publisher may not renew their manifest or CRL in time, because they
    assume that their current manifest and CRL have not yet expired or become
-   stale
-   - Changes to publishers may not have been persisted. Newly registered 
-     publishers may not be present, recently removed publishers may still
-     be present.
+   stale.
+ - Changes to publishers may not have been persisted. Newly registered 
+   publishers may not be present, recently removed publishers may still
+   be present.
 
 Therefore, the Publication Server SHOULD notify publishing CAs about this issue
 if it occurs, so that a full manually triggered resynchronisation can then be
@@ -574,5 +586,22 @@ document.
             <organization>APNIC</organization>
         </author>
         <date year='2018'/>
+    </front>
+</reference>
+
+<reference anchor='rpki-time-in-flight' target='https://www.iijlab.net/en/members/romain/pdf/romain_pam23.pdf'>
+    <front>
+        <title>RPKI Time-of-Flight: Tracking Delays in the Management, Control, and Data Planes</title>
+        <author fullname='Romain Fontugne'>
+        </author>
+        <author fullname='Amreesh Phokeer'>
+        </author>
+        <author fullname='Cristel Pelsser'>
+        </author>
+        <author fullname='Kevin Vermeulen'>
+        </author>
+        <author fullname='Randy Bush'>
+        </author>
+        <date year='2022'/>
     </front>
 </reference>
