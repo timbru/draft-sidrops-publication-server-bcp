@@ -203,8 +203,6 @@ initiated by CAs.
 
 ## Publisher Repository Synchronisation
 
-### Full Synchronisation
-
 It is RECOMMENDED that publishing CAs always perform a list query as described
 in section 2.3 of [@!RFC8181] before sending all their changes using multiple
 PDUs as described in section 2.2 of [@!RFC8181]. This way any desynchronisation
@@ -218,30 +216,6 @@ i.e. 1000s, of publishers this operation could become costly, and unfortunately
 the [@!RFC8181] protocol has no clean support for rate limiting. Therefore,
 publishers SHOULD NOT perform this resynchronisation more frequently than once
 every 10 minutes.
-
-### Monitoring Repository Content
-
-It should be noted that the [@!RFC8181] list reply returned by a Publication
-Server can differ from the actual set of objects that are published. This is
-because the Publication Server needs time between accepting updates from one
-of their publishers and updating the content of the public repositories, or it
-may be because the Publication Server chooses to limit the number of deltas that
-it publishes to a maximum of 1 delta per minute as described in section 5.4 of
-this document.
-
-In either case, the publishing CA can monitor the content of their Publication
-Server's RRDP repository to verify that the objects it expects are updated in
-a timely manner. Because this would rely on conditional retrieval of the RRDP
-Notification file the CA MAY perform this verification every minute.
-
-If the expected files are not found to be published within 5 minutes, or a
-regression is observed, then the CA SHOULD send the Publiczation Server an
-[@!RFC8181] list query. In case the list reply differs from the expected set
-of files, then the Publication Server and CA have become desynchronized and the
-CA SHOULD send an [@!RFC8181] multi-element publication query to update its
-content. If the list reply matches the expected set of files, but they are
-consistently not seen in the RRDP repository then this points at an operational
-issue at the Publication Server.
 
 # RRDP Repository
 
