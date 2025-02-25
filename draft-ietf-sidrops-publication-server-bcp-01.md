@@ -162,6 +162,63 @@ of the root cause for disruption in the Publication Server that effectively is
 part of their infrastructure, and helps publishers avoid - if possible -
 changes in published RPKI objects that are needed during these windows.
 
+## Availability
+
+Short outages of an [@!RFC8181] publication server will not affect RPs as long
+as the corresponding RRDP and RSYNC repositories remain available. However, such
+outages prevent publishers from updating their ROAs and renewing their manifests
+and CRLs in a timely manner. 
+
+The propagation time between CA ROA generation and the ultimate use of resulting
+VRPs in routers is described in table 2 of [@rpki-time-in-flight] and varies
+between 15 and 95 minutes for the repositories that were the subject of this
+study. As seen in this study, the delay between signing and publication can be a
+major contributant to long propogation times.
+
+The potential unavailability of a Publication Server adds to this propagation delay.
+Publication Servers SHOULD therefore aim for high availability of the [@!RFC8181]
+publication protocol.
+
+## Data Loss
+
+Publication Servers MUST aim to minimise data loss in case of severe server
+outages. If a server restore is needed and a content regression has occured due
+to data loss then the server MUST perform an RRDP session reset.
+
+Publishing CAs typically only check in with their Publication Server when they
+have changes that need to be published. As a result they may not be aware if the
+server performed a restore and their content regressed to an earlier state. This
+could result in two problems:
+
+ - The ROAs may not reflect what the publisher intended.
+ - The publisher may not renew their manifest or CRL in time, because they
+   assume that their current manifest and CRL have not yet expired or become
+   stale.
+ - Changes to publishers may not have been persisted. Newly registered 
+   publishers may not be present, recently removed publishers may still
+   be present.
+
+Therefore, the Publication Server SHOULD notify publishing CAs about this issue
+if it occurs, so that a full manually triggered resynchronisation can then be
+initiated by CAs.
+
+## Publisher Repository Synchronisation
+
+It is RECOMMENDED that publishing CAs always perform a list query as described
+in section 2.3 of [@!RFC8181] before sending all their changes using multiple
+PDUs in a single multi-element query message as described in section 2.2 and
+section 3.7.1 of [@!RFC8181]. This way any desynchronisation issue can be
+resolved at least as soon as the publisher is aware of updates that it needs to
+publish.
+
+In addition to this the publishing CA MAY perform regular planned
+synchronisation events where it issues an [@!RFC8181] list query even if it has
+no new content to publish. For Publication Server that serve a large number,
+i.e. 1000s, of publishers this operation could become costly, and unfortunately
+the [@!RFC8181] protocol has no clean support for rate limiting. Therefore,
+publishers SHOULD NOT perform this resynchronisation more frequently than once
+every 10 minutes unless otherwise agreed with the publication server.
+
 # RRDP Repository
 
 ## Distinct Hostnames
@@ -505,5 +562,22 @@ document.
             <organization>APNIC</organization>
         </author>
         <date year='2018'/>
+    </front>
+</reference>
+
+<reference anchor='rpki-time-in-flight' target='https://www.iijlab.net/en/members/romain/pdf/romain_pam23.pdf'>
+    <front>
+        <title>RPKI Time-of-Flight: Tracking Delays in the Management, Control, and Data Planes</title>
+        <author fullname='Romain Fontugne'>
+        </author>
+        <author fullname='Amreesh Phokeer'>
+        </author>
+        <author fullname='Cristel Pelsser'>
+        </author>
+        <author fullname='Kevin Vermeulen'>
+        </author>
+        <author fullname='Randy Bush'>
+        </author>
+        <date year='2022'/>
     </front>
 </reference>

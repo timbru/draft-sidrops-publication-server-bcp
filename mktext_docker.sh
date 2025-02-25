@@ -14,4 +14,4 @@ docker run --rm \
     -v $HOME/.cache/xml2rfc:/var/cache/xml2rfc \
     -w /rfc \
     paulej/rfctools \
-    xml2rfc --text --html $DRAFT.xml
+    xml2rfc --text --html --pdf $DRAFT.xml
