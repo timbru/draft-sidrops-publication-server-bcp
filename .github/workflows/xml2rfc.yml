@@ -11,11 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: cache xml2rfc cache
         id: xml2rfc-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           key: xml2rfc-cache
           path: .cache-xml2rfc
@@ -41,7 +41,7 @@ jobs:
             xml2rfc -p output --text --html output/draft-ietf-sidrops-publication-server-bcp-01.xml
 
       - name: Archive output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: xml2rfc-output
           path: output/
