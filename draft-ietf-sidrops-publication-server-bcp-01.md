@@ -217,7 +217,7 @@ no new content to publish. For Publication Server that serve a large number,
 i.e. 1000s, of publishers this operation could become costly, and unfortunately
 the [@!RFC8181] protocol has no clean support for rate limiting. Therefore,
 publishers SHOULD NOT perform this resynchronisation more frequently than once
-every 10 minutes.
+every 10 minutes unless otherwise agreed with the publication server.
 
 # RRDP Repository
 
