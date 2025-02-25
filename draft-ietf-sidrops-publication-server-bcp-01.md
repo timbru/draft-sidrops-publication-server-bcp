@@ -206,9 +206,10 @@ initiated by CAs.
 
 It is RECOMMENDED that publishing CAs always perform a list query as described
 in section 2.3 of [@!RFC8181] before sending all their changes using multiple
-PDUs as described in section 2.2 of [@!RFC8181]. This way any desynchronisation
-issue can be resolved at least as soon as the publisher is aware of updates that
-it needs to publish.
+PDUs in a single multi-element query message as described in section 2.2 and
+section 3.7.1 of [@!RFC8181]. This way any desynchronisation issue can be
+resolved at least as soon as the publisher is aware of updates that it needs to
+publish.
 
 In addition to this the publishing CA MAY perform regular planned
 synchronisation events where it issues an [@!RFC8181] list query even if it has
