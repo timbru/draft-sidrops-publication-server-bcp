@@ -175,6 +175,7 @@ between 15 and 95 minutes for the repositories that were the subject of this
 study. As seen in this study, the delay between signing and publication can be a
 major contributant to long propogation times.
 
+The potential unavailability of a Publication Server adds to this propagation delay.
 Publication Servers SHOULD therefore aim for high availability of the [@!RFC8181]
 publication protocol.
 
