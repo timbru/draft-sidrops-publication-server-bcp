@@ -105,9 +105,9 @@ if these organisations fix their repositories before objects expire and ensure
 that their Publication Server ([@!RFC8181]) is available when there is a need to
 update RPKI objects such as ROAs.
 
-However, availability issues with such repositories are frequent
-and negatively impact RPs, and the greater the number of separate
-repositories, the greater the chance of such problems.  Therefore, CAs
+However, frequent availability issues with self hosted repositories 
+negatively impact RPs. The greater the number of separate
+repositories, the greater the chance for negative impact to RPs. Therefore, CAs
 that act as parents of other CAs are RECOMMENDED to provide a
 publication service for their child CAs, and CAs with a parent who
 offers a publication service are RECOMMENDED to use that service,
