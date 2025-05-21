@@ -101,10 +101,10 @@ Server for their CA. In this case, the organisation is responsible for ensuring
 the availability of the RRDP and rsync content as described in section 5 and 6
 of this document.
 
-Because RPs use cached data, short outages don't need to cause immediate issues
-if these organisations fix their repositories before objects expire and ensure
-that their Publication Server ([@!RFC8181]) is available when there is a need to
-update RPKI objects such as ROAs.
+RPs are expected to make use of cached data from a previous, successful fetch
+(Section 6 of @!RFC9286). Therefor, short outages on the server side don't need
+to be cause for immediate concern, provided the server operator restores access
+availability in a timely fashion (e.g. before objects expire).
 
 However, availability issues with such repositories are frequent
 and negatively impact RPs, and the greater the number of separate
