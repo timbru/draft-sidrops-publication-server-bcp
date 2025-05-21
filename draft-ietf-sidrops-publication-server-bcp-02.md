@@ -238,8 +238,8 @@ the other functions.
 ## Same Origin URIs
 
 Publication Servers need to take note of the normative updates to [@!RFC8182] in
-section 3.1 of [@!I-D.ietf-sidrops-rrdp-same-origin]. In short this means that
-all URIs need to use the same host and redirects are not allowed.
+section 3.1 of [@!9674]. In short this means that all Delta and Snapshot URIs need
+to use the same host and redirects to other origins are not allowed.
 
 ## Endpoint Protection
 
