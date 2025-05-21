@@ -254,8 +254,8 @@ consist of three main groups:
 
    1. RRDP-specific repository properties, such as the size of notification-,
       delta-, and snapshot files.
-   2. Properties of the CAs publishing in a repository, such as the number of
-      updates, number of objects, and size of objects.
+   2. Properties of the CAs publishing through a particular server, such as the
+      number of updates, number of objects, and size of objects.
    3. Relying party behaviour, e.g. using HTTP compression or not, timeouts or
       minimum transfer speed for downloads, using conditional HTTP requests for
       `notification.xml`.
