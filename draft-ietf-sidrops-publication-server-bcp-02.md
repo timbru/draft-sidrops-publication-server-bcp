@@ -82,8 +82,9 @@ Term               | Description
 -------------------|----------------------------------------------------
 Publication Server | [@!RFC8181] Publication Repository server
 Publishers         | [@!RFC8181] Publishers (Certification Authorities)
-RRDP Repository    | Public facing [@!RFC8182] RRDP repository
-Rsync Repository   | Public facing rsync server
+RRDP Server        | Public facing [@!RFC8182] RRDP repository
+Rsync Server       | Public facing rsync server
+rsyncd             | Software daemon package running on the Rsync Server
 
 # Publication Server
 
@@ -219,11 +220,11 @@ the [@!RFC8181] protocol has no clean support for rate limiting. Therefore,
 publishers SHOULD NOT perform this resynchronisation more frequently than once
 every 10 minutes unless otherwise agreed with the publication server.
 
-# RRDP Repository
+# RRDP Server
 
 ## Distinct Hostnames
 
-It is RECOMMENDED that the public RRDP Repository URI uses a different
+It is RECOMMENDED that the public RRDP Server URI uses a different
 hostname from both the [@!RFC8181] service_uri used by publishers and the
 hostname used in rsync URIs (`sia_base`).
 
@@ -285,7 +286,7 @@ content.
 If possible, it is strongly RECOMMENDED that a Content Delivery Network (CDN) is
 used to serve the RRDP content. Care MUST be taken to ensure that the
 Notification File is not cached for longer than 1 minute unless the back-end
-RRDP Repository is unavailable, in which case it is RECOMMENDED that stale files
+RRDP Server is unavailable, in which case it is RECOMMENDED that stale files
 are served.
 
 A CDN will likely cache 404s for files not found on the back-end server. Because
@@ -406,7 +407,7 @@ effectively less impactful when using a CDN due to caching) to a fail-over
 between RRDP sessions, where clients also risk reading a notification file for
 which some of the content is unavailable.
 
-# Rsync Repository
+# Rsync Server
 
 In this section, we will elaborate on the following recommendations:
 
@@ -416,7 +417,7 @@ In this section, we will elaborate on the following recommendations:
 
 ## Consistent Content
 
-A naive implementation of the Rsync Repository might change the repository
+A naive implementation of the Rsync Server might change the repository
 content while RPs transfer files. Even when the repository is consistent from
 the repository server's point of view, clients may read an inconsistent set of
 files. Clients may get a combination of newer and older files. This "phantom
@@ -442,7 +443,7 @@ Multiple implementations implement this behavior ([@krill-sync], [@rpki-core],
 
 Because rsyncd resolves this symlink when it `chdir`s into the module directory
 when a client connects, any connected RPs can read a consistent state. To limit
-the amount of disk space a repository uses, a Rsync Repository must clean up
+the amount of disk space a repository uses, a Rsync Server must clean up
 copies of the repository; this is a trade-off between providing service to slow
 clients and disk space.
 
@@ -484,7 +485,7 @@ used by RPs to ensure that the repository continuously moves forward from a
 client's point of view, breaking not holding this constraint does not cause
 degraded behavior.
 
-It is RECOMMENDED that the Rsync Repository is load tested to ensure that it
+It is RECOMMENDED that the Rsync Server is load tested to ensure that it
 can handle the requests by all RPs in case they need to fall back from using
 RRDP (as is currently preferred).
 
