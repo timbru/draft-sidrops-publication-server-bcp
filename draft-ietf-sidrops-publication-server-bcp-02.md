@@ -172,7 +172,7 @@ as the corresponding RRDP and RSYNC repositories remain available. However, such
 outages prevent publishers from updating their ROAs and re-issuing their manifests
 and CRLs in a timely manner. 
 
-The propagation time between CA ROA generation and the ultimate use of resulting
+The propagation time between CA ROA issuance and the ultimate use of resulting
 VRPs in routers is described in table 2 of [@rpki-time-in-flight] and varies
 between 15 and 95 minutes for the repositories that were the subject of this
 study. As seen in this study, the delay between signing and publication can be a
@@ -185,15 +185,15 @@ publication protocol.
 ## Data Loss
 
 Publication Servers MUST aim to minimise data loss in case of severe server
-outages. If a server restore is needed and a content regression has occured due
-to data loss then the server MUST perform an RRDP session reset.
+outages. If a server restore is needed and a content regression has occured
+then the server MUST perform an RRDP session reset.
 
 Publishing CAs typically only check in with their Publication Server when they
 have changes that need to be published. As a result they may not be aware if the
 server performed a restore and their content regressed to an earlier state. This
-could result in two problems:
+could result in a number of problems:
 
- - The ROAs may not reflect what the publisher intended.
+ - The published ROAs no longer reflect the CA's intentions.
  - The publisher may not renew their manifest or CRL in time, because they
    assume that their current manifest and CRL have not yet expired or become
    stale.
