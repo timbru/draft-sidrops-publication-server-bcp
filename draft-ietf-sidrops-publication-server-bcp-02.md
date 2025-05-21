@@ -214,13 +214,14 @@ section 3.7.1 of [@!RFC8181]. This way any desynchronisation issue can be
 resolved at least as soon as the publisher is aware of updates that it needs to
 publish.
 
-In addition to this the publishing CA MAY perform regular planned
+In addition to the above, the publishing CA MAY perform regular planned
 synchronisation events where it issues an [@!RFC8181] list query even if it has
-no new content to publish. For Publication Server that serve a large number,
-i.e. 1000s, of publishers this operation could become costly, and unfortunately
-the [@!RFC8181] protocol has no clean support for rate limiting. Therefore,
-publishers SHOULD NOT perform this resynchronisation more frequently than once
-every 10 minutes unless otherwise agreed with the publication server.
+no new content to publish. For Publication Server that serve a large number of
+CAs (e.g. 1000s) this operation could become costly from a resource consumption
+perspective. Unfortunately the [@!RFC8181] protocol has no proper support for
+rate limiting. Therefor, publishers SHOULD NOT perform this resynchronisation
+more frequently than once every 10 minutes unless otherwise agreed with the
+publication server.
 
 # RRDP Server
 
