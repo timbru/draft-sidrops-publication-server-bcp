@@ -199,8 +199,7 @@ could result in two problems:
    be present.
 
 Therefore, the Publication Server SHOULD notify publishing CAs about this issue
-if it occurs, so that a full manually triggered resynchronisation can then be
-initiated by CAs.
+if it occurs, so that a full resynchronisation can be initiated by CAs.
 
 ## Publisher Repository Synchronisation
 
