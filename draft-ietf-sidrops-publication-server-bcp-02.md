@@ -479,8 +479,7 @@ sessions use a single TCP connection per session, there is no need for
 consistent load-balancing between multiple rsyncd servers as long as they each
 provide a consistent view. While it is RECOMMENDED that repositories are
 updated more frequently than the typical refresh rate for rsync repositories
-used by RPs to ensure that the repository continuously moves forward from a
-client's point of view, breaking not holding this constraint does not cause
+used by RPs client's point of view, breaking this constraint does not cause
 degraded behavior.
 
 It is RECOMMENDED that the Rsync Repository is load tested to ensure that it
