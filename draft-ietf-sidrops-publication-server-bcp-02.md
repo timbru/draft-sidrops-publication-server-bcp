@@ -301,7 +301,7 @@ highly dependent on local circumstances and operational preferences.
 Also note that small repositories that serve a single CA, and which serve a
 small amount of data that does not change frequently, may attain high
 availability using a modest setup. Short downtime would not lead to immediate
-issues for the CA, provided that the issues get resolved before their manifest
+issues for the CA, provided that the service is restored before their manifest
 and CRL expire. This may be acceptable to the CA operator, however, because this
 can negatively impact RPs it is RECOMMENDED that these CAs use a Publication
 Server that is provided as a service, e.g. by their RIR or NIR, instead if they
