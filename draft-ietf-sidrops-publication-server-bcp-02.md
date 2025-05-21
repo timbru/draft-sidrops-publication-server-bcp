@@ -169,7 +169,7 @@ changes in published RPKI objects that are needed during these windows.
 
 Short outages of an [@!RFC8181] publication server will not affect RPs as long
 as the corresponding RRDP and RSYNC repositories remain available. However, such
-outages prevent publishers from updating their ROAs and renewing their manifests
+outages prevent publishers from updating their ROAs and re-issuing their manifests
 and CRLs in a timely manner. 
 
 The propagation time between CA ROA generation and the ultimate use of resulting
