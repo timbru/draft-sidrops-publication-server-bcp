@@ -95,6 +95,8 @@ are separated from serving the repository content.
 
 ## Self Hosted Publication Server
 
+In general, it is NOT RECOMMENDED to operate a self-hosted Publication Server.
+
 Some organisations that use a self-hosted CA, rather than for example a hosted
 CA as service provided by their RIR or NIR, also run a self-hosted Publication
 Server for their CA. In this case, the organisation is responsible for ensuring
