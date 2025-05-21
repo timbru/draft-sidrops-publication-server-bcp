@@ -194,9 +194,9 @@ server performed a restore and their content regressed to an earlier state. This
 could result in a number of problems:
 
  - The published ROAs no longer reflect the CA's intentions.
- - The publisher may not renew their manifest or CRL in time, because they
-   assume that their current manifest and CRL have not yet expired or become
-   stale.
+ - The CA might not re-issue their Manifest or CRL in time, because they
+   operated under the assumption that the currently published Manifest and CRL
+   have not yet became stale.
  - Changes to publishers may not have been persisted. Newly registered 
    publishers may not be present, recently removed publishers may still
    be present.
