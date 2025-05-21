@@ -150,12 +150,12 @@ restrictions in this context. For example, the Publication Server can limit
 access to known source IP addresses or apply rate limits.
 
 If the Publication Server is unavailable for some reason, this will prevent
-Publishers from publishing any updated RPKI objects. The most immediate impact
-of this is that the publisher cannot update their ROAs, ASPAs or BGPSec Router
-Certificates during this outage. Thus, it cannot authorise changes in its
-routing operations. If the outage persists for a more extended period, then the
-RPKI manifests and CRLs published will expire, resulting in the RPs rejecting
-CA publication points.
+Publishers from making updated RPKI objects available. The most immediate impact
+of this is that the publisher cannot distribute new issuances or revocations of
+ROAs, ASPAs or BGPSec Router Certificates for the duration of this outage. Thus,
+in effect, it cannot signal changes in its routing operations. If the outage
+persists for an extended period, then RPKI Manifests, CRLs, and Signed Objects
+might became stale, hampering for example BGP Origin Validation ([@!RFC6811].
 
 For this reason, the Publication Server MUST have a high availability.
 Measuring the availability of the Publication Server in a round-trip fashion is
