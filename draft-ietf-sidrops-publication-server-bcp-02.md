@@ -85,6 +85,8 @@ Publishers         | [@!RFC8181] Publishers (Certification Authorities)
 RRDP Server        | Public facing [@!RFC8182] RRDP repository
 Rsync Server       | Public facing rsync server
 rsyncd             | Software daemon package running on the Rsync Server
+RIR                | Regional Internet Registry
+NIR                | National Internet Registry
 
 # Publication Server
 
