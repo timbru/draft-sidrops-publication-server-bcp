@@ -40,6 +40,13 @@ organization = "APNIC"
   [author.address]
   email = "tomh@apnic.net"
 
+[[author]]
+initials="J."
+surname="Snijders"
+fullname="Job Snijders"
+organization = ""
+  [author.address]
+  email = "job@sobornost.net"
 
 [pi]
  toc = "yes"
