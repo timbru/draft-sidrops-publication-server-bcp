@@ -117,9 +117,9 @@ RPs are expected to make use of cached data from a previous, successful fetch
 to be cause for immediate concern, provided the server operator restores access
 availability in a timely fashion (e.g. before objects expire).
 
-However, availability issues with such repositories are frequent
-and negatively impact RPs, and the greater the number of separate
-repositories, the greater the chance of such problems.  Therefore, CAs
+However, frequent availability issues with self hosted repositories 
+negatively impact RPs. The greater the number of separate
+repositories, the greater the chance for negative impact to RPs. Therefore, CAs
 that act as parents of other CAs are RECOMMENDED to provide a
 publication service for their child CAs, and CAs with a parent who
 offers a publication service are RECOMMENDED to use that service,
@@ -211,8 +211,7 @@ could result in a number of problems:
    be present.
 
 Therefore, the Publication Server SHOULD notify publishing CAs about this issue
-if it occurs, so that a full manually triggered resynchronisation can then be
-initiated by CAs.
+if it occurs, so that a full resynchronisation can be initiated by CAs.
 
 ## Publisher Repository Synchronisation
 
@@ -315,7 +314,7 @@ highly dependent on local circumstances and operational preferences.
 Also note that small repositories that serve a single CA, and which serve a
 small amount of data that does not change frequently, may attain high
 availability using a modest setup. Short downtime would not lead to immediate
-issues for the CA, provided that the issues get resolved before their manifest
+issues for the CA, provided that the service is restored before their manifest
 and CRL expire. This may be acceptable to the CA operator, however, because this
 can negatively impact RPs it is RECOMMENDED that these CAs use a Publication
 Server that is provided as a service, e.g. by their RIR or NIR, instead if they
@@ -493,8 +492,7 @@ sessions use a single TCP connection per session, there is no need for
 consistent load-balancing between multiple rsyncd servers as long as they each
 provide a consistent view. While it is RECOMMENDED that repositories are
 updated more frequently than the typical refresh rate for rsync repositories
-used by RPs to ensure that the repository continuously moves forward from a
-client's point of view, breaking not holding this constraint does not cause
+used by RPs client's point of view, breaking this constraint does not cause
 degraded behavior.
 
 It is RECOMMENDED that the Rsync Server is load tested to ensure that it
