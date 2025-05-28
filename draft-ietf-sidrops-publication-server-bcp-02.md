@@ -520,9 +520,7 @@ RECOMMEND load-testing rsync and re-evaluating these parameters over time.
 # Acknowledgments
 
 This document is the result of many informal discussions between implementers.
-
-The authors would like to thank Job Snijders for their helpful review of this
-document.
+The authors wish to thank Mike Hollymon for editorial suggestions.
 
 {backmatter}
 
