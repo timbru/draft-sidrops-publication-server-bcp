@@ -246,7 +246,7 @@ the other functions.
 ## Same Origin URIs
 
 Publication Servers need to take note of the normative updates to [@!RFC8182] in
-section 3.1 of [@!9674]. In short this means that all Delta and Snapshot URIs need
+section 3.1 of [@!RFC9674]. In short this means that all Delta and Snapshot URIs need
 to use the same host and redirects to other origins are not allowed.
 
 ## Endpoint Protection
