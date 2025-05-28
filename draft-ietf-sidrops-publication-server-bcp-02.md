@@ -40,6 +40,13 @@ organization = "APNIC"
   [author.address]
   email = "tomh@apnic.net"
 
+[[author]]
+initials="J."
+surname="Snijders"
+fullname="Job Snijders"
+organization = ""
+  [author.address]
+  email = "job@sobornost.net"
 
 [pi]
  toc = "yes"
@@ -82,8 +89,11 @@ Term               | Description
 -------------------|----------------------------------------------------
 Publication Server | [@!RFC8181] Publication Repository server
 Publishers         | [@!RFC8181] Publishers (Certification Authorities)
-RRDP Repository    | Public facing [@!RFC8182] RRDP repository
-Rsync Repository   | Public facing rsync server
+RRDP Server        | Public facing [@!RFC8182] RRDP repository
+Rsync Server       | Public facing rsync server
+rsyncd             | Software daemon package running on the Rsync Server
+RIR                | Regional Internet Registry
+NIR                | National Internet Registry
 
 # Publication Server
 
@@ -94,16 +104,18 @@ are separated from serving the repository content.
 
 ## Self Hosted Publication Server
 
+In general, it is NOT RECOMMENDED to operate a self-hosted Publication Server.
+
 Some organisations that use a self-hosted CA, rather than for example a hosted
 CA as service provided by their RIR or NIR, also run a self-hosted Publication
 Server for their CA. In this case, the organisation is responsible for ensuring
 the availability of the RRDP and rsync content as described in section 5 and 6
 of this document.
 
-Because RPs use cached data, short outages don't need to cause immediate issues
-if these organisations fix their repositories before objects expire and ensure
-that their Publication Server ([@!RFC8181]) is available when there is a need to
-update RPKI objects such as ROAs.
+RPs are expected to make use of cached data from a previous, successful fetch
+(Section 6 of @!RFC9286). Therefor, short outages on the server side don't need
+to be cause for immediate concern, provided the server operator restores access
+availability in a timely fashion (e.g. before objects expire).
 
 However, availability issues with such repositories are frequent
 and negatively impact RPs, and the greater the number of separate
@@ -147,12 +159,12 @@ restrictions in this context. For example, the Publication Server can limit
 access to known source IP addresses or apply rate limits.
 
 If the Publication Server is unavailable for some reason, this will prevent
-Publishers from publishing any updated RPKI objects. The most immediate impact
-of this is that the publisher cannot update their ROAs, ASPAs or BGPSec Router
-Certificates during this outage. Thus, it cannot authorise changes in its
-routing operations. If the outage persists for a more extended period, then the
-RPKI manifests and CRLs published will expire, resulting in the RPs rejecting
-CA publication points.
+Publishers from making updated RPKI objects available. The most immediate impact
+of this is that the publisher cannot distribute new issuances or revocations of
+ROAs, ASPAs or BGPSec Router Certificates for the duration of this outage. Thus,
+in effect, it cannot signal changes in its routing operations. If the outage
+persists for an extended period, then RPKI Manifests, CRLs, and Signed Objects
+might became stale, hampering for example BGP Origin Validation ([@!RFC6811].
 
 For this reason, the Publication Server MUST have a high availability.
 Measuring the availability of the Publication Server in a round-trip fashion is
@@ -166,10 +178,10 @@ changes in published RPKI objects that are needed during these windows.
 
 Short outages of an [@!RFC8181] publication server will not affect RPs as long
 as the corresponding RRDP and RSYNC repositories remain available. However, such
-outages prevent publishers from updating their ROAs and renewing their manifests
+outages prevent publishers from updating their ROAs and re-issuing their manifests
 and CRLs in a timely manner. 
 
-The propagation time between CA ROA generation and the ultimate use of resulting
+The propagation time between CA ROA issuance and the ultimate use of resulting
 VRPs in routers is described in table 2 of [@rpki-time-in-flight] and varies
 between 15 and 95 minutes for the repositories that were the subject of this
 study. As seen in this study, the delay between signing and publication can be a
@@ -182,18 +194,18 @@ publication protocol.
 ## Data Loss
 
 Publication Servers MUST aim to minimise data loss in case of severe server
-outages. If a server restore is needed and a content regression has occured due
-to data loss then the server MUST perform an RRDP session reset.
+outages. If a server restore is needed and a content regression has occured
+then the server MUST perform an RRDP session reset.
 
 Publishing CAs typically only check in with their Publication Server when they
 have changes that need to be published. As a result they may not be aware if the
 server performed a restore and their content regressed to an earlier state. This
-could result in two problems:
+could result in a number of problems:
 
- - The ROAs may not reflect what the publisher intended.
- - The publisher may not renew their manifest or CRL in time, because they
-   assume that their current manifest and CRL have not yet expired or become
-   stale.
+ - The published ROAs no longer reflect the CA's intentions.
+ - The CA might not re-issue their Manifest or CRL in time, because they
+   operated under the assumption that the currently published Manifest and CRL
+   have not yet became stale.
  - Changes to publishers may not have been persisted. Newly registered 
    publishers may not be present, recently removed publishers may still
    be present.
@@ -211,19 +223,20 @@ section 3.7.1 of [@!RFC8181]. This way any desynchronisation issue can be
 resolved at least as soon as the publisher is aware of updates that it needs to
 publish.
 
-In addition to this the publishing CA MAY perform regular planned
+In addition to the above, the publishing CA MAY perform regular planned
 synchronisation events where it issues an [@!RFC8181] list query even if it has
-no new content to publish. For Publication Server that serve a large number,
-i.e. 1000s, of publishers this operation could become costly, and unfortunately
-the [@!RFC8181] protocol has no clean support for rate limiting. Therefore,
-publishers SHOULD NOT perform this resynchronisation more frequently than once
-every 10 minutes unless otherwise agreed with the publication server.
+no new content to publish. For Publication Server that serve a large number of
+CAs (e.g. 1000s) this operation could become costly from a resource consumption
+perspective. Unfortunately the [@!RFC8181] protocol has no proper support for
+rate limiting. Therefor, publishers SHOULD NOT perform this resynchronisation
+more frequently than once every 10 minutes unless otherwise agreed with the
+publication server.
 
-# RRDP Repository
+# RRDP Server
 
 ## Distinct Hostnames
 
-It is RECOMMENDED that the public RRDP Repository URI uses a different
+It is RECOMMENDED that the public RRDP Server URI uses a different
 hostname from both the [@!RFC8181] service_uri used by publishers and the
 hostname used in rsync URIs (`sia_base`).
 
@@ -234,8 +247,8 @@ the other functions.
 ## Same Origin URIs
 
 Publication Servers need to take note of the normative updates to [@!RFC8182] in
-section 3.1 of [@!I-D.ietf-sidrops-rrdp-same-origin]. In short this means that
-all URIs need to use the same host and redirects are not allowed.
+section 3.1 of [@!9674]. In short this means that all Delta and Snapshot URIs need
+to use the same host and redirects to other origins are not allowed.
 
 ## Endpoint Protection
 
@@ -250,8 +263,8 @@ consist of three main groups:
 
    1. RRDP-specific repository properties, such as the size of notification-,
       delta-, and snapshot files.
-   2. Properties of the CAs publishing in a repository, such as the number of
-      updates, number of objects, and size of objects.
+   2. Properties of the CAs publishing through a particular server, such as the
+      number of updates, number of objects, and size of objects.
    3. Relying party behaviour, e.g. using HTTP compression or not, timeouts or
       minimum transfer speed for downloads, using conditional HTTP requests for
       `notification.xml`.
@@ -285,7 +298,7 @@ content.
 If possible, it is strongly RECOMMENDED that a Content Delivery Network (CDN) is
 used to serve the RRDP content. Care MUST be taken to ensure that the
 Notification File is not cached for longer than 1 minute unless the back-end
-RRDP Repository is unavailable, in which case it is RECOMMENDED that stale files
+RRDP Server is unavailable, in which case it is RECOMMENDED that stale files
 are served.
 
 A CDN will likely cache 404s for files not found on the back-end server. Because
@@ -406,7 +419,7 @@ effectively less impactful when using a CDN due to caching) to a fail-over
 between RRDP sessions, where clients also risk reading a notification file for
 which some of the content is unavailable.
 
-# Rsync Repository
+# Rsync Server
 
 In this section, we will elaborate on the following recommendations:
 
@@ -416,7 +429,7 @@ In this section, we will elaborate on the following recommendations:
 
 ## Consistent Content
 
-A naive implementation of the Rsync Repository might change the repository
+A naive implementation of the Rsync Server might change the repository
 content while RPs transfer files. Even when the repository is consistent from
 the repository server's point of view, clients may read an inconsistent set of
 files. Clients may get a combination of newer and older files. This "phantom
@@ -442,7 +455,7 @@ Multiple implementations implement this behavior ([@krill-sync], [@rpki-core],
 
 Because rsyncd resolves this symlink when it `chdir`s into the module directory
 when a client connects, any connected RPs can read a consistent state. To limit
-the amount of disk space a repository uses, a Rsync Repository must clean up
+the amount of disk space a repository uses, a Rsync Server must clean up
 copies of the repository; this is a trade-off between providing service to slow
 clients and disk space.
 
@@ -484,7 +497,7 @@ used by RPs to ensure that the repository continuously moves forward from a
 client's point of view, breaking not holding this constraint does not cause
 degraded behavior.
 
-It is RECOMMENDED that the Rsync Repository is load tested to ensure that it
+It is RECOMMENDED that the Rsync Server is load tested to ensure that it
 can handle the requests by all RPs in case they need to fall back from using
 RRDP (as is currently preferred).
 
