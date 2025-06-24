@@ -6,7 +6,7 @@ ipr = "trust200902"
 [seriesInfo]
 status = "bcp"
 name = "Internet-Draft"
-value = "draft-ietf-sidrops-publication-server-bcp-02"
+value = "draft-ietf-sidrops-publication-server-bcp-03"
 
 [[author]]
 initials="T."
@@ -14,7 +14,7 @@ surname="Bruijnzeels"
 fullname="Tim Bruijnzeels"
 organization = "RIPE NCC"
   [author.address]
-  email = "tim@ripe.net"
+  email = "tbruijnzeels@ripe.net"
 
 [[author]]
 initials="T."
