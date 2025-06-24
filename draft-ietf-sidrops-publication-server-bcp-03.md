@@ -14,7 +14,7 @@ surname="Bruijnzeels"
 fullname="Tim Bruijnzeels"
 organization = "RIPE NCC"
   [author.address]
-  email = "tim@ripe.net"
+  email = "tbruijnzeels@ripe.net"
 
 [[author]]
 initials="T."
