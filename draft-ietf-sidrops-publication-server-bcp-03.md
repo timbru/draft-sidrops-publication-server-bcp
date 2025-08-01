@@ -139,7 +139,7 @@ providing publication service to CA3:
  on behalf of CA3.
  
  3. CA2 may operate a publication proxy service (per e.g.
- [@rpki-publication-proxy]), which acts as the publication server for
+ [@rpki-publication-proxy]), which acts as the Publication Server for
  CA3.  This proxy would set aside part of CA2's namespace at CA1 for
  the publication of CA3's objects, adjusting and forwarding requests
  from CA3 to CA1 accordingly.
@@ -176,7 +176,7 @@ changes in published RPKI objects that are needed during these windows.
 
 ## Availability
 
-Short outages of an [@!RFC8181] publication server will not affect RPs as long
+Short outages of an [@!RFC8181] Publication Server will not affect RPs as long
 as the corresponding RRDP and RSYNC repositories remain available. However, such
 outages prevent publishers from updating their ROAs and re-issuing their manifests
 and CRLs in a timely manner. 
@@ -229,7 +229,7 @@ CAs (e.g. 1000s) this operation could become costly from a resource consumption
 perspective. Unfortunately the [@!RFC8181] protocol has no proper support for
 rate limiting. Therefore, publishers SHOULD NOT perform this resynchronisation
 more frequently than once every 10 minutes unless otherwise agreed with the
-publication server.
+Publication Server.
 
 # RRDP Server
 
