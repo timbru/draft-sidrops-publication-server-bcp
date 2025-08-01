@@ -113,7 +113,7 @@ the availability of the RRDP and rsync content as described in section 5 and 6
 of this document.
 
 RPs are expected to make use of cached data from a previous, successful fetch
-(Section 6 of @!RFC9286). Therefor, short outages on the server side don't need
+(Section 6 of [@!RFC9286]). Therefor, short outages on the server side don't need
 to be cause for immediate concern, provided the server operator restores access
 availability in a timely fashion (e.g. before objects expire).
 
