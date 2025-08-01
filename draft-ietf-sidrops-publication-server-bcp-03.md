@@ -161,7 +161,7 @@ access to known source IP addresses or apply rate limits.
 If the Publication Server is unavailable for some reason, this will prevent
 Publishers from making updated RPKI objects available. The most immediate impact
 of this is that the publisher cannot distribute new issuances or revocations of
-ROAs, ASPAs or BGPSec Router Certificates for the duration of this outage. Thus,
+ROAs, ASPAs or BGPsec Router Certificates for the duration of this outage. Thus,
 in effect, it cannot signal changes in its routing operations. If the outage
 persists for an extended period, then RPKI Manifests, CRLs, and Signed Objects
 might became stale, hampering for example BGP Origin Validation ([@!RFC6811].
@@ -480,7 +480,7 @@ when written to disk. These heuristics assume that a CA is compliant with
   - For CRLs, use the value of thisUpdate.
   - For RPKI Signed Objects, use the CMS signing-time (see
     ([@!I-D.spaghetti-sidrops-cms-signing-time]))
-  - For CA and BGPSec Router Certificates, use the value of notBefore
+  - For CA and BGPsec Router Certificates, use the value of notBefore
   - For directories, use any constant value.
 
 ## Load Balancing and Testing
