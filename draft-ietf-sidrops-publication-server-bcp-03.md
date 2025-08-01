@@ -164,7 +164,7 @@ of this is that the publisher cannot distribute new issuances or revocations of
 ROAs, ASPAs or BGPsec Router Certificates for the duration of this outage. Thus,
 in effect, it cannot signal changes in its routing operations. If the outage
 persists for an extended period, then RPKI Manifests, CRLs, and Signed Objects
-might became stale, hampering for example BGP Origin Validation ([@!RFC6811].
+might became stale, hampering for example BGP Origin Validation ([@!RFC6811]).
 
 For this reason, the Publication Server MUST have a high availability.
 Measuring the availability of the Publication Server in a round-trip fashion is
@@ -349,7 +349,7 @@ Publication Server SHOULD publish changes at a regular (one-minute) interval.
 The Publication Server then publishes the updates received from all Publishers
 in this interval in a single RRDP Delta File.
 
-While, the latter may not reduce the amount of data due to changed objects,
+While the latter may not reduce the amount of data due to changed objects,
 this will result in shorter notification files, and will reduce the number of
 delta files that RPs need to fetch and process.
 
