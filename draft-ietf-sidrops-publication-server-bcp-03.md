@@ -113,7 +113,7 @@ the availability of the RRDP and rsync content as described in section 5 and 6
 of this document.
 
 RPs are expected to make use of cached data from a previous, successful fetch
-(Section 6 of [@!RFC9286]). Therefor, short outages on the server side don't need
+(Section 6 of [@!RFC9286]). Therefore, short outages on the server side don't need
 to be cause for immediate concern, provided the server operator restores access
 availability in a timely fashion (e.g. before objects expire).
 
@@ -227,7 +227,7 @@ synchronisation events where it issues an [@!RFC8181] list query even if it has
 no new content to publish. For Publication Server that serve a large number of
 CAs (e.g. 1000s) this operation could become costly from a resource consumption
 perspective. Unfortunately the [@!RFC8181] protocol has no proper support for
-rate limiting. Therefor, publishers SHOULD NOT perform this resynchronisation
+rate limiting. Therefore, publishers SHOULD NOT perform this resynchronisation
 more frequently than once every 10 minutes unless otherwise agreed with the
 publication server.
 
