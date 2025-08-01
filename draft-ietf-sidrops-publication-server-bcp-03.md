@@ -407,8 +407,8 @@ period. This issue is especially prominent with CDNs that use HTTP proxies
 internally when connecting to the origin while also load-balancing over
 multiple proxies. As a result, some requests may use a connection to the
 disabled server and retrieve stale content, while other connections load data
-from another server. Depending on the exact configuration – for example, nodes
-behind the LB may have different RRDP sessions – this can lead to an
+from another server. Depending on the exact configuration - for example, nodes
+behind the LB may have different RRDP sessions - this can lead to an
 inconsistent RRDP repository.
 
 Because of this issue, we RECOMMEND to (1) limit HTTP keepalive to a short
