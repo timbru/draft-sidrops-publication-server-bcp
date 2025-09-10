@@ -231,9 +231,7 @@ rate limiting. Therefore, publishers SHOULD NOT perform this resynchronisation
 more frequently than once every 10 minutes unless otherwise agreed with the
 Publication Server.
 
-# RRDP Server
-
-## Distinct Hostnames
+# Hostnames
 
 It is RECOMMENDED that the public RRDP Server URI uses a different
 hostname from both the [@!RFC8181] service_uri used by publishers and the
@@ -242,6 +240,18 @@ hostname used in rsync URIs (`sia_base`).
 Using a unique hostname will allow the operator to use dedicated infrastructure
 and/or a Content Delivery Network for its RRDP content without interfering with
 the other functions.
+
+If feasible there is merit in using different domains for these hostnames as
+DNS issues with the domain could otherwise be a single point of failure
+affecting both RRDP and rsync. Operators need to weigh this benefit against
+potential increased operational risk and burden of maintaining multiple domains.
+Because this outcome depends highly on local considerations no formal
+recommendation is given here.
+
+Furthermore, it is RECOMMENDED that DNSSEC is used in accordance with best
+current practice as described in [@!RFC9364].
+
+# RRDP Server
 
 ## Same Origin URIs
 
