@@ -1,4 +1,5 @@
 #!/bin/bash
+
 DRAFT="draft-ietf-sidrops-publication-server-bcp-03"
 
 docker run --rm \
