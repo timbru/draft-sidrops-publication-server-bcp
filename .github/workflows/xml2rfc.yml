@@ -30,7 +30,7 @@ jobs:
           image: paulej/rfctools
           options: -v ${{ github.workspace }}:/rfc -v ${{ github.workspace }}/.cache-xml2rfc:/var/cache/xml2rfc -w /rfc
           run: |
-            mmark draft-ietf-sidrops-publication-server-bcp-04.md > output/draft-ietf-sidrops-publication-server-bcp-04.xml
+            mmark draft-ietf-sidrops-publication-server-bcp-05.md > output/draft-ietf-sidrops-publication-server-bcp-05.xml
 
       - name: build html
         uses: addnab/docker-run-action@v3
@@ -38,7 +38,7 @@ jobs:
           image: paulej/rfctools
           options: -v ${{ github.workspace }}:/rfc -v ${{ github.workspace }}/.cache-xml2rfc:/var/cache/xml2rfc -w /rfc
           run: |
-            xml2rfc -p output --text --html output/draft-ietf-sidrops-publication-server-bcp-04.xml
+            xml2rfc -p output --text --html output/draft-ietf-sidrops-publication-server-bcp-05.xml
 
       - name: Archive output
         uses: actions/upload-artifact@v4
