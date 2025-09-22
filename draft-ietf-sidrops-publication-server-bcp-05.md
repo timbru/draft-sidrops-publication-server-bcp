@@ -78,7 +78,7 @@ RPKI Certification Authorities (CAs) and their Publication Repository server.
 The server is responsible for handling publication requests sent by the
 CAs, called Publishers in this context, and ensuring that their data is
 made available to RPKI Relying Parties (RPs) in (public) rsync and RRDP
-[@!RFC8182] publication points.
+[@!RFC8182] repositories.
 
 In this document, we will describe best current practices based on the
 operational experience of several implementers and operators.
@@ -465,7 +465,8 @@ files. Clients may get a combination of newer and older files. This "phantom
 read" can lead to unpredictable and unreliable results. While modern RPs will
 treat such inconsistencies as a "Failed Fetch" ([@!RFC9286]), it is best to
 avoid this situation since a failed fetch for one repository can cause the
-rejection of the publication point for a sub-CA when resources change.
+rejection of delegated certificates and/or RPKI signed objects for a sub-CA
+when resources change.
 
 One way to ensure that rsyncd serves connected clients (RPs) with a consistent
 view of the repository is by configuring the rsyncd 'module' path to a path
