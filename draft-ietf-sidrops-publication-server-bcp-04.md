@@ -251,6 +251,20 @@ recommendation is given here.
 Furthermore, it is RECOMMENDED that DNSSEC is used in accordance with best
 current practice as described in [@!RFC9364].
 
+# IP Address Space and Autonomous System
+
+To prevent failure scenarios which persist beyond remediation, the topological
+placement of Publication Servers in the global Internet routing system should be
+carefully considered.
+
+It is RECOMMENDED to use IP addresses for Publication Servers from IP address space
+which is not subordinate to any authoritives publishing through those same servers.
+
+It is RECOMMENDED to host Publication Servers in Autonomous Systems which are not
+subordinate to any authorities publishing through those same servers.
+
+See section 6 of [@!RFC7115] for more considerations.
+
 # RRDP Server
 
 ## Same Origin URIs
