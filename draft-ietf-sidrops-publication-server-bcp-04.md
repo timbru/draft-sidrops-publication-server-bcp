@@ -241,7 +241,8 @@ Using a unique hostname will allow the operator to use dedicated infrastructure
 and/or a Content Delivery Network for its RRDP content without interfering with
 the other functions.
 
-If feasible there is merit in using different TLDs and/or subdomains for these hostnames as DNS issues at any level could otherwise be a single point of failure
+If feasible there is merit in using different TLDs and/or subdomains for these
+hostnames as DNS issues at any level could otherwise be a single point of failure
 affecting both RRDP and rsync. Operators need to weigh this benefit against
 potential increased operational risk and burden of maintaining multiple domains.
 Because this outcome depends highly on local considerations no formal
@@ -249,6 +250,20 @@ recommendation is given here.
 
 Furthermore, it is RECOMMENDED that DNSSEC is used in accordance with best
 current practice as described in [@!RFC9364].
+
+# IP Address Space and Autonomous System
+
+To prevent failure scenarios which persist beyond remediation, the topological
+placement of Publication Servers in the global Internet routing system should be
+carefully considered.
+
+It is RECOMMENDED to use IP addresses for Publication Servers from IP address space
+which is not subordinate to any authoritives publishing through those same servers.
+
+It is RECOMMENDED to host Publication Servers in Autonomous Systems which are not
+subordinate to any authorities publishing through those same servers.
+
+See section 6 of [@!RFC7115] for more considerations.
 
 # RRDP Server
 
