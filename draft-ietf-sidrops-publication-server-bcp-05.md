@@ -106,11 +106,11 @@ are separated from serving the repository content.
 
 In general, it is NOT RECOMMENDED to operate a self-hosted Publication Server.
 
-Some organisations that use a self-hosted CA (alsocalled delegated RPKI),
-rather than for example a hosted CA as service provided by their RIR or NIR,
+Some organisations that use a self-hosted CA (also called a Delegated CA),
+rather than for example a CA hosted as service provided by their RIR or NIR,
 also run a self-hosted Publication Server for their CA. In this case, the
-organisation is responsible for ensuring the availability of the RRDP and
-rsync content as described in section 5 and 6 of this document.
+organisation is responsible for ensuring the availability of signed content
+via RRDP and rsync as described in section 5 and 6 of this document.
 
 RPs are expected to make use of cached data from a previous, successful fetch
 (Section 6 of [@!RFC9286]). Therefore, short outages on the server side don't need
