@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DRAFT="draft-ietf-sidrops-publication-server-bcp-04"
+DRAFT="draft-ietf-sidrops-publication-server-bcp-05"
 
 docker run --rm \
     -v $(pwd):/rfc \
