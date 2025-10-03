@@ -254,16 +254,22 @@ current practice as described in [@!RFC9364].
 # IP Address Space and Autonomous System
 
 To prevent failure scenarios which persist beyond remediation, the topological
-placement of Publication Servers in the global Internet routing system should be
-carefully considered.
+placement and reachability of Publication Servers in the global Internet routing
+system needs to be considered very carefully, see section 6 of [@!RFC7115].
 
-It is RECOMMENDED to use IP addresses for Publication Servers from IP address space
-which is not subordinate to any authoritives publishing through those same servers.
+An example of a problematic scenario would be when a prefix or AS path related to
+a repository becomes invalid because of RPKI objects published in that repository,
+RPs then might have trouble retrieving updates from that repository - hampering
+service restoration.
 
-It is RECOMMENDED to host Publication Servers in Autonomous Systems which are not
-subordinate to any authorities publishing through those same servers.
+With the above in mind, it is RECOMMENDED to use IP addresses for RRDP and Rsync
+services from IP address space which is not subordinate to authorities solely
+dependent on those service endpoints.
 
-See section 6 of [@!RFC7115] for more considerations.
+It is also RECOMMENDED to host RRDP and Rsync services in Autonomous Systems which
+are not subordinate to authorities publishing through those same endpoints.
+
+It is RECOMMENDED to host RRDP and Rsync services in different networks.
 
 # RRDP Server
 
