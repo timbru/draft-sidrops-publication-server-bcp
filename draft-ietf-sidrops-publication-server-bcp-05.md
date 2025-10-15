@@ -44,9 +44,14 @@ organization = "APNIC"
 initials="J."
 surname="Snijders"
 fullname="Job Snijders"
-organization = ""
+abbrev = "BSD"
+organization = "BSD Software Development"
   [author.address]
-  email = "job@sobornost.net"
+  email = "job@bsd.nl"
+  url = "https://www.bsd.nl/"
+  [author.address.postal]
+  city = "Amsterdam"
+  country = "NL"
 
 [pi]
  toc = "yes"
