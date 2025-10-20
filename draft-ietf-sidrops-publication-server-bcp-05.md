@@ -555,10 +555,7 @@ situations, a rsync repository that strives for high availability should be
 deployed on multiple nodes load-balanced by an L4 load balancer.  Because Rsync
 sessions use a single TCP connection per session, there is no need for
 consistent load-balancing between multiple rsync servers as long as they each
-provide a consistent view. While it is RECOMMENDED that repositories are
-updated more frequently than the typical refresh rate for rsync repositories
-used by RPs client's point of view, breaking this constraint does not cause
-degraded behavior.
+provide a consistent view.
 
 It is RECOMMENDED that the Rsync Server is load tested to ensure that
 it can handle simultaneous requests from all RPs, in case those RPs
