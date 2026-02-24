@@ -323,7 +323,7 @@ consisting of three main groups:
 
 When an RRDP repository server is hosted behind a congested network link or
 otherwise overloaded (i.e. demand somehow exceeds available capacity), this can
-cause a downward spiral in which the aggregate load on the server continues to
+cause a cascading failure in which the aggregate load on the server continues to
 increase, resulting in degraded service for all RPs. For example, when an RP
 attempts to fetch one or more delta files, and one fails, it will typically try
 to fetch the snapshot (which is a larger object than the failed delta). If this
