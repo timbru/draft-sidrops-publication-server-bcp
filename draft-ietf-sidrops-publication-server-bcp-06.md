@@ -95,8 +95,8 @@ Term               | Description
 Publication Server | [@!RFC8181] Publication Server
 Publishers         | [@!RFC8181] Publishers (Certification Authorities)
 RRDP Server        | Public-facing [@!RFC8182] RRDP server
-Rsync Server       | Public-facing rsync server
-rsyncd             | Software daemon package providing rsync service
+Rsync Server       | Public-facing [@!RFC5781] rsync server
+rsyncd             | Software daemon package providing Rsync service
 RIR                | Regional Internet Registry
 NIR                | National Internet Registry
 
