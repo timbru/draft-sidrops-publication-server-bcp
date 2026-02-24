@@ -207,9 +207,9 @@ SHOULD be planned and communicated to publishers.
 
 ## Data Loss
 
-Publication Servers MUST aim to minimise data loss. If a server restore was
-needed and a content regression occurred (e.g., restoration from a slightly
-out-of-date backup), then the server MUST perform an RRDP session reset.
+Publication service operators MUST aim to minimise data loss. If a server restore
+was needed and a content regression occurred (for example, due to restoration from
+a slightly out-of-date backup), then the server MUST perform an RRDP session reset.
 
 CAs typically only check in with their publication server when they have produced
 changes in RPKI material that need to be shared with the world. As a result, the
