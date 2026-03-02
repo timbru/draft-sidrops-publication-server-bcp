@@ -434,29 +434,22 @@ newly issued ROAs and ASPAs.
 ## ROA Prefix Aggregation
 
 [@!RFC9455] recommends that "unless the CA has good reasons to the contrary,
-an issued ROA SHOULD contain a single IP prefix".
+an issued ROA SHOULD contain a single IP prefix". However, it is not entirely
+clear what good reasons exist.
 
-The main reason for this is that fate sharing multiple prefixes on a single object
-can lead to invalidation of that object in case any of the prefixes are no longer
-held by the CA certificate chain leading down to it. The issuing CA can re-issue a
-another ROA removing  the affected prefix(es), but timing issues may occur. In
-particular, the CA does not have forewarning about resources to be shrunk under
-[@RFC6492] and their parent could shrink their CA certificate without their
-knowledge.
+Using a single ROA per prefix can lead to many ROA objects being published under
+a CA certificate. Clustering multiple prefixes in a single ROA (per origin AS)
+can therefore achieve a significant reduction in the number of files and the total
+size of a repository.
 
-That being said, using a single ROA per prefix can lead to many ROA objects being
-published under a CA certificate. Aggregating multiple prefixes in a single ROA (per
-origin AS) can therefore achieve a significant reduction in the number of files and
-the total size of a repository.
+It is RECOMMENDED that issuing CAs cluster multiple prefix per ROA in case:
 
-It is RECOMMENDED that issuing CAs aggregate multiple prefix per ROA in case:
-
- - The described fate sharing is not a concern, i.e. they control both
-   the parent and issuing CA.
- - The fatesharing risk is outweighed by the operational impact of having
-   too many ROA objects, e.g. because it leads to bandwidth constraints
-   on the repository, or it's causing (an) excessively sized manifest(s),
-   or it leads to an excessive amount of data or number of files for RPs.
+ - Fate sharing is not a concern, for example, when both the parent and issuing
+   CA are controlled by the same entity.
+ - Fate sharing risks are outweighed by the operational impact of having many ROA
+   objects, e.g. because it leads to excessive bandwidth demands on the repository,
+   or it's causing overly large manifest(s), or it leads to an excessive amount of
+   data or number of files for RPs.
 
 ## Consistent Load-Balancing
 
