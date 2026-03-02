@@ -442,12 +442,12 @@ cluster as many prefixes per ROA as possible, provided:
 
 It is RECOMMENDED that issuing CAs cluster multiple prefix per ROA in case:
 
- - Fate sharing is not a concern, for example, when both the parent and issuing
-   CA are controlled by the same entity.
- - Fate sharing risks are outweighed by the operational impact of having many ROA
-   objects, e.g. because it leads to excessive bandwidth demands on the repository,
-   or it's causing overly large manifest(s), or it leads to an excessive amount of
-   data or number of files for RPs.
+ - Fate sharing is not a concern, for example, when both the parent and issuing CA
+   are controlled by the same entity.
+ - The operational impact of publishing many ROAs outweighs the perceived fate
+   sharing risks, e.g. because it leads to excessive bandwidth demands on the
+   repository, or it's causing overly large manifest(s), or it leads to an excessive
+   amount of data or number of files for RPs.
 
 ## Consistent Load-Balancing
 
