@@ -436,6 +436,24 @@ observed that increasing the reissuance cycle from once every 24 hours to once e
 changes in the repository content are reissuance of manifests and CRLs, rather than
 newly issued ROAs and ASPAs.
 
+## ROA Prefix Aggregation
+
+The practice of issuing ROAs with only a single prefix per ROA ([@!RFC9455]) can
+lead to many ROA objects being published by a given CA. However, clustering multiple
+prefixes in a single ROA (per origin AS) can achieve a significant reduction in the
+number of objects and the total size of a repository. In order to reduce bandwidth 
+consumption and reduce the number of signatures, it is RECOMMENDED that issuing CAs
+cluster as many prefixes per ROA as possible, provided:
+
+It is RECOMMENDED that issuing CAs cluster multiple prefix per ROA in case:
+
+ - Fate sharing is not a concern, for example, when both the parent and issuing CA
+   are controlled by the same entity.
+ - The operational impact of publishing many ROAs outweighs the perceived fate
+   sharing risks, e.g. because it leads to excessive bandwidth demands on the
+   repository, or it's causing overly large manifest(s), or it leads to an excessive
+   amount of data or number of files for RPs.
+
 ## Consistent Load-Balancing
 
 ### Notification File Timing
