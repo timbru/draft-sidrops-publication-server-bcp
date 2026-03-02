@@ -351,6 +351,11 @@ unavailable due to large file sizes (this is a behaviour observed in some CDNs).
 Publication service operators MUST ensure that their RRDP servers are highly
 available.
 
+The RRDP snapshot and delta files SHOULD remain available for two hours after
+they have become unreferenced by the latest RRDP notification file. Not doing
+so could lead to files being not found due to race conditions or slow RPs, and
+force these RPs to fall back to full snapshot fetching. 
+
 If possible, it is RECOMMENDED that a CDN is used to serve the RRDP content.
 Special care MUST be taken to ensure that the notification file is not cached
 for longer than 1 minute unless the backend RRDP server is unavailable, in which
