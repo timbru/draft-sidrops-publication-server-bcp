@@ -436,6 +436,35 @@ observed that increasing the reissuance cycle from once every 24 hours to once e
 changes in the repository content are reissuance of manifests and CRLs, rather than
 newly issued ROAs and ASPAs.
 
+## Using Short and Unique Filenames for each Issuance
+
+While the filenames of signed objects are determined by the issuing CA rather
+than the publication engine operator, publishers should be cognizant that their
+choice the file naming scheme can positively or negatively impact publication
+point operations.
+
+ * Because filenames are repeated multiple times throughout RPKI materials (e.g.,
+   in SIA fields, AIA fields, CRLDP fields, as part of in Manifest fileLists,
+   and in the uri field in RRDP publish elements, etc), use of shorter filenames
+   has a positive impact on storage & bandwidth required in the overall ecosystem.
+   Therefore publishers are RECOMMENDED to use filenames shorter than 32 characters.
+
+ * The algorithm most commonly used in the preparation phase of rsync transfers
+   relies on the 3-tuple of filename, filesize, and last-modification timestamp
+   to determine whether material was updated and should be transferred. Therefore,
+   using a new unique filename for each new issuance may help improve reliable
+   propagation of newly signed material in the pipeline from publishers to RPs.
+
+   An additional benefit of using new unique filenames for new content is improved
+   debuggability, because using the same name throughout time for different things
+   may hamper, for example, swift and accurate interpretation of log messages
+   containing filenames.
+
+In summary, to conserve bandwidth, to improve reliability of object propagation,
+and to make debugging easier, publishers are RECOMMENDED use "one-time-use" EE
+certificates (section 3 of [@!RFC6487]) and to adhere to the guidelines for naming
+objects described in section 2.2 of [@!RFC6481].
+
 ## ROA Prefix Aggregation
 
 The practice of issuing ROAs with only a single prefix per ROA ([@!RFC9455]) can
