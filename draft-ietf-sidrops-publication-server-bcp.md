@@ -433,14 +433,12 @@ newly issued ROAs and ASPAs.
 
 ## ROA Prefix Aggregation
 
-[@!RFC9455] recommends that "unless the CA has good reasons to the contrary,
-an issued ROA SHOULD contain a single IP prefix". However, it is not entirely
-clear what good reasons exist.
-
-Using a single ROA per prefix can lead to many ROA objects being published under
-a CA certificate. Clustering multiple prefixes in a single ROA (per origin AS)
-can therefore achieve a significant reduction in the number of files and the total
-size of a repository.
+The practice of issuing ROAs with only a single prefix per ROA ([@!RFC9455]) can
+lead to many ROA objects being published by a given CA. However, clustering multiple
+prefixes in a single ROA (per origin AS) can achieve a significant reduction in the
+number of objects and the total size of a repository. In order to reduce bandwidth 
+consumption and reduce the number of signatures, it is RECOMMENDED that issuing CAs
+cluster as many prefixes per ROA as possible, provided:
 
 It is RECOMMENDED that issuing CAs cluster multiple prefix per ROA in case:
 
