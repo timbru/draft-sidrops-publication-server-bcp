@@ -353,8 +353,8 @@ available.
 
 The RRDP snapshot and delta files SHOULD remain available for two hours after
 they have become unreferenced by the latest RRDP notification file. Not doing
-so could lead to files being not found due to race conditions or slow RPs, and
-force these RPs to fall back to full snapshot fetching. 
+so could lead to files being not found due to race conditions or slow fetching
+by RPs, and force RPs to fall back to full snapshot or RSYNC fetching.
 
 If possible, it is RECOMMENDED that a CDN is used to serve the RRDP content.
 Special care MUST be taken to ensure that the notification file is not cached
