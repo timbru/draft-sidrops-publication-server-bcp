@@ -318,8 +318,7 @@ consisting of three main groups:
       number of updates, number of objects, the length of the validity period,
       and size of objects.
    3. Relying party behaviour, e.g. using HTTP compression, requiring timeouts or
-      minimum transfer speed for downloads, and using conditional HTTP requests for
-      `notification.xml`.
+      minimum transfer speed for downloads, and using conditional HTTP requests.
 
 When an RRDP repository server is hosted behind a congested network link or
 otherwise overloaded (i.e. demand somehow exceeds available capacity), this can
