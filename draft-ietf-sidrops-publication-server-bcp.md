@@ -271,6 +271,14 @@ no normative recommendation is provided here.
 Furthermore, it is RECOMMENDED that DNSSEC is used in accordance with best
 current practice as described in [@!RFC9364].
 
+# IP Networking
+
+To increase reachability, publication service operators SHOULD make use of
+dual-stack IP networking, i.e. make their public facing services and the
+publication engine available via both IPv4 and IPv6 at the same time.
+Dual-stack publication services help bridge between publishers and RPs in case
+those are constrained to different address families.
+
 # IP Address Space and Autonomous Systems
 
 To prevent failure scenarios which persist beyond remediation, the topological
