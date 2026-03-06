@@ -271,6 +271,14 @@ no normative recommendation is provided here.
 Furthermore, it is RECOMMENDED that DNSSEC is used in accordance with best
 current practice as described in [@!RFC9364].
 
+# IP Networking
+
+To increase reachability, publication service operators SHOULD make use of
+dual-stack IP networking, i.e. make their public facing services and the
+publication engine available via both IPv4 and IPv6 at the same time.
+Dual-stack publication services help bridge between publishers and RPs in case
+those are constrained to different address families.
+
 # IP Address Space and Autonomous Systems
 
 To prevent failure scenarios which persist beyond remediation, the topological
@@ -318,8 +326,7 @@ consisting of three main groups:
       number of updates, number of objects, the length of the validity period,
       and size of objects.
    3. Relying party behaviour, e.g. using HTTP compression, requiring timeouts or
-      minimum transfer speed for downloads, and using conditional HTTP requests for
-      `notification.xml`.
+      minimum transfer speed for downloads, and using conditional HTTP requests.
 
 When an RRDP repository server is hosted behind a congested network link or
 otherwise overloaded (i.e. demand somehow exceeds available capacity), this can
