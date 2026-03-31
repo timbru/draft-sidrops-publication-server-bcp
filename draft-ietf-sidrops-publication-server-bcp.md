@@ -349,9 +349,10 @@ HTTP endpoints SHOULD support at the very least gzip content encoding as describ
 in section 8.4.1.3 of [@!RFC9110], in addition to any other popular compression
 algorithms that the server can support.
 
-Because RRDP snapshots can be substantial in size (tens to hundreds of megabytes),
-special care must be taken for HTTP compression is not be unintentionally
-unavailable due to large file sizes (this is a behaviour observed in some CDNs).
+RRDP snapshots can be substantial in size (tens to hundreds of megabytes) and HTTP
+compression should not be unintentionally disabled due to large file sizes. This
+behavior has been observed in some CDNs where compression may not be used when the
+files exceed a certain size.
 
 ## Content Availability
 
