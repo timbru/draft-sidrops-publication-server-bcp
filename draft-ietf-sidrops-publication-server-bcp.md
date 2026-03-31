@@ -110,12 +110,12 @@ separate from those serving public requests via rsync and RRDP.
 
 ## Self-Hosted CA and Self-Hosted Repository Considerations
 
-The most common and RECOMMENDED approach for resource holders wishing to make
-use of the RPKI is to leverage a CA instance hosted and operated by the
-provider of those resources (e.g. an RIR or NIR). However, in some rare
-instances, resource holders might instead choose to deploy and manage a CA
-themselves. This latter type of CA is commonly referred to as a "self-hosted"
-or "delegated" CA.
+The most common and RECOMMENDED approach for resource holders wishing to
+make use of the RPKI is to leverage a CA instance hosted and operated by
+the provider of those resources (e.g. an RIR or NIR). However, in some
+specific circumstances, resource holders might instead choose to deploy
+and manage a CA themselves. This latter type of CA is commonly referred
+to as a "self-hosted" or "delegated" CA.
 
 If the resource holder chooses to operate their CA in a self-hosted fashion,
 the holder must also decide how they make their RPKI material available to the
