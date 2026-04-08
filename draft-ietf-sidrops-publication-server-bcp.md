@@ -475,12 +475,14 @@ objects described in section 2.2 of [@!RFC6481].
 
 ## ROA Prefix Aggregation
 
-The practice of issuing ROAs with only a single prefix per ROA ([@!RFC9455]) can
-lead to many ROA objects being published by a given CA. However, clustering multiple
-prefixes in a single ROA (per origin AS) can achieve a significant reduction in the
-number of objects and the total size of a repository. In order to reduce bandwidth 
-consumption and reduce the number of signatures, it is RECOMMENDED that issuing CAs
-cluster as many prefixes per ROA as possible, provided:
+While ([@!RFC9455]) recommends issuing ROAs that contain only a single prefix,
+this approach can lead to a large number of ROA objects being published by a given CA.
+Clustering multiple prefixes in a single ROA (per origin AS), however, can significantly
+reduce the number of objects and the total size of a repository. 
+
+To reduce bandwidth consumption and reduce the number of signatures, issuing CAs
+are encouraged to include as many prefixes as possible within single ROA,
+provided certain conditions are met.
 
 It is RECOMMENDED that issuing CAs cluster multiple prefix per ROA in case:
 
