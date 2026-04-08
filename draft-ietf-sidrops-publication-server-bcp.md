@@ -1,6 +1,6 @@
 %%%
-Title = "Best Practises for Operating Resource Public Key Infrastructure (RPKI) Publication Services"
-Abbrev = "Best Practises for RPKI Publication"
+Title = "Best Practices for Operating Resource Public Key Infrastructure (RPKI) Publication Services"
+Abbrev = "Best Practices for RPKI Publication"
 ipr = "trust200902"
 
 [seriesInfo]
@@ -85,7 +85,7 @@ publicly accessible rsync [@!RFC5781] and RRDP [@!RFC8182] repositories.
 
 This document describes best current practices for operating RPKI publication
 services at a scale suitable for use with the global Internet routing system.
-The practises are based on more than a decade of operational experience from
+The practices are based on more than a decade of operational experience from
 several implementers and operators of both client and server side.
 
 # Glossary
@@ -635,7 +635,7 @@ is RECOMMENDED to load-test rsync service and reevaluating parameters over time.
 
 # Acknowledgments
 
-The authors wish to thank Mike Hollyman for editorial suggestions.
+The authors wish to thank Mike Hollyman and Theodor-Fedor Vompe for editorial suggestions.
 
 {backmatter}
 
