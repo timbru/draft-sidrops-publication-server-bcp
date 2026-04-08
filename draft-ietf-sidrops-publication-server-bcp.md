@@ -480,8 +480,8 @@ this approach can lead to a large number of ROA objects being published by a giv
 Clustering multiple prefixes in a single ROA (per origin AS), however, can significantly
 reduce the number of objects and the total size of a repository. 
 
-To reduce bandwidth consumption and reduce the number of signatures, issuing CAs
-are encouraged to include as many prefixes as possible within single ROA,
+To reduce bandwidth consumption and reduce the number of signatures, it is RECOMMENDED
+that issuing CAs include as many prefixes as possible within single ROA,
 provided certain conditions are met.
 
 It is RECOMMENDED that issuing CAs cluster multiple prefix per ROA in case:
