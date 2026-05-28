@@ -93,7 +93,7 @@ several implementers and operators of both client and server side.
 Term               | Description
 -------------------|----------------------------------------------------
 Publication engine | Synonym of Publication Server [@!RFC8181]
-Publisher          | Certification Authority client of Publication Server 
+Publisher          | Certification Authority (client of Publication Server)
 RRDP server        | Public-facing [@!RFC8182] RRDP server
 Rsync server       | Public-facing [@!RFC5781] rsync server
 rsyncd             | Software daemon package providing rsync service
@@ -650,8 +650,6 @@ This document raises no security issues itself.
 However, note that this document makes the trade-off between avoiding
 fate-sharing of ROA prefixes on a single ROA object as recommended by
 [@!RFC9455] versus the operational impact that this can have more explicit.
-
-
 
 # Acknowledgments
 
