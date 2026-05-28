@@ -639,11 +639,10 @@ This document does not make any request to IANA.
 
 # Security Considerations
 
-This document raises no security issues itself.
+This document does not introduce any new security issues.
 
-However, note that this document makes the trade-off between avoiding
-fate-sharing of ROA prefixes on a single ROA object as recommended by
-[@!RFC9455] versus the operational impact that this can have more explicit.
+Readers are encouraged to review the Security Considerations in [@RFC8181],
+[@RFC8182], [@RFC9589], and [@RFC9674].
 
 # Acknowledgments
 
