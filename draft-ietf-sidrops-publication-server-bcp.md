@@ -637,12 +637,6 @@ is RECOMMENDED to load-test rsync service and reevaluating parameters over time.
 
 This document does not make any request to IANA.
 
-# Operational Considerations
-
-This document seeks to offer guidance to operators of RPKI Publication Servers
-and associated public RPKI repositories, and to a degree to RPKI Certification
-Authority operators on matters related to publication.
-
 # Security Considerations
 
 This document raises no security issues itself.
