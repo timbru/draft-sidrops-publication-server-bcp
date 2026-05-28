@@ -92,8 +92,8 @@ several implementers and operators of both client and server side.
 
 Term               | Description
 -------------------|----------------------------------------------------
-Publication engine | [@!RFC8181] publication server
-Publishers         | [@!RFC8181] clients (Certification Authorities)
+Publication engine | Synonym of Publication Server [@!RFC8181]
+Publisher          | Certification Authority (client of Publication Server)
 RRDP server        | Public-facing [@!RFC8182] RRDP server
 Rsync server       | Public-facing [@!RFC5781] rsync server
 rsyncd             | Software daemon package providing rsync service
@@ -146,17 +146,17 @@ third-party publication service, the CA operator SHOULD make use of that service
 in order to consolicate their data with other CAs and increase efficiency for
 RPs.
 
-For the case of a 'grandchild' CA, where CA1 is a TA, CA2 is a child
+For the case of a 'grandchild' CA, where CA1 is a CA, CA2 is a child
 CA of CA1, and CA3 is a child CA of CA2, there are several options for
 providing publication service to CA3:
 
- 1. RFC 8183 defines a 'referral' mechanism as part of the out-of-band
+ 1. [@!RFC8183] defines a 'referral' mechanism as part of the out-of-band
  CA setup protocol. If supported by CA1 and CA2, then this simplifies
  the process of registering CA3 as a direct publication client of CA1.
 
  2. CA1 may support the registration of multiple publishers by CA2, by
  using the publisher_request/repository_response XML exchange defined
- in RFC 8183. CA2 would then be able to register a separate publisher
+ in [@!RFC8183]. CA2 would then be able to register a separate publisher
  on behalf of CA3.
 
  3. CA2 may operate a publication proxy service (e.g. [@rpki-publication-proxy]),
@@ -273,17 +273,19 @@ current practice as described in [@!RFC9364].
 
 # IP Networking
 
-To increase reachability, publication service operators SHOULD make use of
-dual-stack IP networking, i.e. make their public facing services and the
-publication engine available via both IPv4 and IPv6 at the same time.
-Dual-stack publication services help bridge between publishers and RPs in case
-those are constrained to different address families.
+To increase reachability, publication service operators SHOULD  make 
+their public facing services and the publication engine available via 
+both IPv4 and IPv6  at the same time. Publication services via both 
+IP versions help bridge between publishers and RPs in case those 
+are constrained to different address families.
 
 # IP Address Space and Autonomous Systems
 
 To prevent failure scenarios which persist beyond remediation, the topological
 placement and reachability of publication servers in the global Internet routing
-system need to be considered very carefully. See section 6 of [@!RFC7115].
+system need to be considered very carefully. See section 6 of [@!RFC7115] for
+discussion on a trade-off in placement of an RPKI repository in address space
+for which the repository's content is authoritative.
 
 An example of a problematic scenario would be when a prefix or AS path related to
 a repository becomes invalid because of RPKI objects published in that
@@ -304,7 +306,7 @@ It is RECOMMENDED to host RRDP and rsync services in different networks.
 ## Same Origin URIs
 
 Publication server operators need to be aware of the normative updates to
-[@!RFC8182] in section 3.1 of [@!RFC9674]. In short, this update means that
+[@!RFC8182] in section 3.1 of [@!RFC9674]. In short, these updates mean that
 all delta and snapshot URIs need to reside on the same host, i.e., HTTP
 redirects or references to other origins are not allowed and not followed by RPs.
 
@@ -362,17 +364,17 @@ available.
 The RRDP snapshot and delta files SHOULD remain available for two hours after
 they have become unreferenced by the latest RRDP notification file. Not doing
 so could lead to files being not found due to race conditions or slow fetching
-by RPs, and force RPs to fall back to full snapshot or RSYNC fetching.
+by RPs, and force RPs to fall back to full snapshot or rsync fetching.
 
 If possible, it is RECOMMENDED that a CDN is used to serve the RRDP content.
 Special care MUST be taken to ensure that the notification file is not cached
 for longer than 1 minute unless the backend RRDP server is unavailable, in which
 case it is RECOMMENDED that stale files are served.
 
-Some CDN services might cache 404 responses for resources not found on the backend
+Some CDN services might cache HTTP 404 responses for resources not found on the backend
 server. Because of this, publication engines SHOULD use randomised unpredictable
 paths for snapshot and delta files, to avoid the intermediate CDN caching such
-404 responses hampering future updates. Alternatively, the publication engine
+HTTP 404 responses hampering future updates. Alternatively, the publication engine
 operator can instruct the CDN to purge cached information for the paths on which
 new files are published.
 
@@ -448,7 +450,7 @@ newly issued ROAs and ASPAs.
 
 While the filenames of signed objects are determined by the issuing CA rather
 than the publication engine operator, publishers should be cognizant that their
-choice the file naming scheme can positively or negatively impact publication
+choice of the file naming scheme can positively or negatively impact publication
 point operations.
 
  * Because filenames are repeated multiple times throughout RPKI materials (e.g.,
@@ -481,8 +483,6 @@ prefixes in a single ROA (per origin AS) can achieve a significant reduction in 
 number of objects and the total size of a repository. In order to reduce bandwidth 
 consumption and reduce the number of signatures, it is RECOMMENDED that issuing CAs
 cluster as many prefixes per ROA as possible, provided:
-
-It is RECOMMENDED that issuing CAs cluster multiple prefix per ROA in case:
 
  - Fate sharing is not a concern, for example, when both the parent and issuing CA
    are controlled by the same entity.
@@ -632,6 +632,17 @@ The number of rsync servers needed depends on the number of RPs, their refresh
 rate, and the "max connections" used. These values are subject to change over
 time, so it is hard to give clear recommendations here except to restate that it
 is RECOMMENDED to load-test rsync service and reevaluating parameters over time.
+
+# IANA Considerations
+
+This document does not make any request to IANA.
+
+# Security Considerations
+
+This document does not introduce any new security issues.
+
+Readers are encouraged to review the Security Considerations in [@RFC8181],
+[@RFC8182], [@RFC9589], and [@RFC9674].
 
 # Acknowledgments
 
