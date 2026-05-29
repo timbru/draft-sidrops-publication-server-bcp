@@ -663,7 +663,7 @@ The authors wish to thank Mike Hollyman and Theodor-Fedor Vompe for editorial su
 <reference anchor='krill-sync' target='https://github.com/NLnetLabs/krill-sync'>
     <front>
         <title>krill-sync</title>
-        <author initials='T.' surname='Bruijnzeels' fullname='Tim Bruijnzeels'>
+        <author fullname='NLnetLabs'>
             <organization>NLnet Labs</organization>
         </author>
         <date year='2023'/>
@@ -673,7 +673,7 @@ The authors wish to thank Mike Hollyman and Theodor-Fedor Vompe for editorial su
 <reference anchor='rpki-core' target='https://github.com/RIPE-NCC/rpki-core'>
     <front>
         <title>rpki-core</title>
-        <author fullname='RPKI Team'>
+        <author fullname='RIPE_NCC'>
             <organization>RIPE NCC</organization>
         </author>
         <date year='2023'/>
@@ -683,7 +683,7 @@ The authors wish to thank Mike Hollyman and Theodor-Fedor Vompe for editorial su
 <reference anchor='rsyncit' target='https://github.com/RIPE-NCC/rsyncit'>
     <front>
         <title>rpki-core</title>
-        <author fullname='RPKI Team'>
+        <author fullname='RIPE_NCC'>
             <organization>RIPE NCC</organization>
         </author>
         <date year='2023'/>
