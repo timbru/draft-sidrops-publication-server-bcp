@@ -182,7 +182,7 @@ addresses or apply rate limits.
 If the publication engine is unavailable for some reason, this will prevent
 publishers from making new RPKI material available. The most immediate impact
 of this is that the publisher cannot distribute new issuances and revocations of
-ROAs ([@!RFC9582]), ASPAs ([@?I-D.ietf-sidrops-aspa-profile]), and BGPsec Router
+ROAs ([@!RFC9582]), ASPAs ([@!I-D.ietf-sidrops-aspa-profile]), and BGPsec Router
 Certificates ([@!RFC8209]) for the duration of this outage. Thus, in effect,
 the resource holder cannot inform the world about changes to its routing
 intentions. If the outage persists for an extended period, then RPKI Manifests,
@@ -641,8 +641,8 @@ This document does not make any request to IANA.
 
 This document does not introduce any new security issues.
 
-Readers are encouraged to review the Security Considerations in [@RFC8181],
-[@RFC8182], [@RFC9589], and [@RFC9674].
+Readers are encouraged to review the Security Considerations in [@!RFC8181],
+[@!RFC8182], [@!RFC9589], and [@!RFC9674].
 
 # Acknowledgments
 
