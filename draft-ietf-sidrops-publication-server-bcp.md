@@ -630,15 +630,15 @@ The following deterministic heuristics are RECOMMENDED as the file's timestamp
 when writing objects to disk:
 
   - For CRLs, use the value of thisUpdate.
-  - For RPKI Signed Objects, use the CMS signing-time (see ([@!RFC9589])).
+  - For RPKI Signed Objects, use the Cryptographic Message Syntax (CMS) signing-time value [@!RFC9589].
   - For CA and BGPsec Router Certificates, use the value of notBefore.
   - For directories, use any constant value.
 
 ## Load-Balancing and Testing
 
-To increase availability during both regular maintenance and exceptional
+To increase availability during both planned maintenance and exceptional
 situations, a rsync repository that strives for high availability should be
-deployed on multiple nodes load-balanced by an Layer 4 load balancer.  Because rsync
+deployed on multiple nodes load-balanced by a Layer 4 load balancer.  Because rsync
 sessions use a single TCP connection per synchronisation attempt, there is no
 need for consistent load-balancing between multiple rsync servers as long as
 they each provide a consistent view.
