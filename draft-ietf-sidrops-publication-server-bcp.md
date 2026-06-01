@@ -1,5 +1,5 @@
 %%%
-Title = "Recommendations for Operating Resource Public Key Infrastructure (RPKI) Publication Services"
+Title = "Best Practices for Operating Resource Public Key Infrastructure (RPKI) Publication Services"
 Abbrev = "Best Practices for RPKI Publication"
 ipr = "trust200902"
 
@@ -63,7 +63,7 @@ organization = "BSD Software Development"
 
 .# Abstract
 
-This document describes recommendations for operating an RFC 8181 (A Publication Protocol for the Resource Public Key Infrastructure (RPKI))
+This document describes best current practices for operating an RFC 8181 (A Publication Protocol for the Resource Public Key Infrastructure (RPKI))
 publication engine and its associated publicly accessible rsync (RFC 5781) and
 RPKI Repository Delta Protocol (RRDP) (RFC 8182) repositories.
 
@@ -76,7 +76,7 @@ is then submitted to a publication engine using the publication
 protocol specified in [@!RFC8181], and finally made available to RPKI Relying Parties (RPs) through
 publicly accessible rsync [@!RFC5781] and RPKI Repository Delta Protocol (RRDP) [@!RFC8182] repositories.
 
-This document provides recommendations for operating RPKI publication
+This document provides  best current practices for operating RPKI publication
 services at a scale suitable for use with the global Internet routing system.
 These recommendations are based on more than a decade of operational experience from
 several implementers and operators of both client and server sides.
@@ -96,7 +96,7 @@ this document are to be interpreted as described in BCP 14 [@!RFC2119]
 
 ## Definitions
 
-This document makes use of these terms:
+This document makes use of the following terms:
 
 Publication engine:
 : Synonym of publication server [@!RFC8181].
@@ -112,7 +112,6 @@ rsync server:
 
 rsyncd:
 : A software daemon package providing rsync service.
-
 
 ## Acronyms
 
