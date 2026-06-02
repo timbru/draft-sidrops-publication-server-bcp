@@ -118,9 +118,6 @@ rsyncd:
 RIR:
 :Regional Internet Registry
 
-RPKI:
-:Resource Public Key Infrastructure
-
 RRDP:
 :Repository Delta Protocol
 
@@ -291,7 +288,7 @@ Using a unique hostname for the different components will allow an operator
 to use dedicated infrastructures and/or a Content Delivery Network (CDN) for its
 RRDP content without interfering with the other functions.
 
-If feasible, there is merit in using different Top-Level Domains (TLDs) (Section 2 of [@?RFRFC9499])  and/or subdomains for these
+If feasible, there is merit in using different Top-Level Domains (TLDs) (Section 2 of [@?RFC9499])  and/or subdomains for these
 hostnames, as DNS issues at any level could otherwise be a single point of failure
 affecting both RRDP and rsync services. Operators need to weigh this benefit against
 potential increased operational risk and the burden of maintaining multiple domains.
@@ -342,7 +339,7 @@ redirects or references to other origins are not allowed and not followed by RPs
 
 ## Endpoint Protection
 
-Repository operators SHOULD enable access control to protect their RRDP endpoints.
+Repository operators SHOULD configure access control policies to protect their RRDP endpoints.
 For example, if the repository operator knows HTTP GET parameters are not used
 to provide service, then the operator can safely block any requests containing
 GET parameters.
