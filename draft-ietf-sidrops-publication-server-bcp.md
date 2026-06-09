@@ -63,47 +63,74 @@ organization = "BSD Software Development"
 
 .# Abstract
 
-This document describes best current practices for operating an RFC 8181 RPKI
+This document describes best current practices for operating an RFC 8181 (A Publication Protocol for the Resource Public Key Infrastructure (RPKI))
 publication engine and its associated publicly accessible rsync (RFC 5781) and
-RRDP (RFC 8182) repositories.
+RPKI Repository Delta Protocol (RRDP) (RFC 8182) repositories.
 
 {mainmatter}
 
-# Requirements Language
+# Introduction
+
+Resource Public Key Infrastructure (RPKI) material is created by Certification Authorities (CAs). This signed data
+is then submitted to a publication engine using the publication
+protocol specified in [@!RFC8181], and finally made available to RPKI Relying Parties (RPs) through
+publicly accessible rsync [@!RFC5781] and RPKI Repository Delta Protocol (RRDP) [@!RFC8182] repositories.
+
+This document provides  best current practices for operating RPKI publication
+services at a scale suitable for use with the global Internet routing system.
+These recommendations are based on more than a decade of operational experience from
+several implementers and operators of both client and server sides.
+
+# Terminology
+
+## Requirements Language
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in
 this document are to be interpreted as described in BCP 14 [@!RFC2119]
 [@!RFC8174] when, and only when, they appear in all capitals, as shown here.
 
-# Introduction
+> Note that the key words are used to stress importance for
+> operations; they are not required as a formal implementation
+> requirement.
 
-RPKI material is created by Certification Authorities (CAs), this signed data
-is then submitted to a publication engine using the [@!RFC8181] publication
-protocol, and finally made available to RPKI Relying Parties (RPs) through
-publicly accessible rsync [@!RFC5781] and RRDP [@!RFC8182] repositories.
+## Definitions
 
-This document describes best current practices for operating RPKI publication
-services at a scale suitable for use with the global Internet routing system.
-The practices are based on more than a decade of operational experience from
-several implementers and operators of both client and server side.
+This document makes use of the following terms:
 
-# Glossary
+Publication engine:
+: Synonym of publication server [@!RFC8181].
 
-Term               | Description
--------------------|----------------------------------------------------
-Publication engine | Synonym of Publication Server [@!RFC8181]
-Publisher          | Certification Authority (client of Publication Server)
-RRDP server        | Public-facing [@!RFC8182] RRDP server
-Rsync server       | Public-facing [@!RFC5781] rsync server
-rsyncd             | Software daemon package providing rsync service
-RIR                | Regional Internet Registry
-NIR                | National Internet Registry
+Publisher: 
+: Certification Authority (CA) (client of publication server).
+
+RRDP server:
+: Public-facing RRDP server [@!RFC8182].
+
+rsync server:
+:Public-facing rsync server [@!RFC5781].
+
+rsyncd:
+: A software daemon package providing rsync service.
+
+## Acronyms
+
+RIR:
+:Regional Internet Registry
+
+RRDP:
+:Repository Delta Protocol
+
+RP:
+: Relying Party
+
+NIR:
+: National Internet Registry
 
 # Publication Server
 
-The publication engine handles the server side of the [@!RFC8181] publication
-protocol, that is, CAs interact with the publication engine. The publication
+The publication engine handles the server side of the publication
+protocol specified in [@!RFC8181]. That is, CAs interact with a publication engine. The publication
 engine also prepares the content for public consumption through RRDP and rsync.
 It is RECOMMENDED to deploy these engine functions on dedicated machines
 separate from those serving public requests via rsync and RRDP.
@@ -112,25 +139,25 @@ separate from those serving public requests via rsync and RRDP.
 
 The most common and RECOMMENDED approach for resource holders wishing to
 make use of the RPKI is to leverage a CA instance hosted and operated by
-the provider of those resources (e.g. an RIR or NIR). However, in some
-specific circumstances, resource holders might instead choose to deploy
+the provider of those resources (e.g., a RIR or a NIR). However, in some
+specific circumstances (e.g., deployment policy), resource holders might instead choose to deploy
 and manage a CA themselves. This latter type of CA is commonly referred
 to as a "self-hosted" or "delegated" CA.
 
 If the resource holder chooses to operate their CA in a self-hosted fashion,
 the holder must also decide how they make their RPKI material available to the
 public: the holder can either deploy and operate their own publication engine
-and associated rsync and RRDP infrastructure (referred to as a "self-hosted
-repository"), or make use a third-party operated publication service (e.g.,
-operated by an RIR).
+and associated rsync and RRDP infrastructures (referred to as a "self-hosted
+repository") or make use a third-party operated publication service (e.g.,
+operated by a RIR).
 
 If the resource holder chooses to self-host the repository, then they take on
 the responsibility for ensuring the high availability of their signed data via
-RRDP and rsync (further described in section 5 and 6 of this document).
+RRDP and rsync (further described in Sections 5 and 6 of this document).
 
 Because RPs are expected to make use of cached data from previous successful
 fetches (Section 6 of [@!RFC9286]), short outages on the server side do not need
-to be cause for immediate concern -- provided the self-hosting operator restores
+to be cause for immediate concern -- provided that the self-hosting operator restores
 access availability in a timely fashion, i.e., before objects become stale.
 
 However, in practice, self-hosted repositories tend to exhibit more frequent
@@ -141,9 +168,9 @@ negative impact on the overall ecosystem. Therefore, CAs that act as parents of
 other CAs are RECOMMENDED to provide a publication service for their child CAs,
 and CAs with a parent who offers a publication service are RECOMMENDED to use
 that service (rather than self-hosting). If a CA's parent does not offer a
-publication service, but the CA operator is able to use a another reliable
+publication service, but the CA operator is able to use another reliable
 third-party publication service, the CA operator SHOULD make use of that service
-in order to consolicate their data with other CAs and increase efficiency for
+in order to consolidate their data with other CAs and increase efficiency for
 RPs.
 
 For the case of a 'grandchild' CA, where CA1 is a CA, CA2 is a child
@@ -151,16 +178,16 @@ CA of CA1, and CA3 is a child CA of CA2, there are several options for
 providing publication service to CA3:
 
  1. [@!RFC8183] defines a 'referral' mechanism as part of the out-of-band
- CA setup protocol. If supported by CA1 and CA2, then this simplifies
+ CA setup protocol. For example, if supported by CA1 and CA2, then this simplifies
  the process of registering CA3 as a direct publication client of CA1.
 
  2. CA1 may support the registration of multiple publishers by CA2, by
- using the publisher_request/repository_response XML exchange defined
+ using the <publisher_request/>/<repository_response/> XML exchange defined
  in [@!RFC8183]. CA2 would then be able to register a separate publisher
  on behalf of CA3.
 
- 3. CA2 may operate a publication proxy service (e.g. [@rpki-publication-proxy]),
- which acts as the Publication Server for CA3. This proxy would set aside part of
+ 3. CA2 may operate a publication proxy service (e.g., [@rpki-publication-proxy]),
+ which acts as the publication server for CA3. This proxy would set aside part of
  CA2's namespace at CA1 for the publication of CA3's objects, adjusting and
  forwarding requests from CA3 to CA1 accordingly.
 
@@ -174,23 +201,23 @@ from CA1 directly.
 The CA-facing publication engine and public-facing repository services have
 different requirements on their availability and reachability. While the
 publication engine only needs to be accessed by publishers, the repository
-content MUST be highly available to any RP worldwide. Depending on the specific
+content MUST be highly-available to any RP worldwide. Depending on the specific
 setup, this may allow for additional access restrictions in this context: for
 example, the publication engine can limit access to known publisher source IP
 addresses or apply rate limits.
 
 If the publication engine is unavailable for some reason, this will prevent
 publishers from making new RPKI material available. The most immediate impact
-of this is that the publisher cannot distribute new issuances and revocations of
-ROAs ([@!RFC9582]), ASPAs ([@!I-D.ietf-sidrops-aspa-profile]), and BGPsec Router
-Certificates ([@!RFC8209]) for the duration of this outage. Thus, in effect,
+of such event is that the publisher cannot distribute new issuances and revocations of
+Route Origin Authorizations (ROAs) [@!RFC9582], Autonomous System Provider Authorizations (ASPAs) [@!I-D.ietf-sidrops-aspa-profile], and BGPsec Router
+Certificates [@!RFC8209] for the duration of this outage. Thus, in effect,
 the resource holder cannot inform the world about changes to its routing
 intentions. If the outage persists for an extended period, then RPKI Manifests,
-CRLs, and Signed Objects cached by RPs will became stale, in turn hampering,
-for example, BGP Origin Validation ([@!RFC6811]). For the aforementioned reasons,
-the publication engine MUST be highly available.
+Certificate Revocation Lists (CRLs), and Signed Objects cached by RPs will became stale, in turn hampering,
+for example, BGP Origin Validation [@?RFC6811]. For the aforementioned reasons,
+the publication engine MUST be highly-available.
 
-Research ([@rpki-time-in-flight]) on RPKI material propagation time, specifically
+Research on RPKI material propagation time (e.g., [@rpki-time-in-flight]), specifically
 the delay period between issuance of ROAs and the eventual application of the
 resulting Validated ROA Payloads in Internet routing, showed that propagation
 time ranged between 15 and 95 minutes for the CAs and associated repositories
@@ -201,7 +228,7 @@ It is RECOMMENDED to monitor the availability and latency of publication engines
 in a round-trip fashion by keeping track of expected and observed appearance of
 re-issued objects.
 
-To make publishers aware of the root cause of disruption in the publication
+To make publishers aware of the probable root cause of disruption in the publication
 engine and allow them to plan accordingly ahead of time, maintenance windows
 SHOULD be planned and communicated to publishers.
 
@@ -213,7 +240,7 @@ a slightly out-of-date backup), then the server MUST perform an RRDP session res
 
 CAs typically only check in with their publication server when they have produced
 changes in RPKI material that need to be shared with the world. As a result, the
-CA may not be aware if the server performed a restore and their content regressed
+CA may not be aware whether the server performed a restore and their content regressed
 to an earlier state. This could result in a number of problems:
 
  - The currently published ROAs no longer reflect the CA's intentions.
@@ -231,13 +258,13 @@ initiate a full resynchronisation.
 ## Publisher Repository Synchronisation
 
 It is RECOMMENDED that publishing CAs always perform a list query as described
-in section 2.3 of [@!RFC8181] before submitting changes to the publication server.
+in Section 2.3 of [@!RFC8181] before submitting changes to the publication server.
 This approach means that any desynchronisation issue can be resolved at least as
 soon as the publisher is aware of updates that it needs to publish.
 
-When publishing changes in material, CAs SHOULD send all of their changes using
+When publishing changes in material, CAs SHOULD send all their changes using
 multiple PDUs contained within a single multi-element query message (described
-in section 2.2 and section 3.7.1 of [@!RFC8181]). This approach reduces the risk
+in Sections 2.2 and 3.7.1 of [@!RFC8181]). This approach reduces the risk
 of changesets that were intended to take effect as an atomic action from taking
 effect in an inconsistent fashion.
 
@@ -246,7 +273,7 @@ synchronisation events where it issues an [@!RFC8181] list query and ensures
 that the publication server has the expected state, even if the CA has no new
 material to publish. For publication engines that serve a large number of CAs
 (e.g., thousands) this operation could become costly from a resource consumption
-perspective. Unfortunately, the [@!RFC8181] publication protocol has no proper
+perspective. Unfortunately, the publication protocol specified in [@!RFC8181] has no adequate
 support for rate limiting or signaling requests to CAs to backoff. Therefore,
 publishers SHOULD NOT perform this resynchronisation more frequently than once
 every 10 minutes, unless otherwise agreed with the publication engine operator.
@@ -257,69 +284,69 @@ It is RECOMMENDED that a different hostname is used in the public RRDP Server UR
 from that of the [@!RFC8181] service_uri used by publishers, as well as that of
 any rsync URIs (i.e., `sia_base`) used by the relevant publication service.
 
-Using a unique hostnames for the different components will allow the operator
-to use dedicated infrastructure and/or a Content Delivery Network (CDN) for its
+Using a unique hostname for the different components will allow an operator
+to use dedicated infrastructures and/or a Content Delivery Network (CDN) for its
 RRDP content without interfering with the other functions.
 
-If feasible, there is merit in using different TLDs and/or subdomains for these
+If feasible, there is merit in using different Top-Level Domains (TLDs) (Section 2 of [@?RFC9499])  and/or subdomains for these
 hostnames, as DNS issues at any level could otherwise be a single point of failure
-affecting both RRDP and rsync. Operators need to weigh this benefit against
+affecting both RRDP and rsync services. Operators need to weigh this benefit against
 potential increased operational risk and the burden of maintaining multiple domains.
 Because the usefulness of this approach is highly context-dependent,
-no normative recommendation is provided here.
+no deployment recommendation is provided here.
 
 Furthermore, it is RECOMMENDED that DNSSEC is used in accordance with best
-current practice as described in [@!RFC9364].
+current practices as described in [@!RFC9364].
 
-# IP Networking
+# IP Reachability
 
 To increase reachability, publication service operators SHOULD  make 
-their public facing services and the publication engine available via 
-both IPv4 and IPv6  at the same time. Publication services via both 
-IP versions help bridge between publishers and RPs in case those 
-are constrained to different address families.
+their public-facing services and the publication engine available via 
+both IPv4 and IPv6 at the same time. Publication services via both 
+IP address families help bridge between publishers and RPs in case those 
+are constrained to different address families and no translation mechanism is in place (e.g., NAT64 [@?RFC6146]).
 
 # IP Address Space and Autonomous Systems
 
-To prevent failure scenarios which persist beyond remediation, the topological
+To prevent failure scenarios that persist beyond remediation, the topological
 placement and reachability of publication servers in the global Internet routing
-system need to be considered very carefully. See section 6 of [@!RFC7115] for
+system need to be considered very carefully. Refer to Section 6 of [@!RFC7115] for
 discussion on a trade-off in placement of an RPKI repository in address space
 for which the repository's content is authoritative.
 
-An example of a problematic scenario would be when a prefix or AS path related to
+An example of a problematic scenario is when an IP prefix or Autonomous System (AS) path related to
 a repository becomes invalid because of RPKI objects published in that
 repository. As a result, RPs may be unable to retrieve remediating updates from
 that repository.
 
-With the above in mind, it is RECOMMENDED to use IP addresses for RRDP and rsync
-services from IP address space which is not subordinate to authorities solely
+It is thus RECOMMENDED to use IP addresses for RRDP and rsync
+services from an IP address space which is not subordinate to authorities solely
 dependent on those service endpoints.
 
-It is also RECOMMENDED to host RRDP and rsync services in Autonomous Systems which
+It is also RECOMMENDED to host RRDP and rsync services in ASes that
 are not subordinate to authorities publishing through those same endpoints.
 
-It is RECOMMENDED to host RRDP and rsync services in different networks.
+In addition, it is RECOMMENDED to host RRDP and rsync services in different networks.
 
 # RRDP Server
 
 ## Same Origin URIs
 
-Publication server operators need to be aware of the normative updates to
-[@!RFC8182] in section 3.1 of [@!RFC9674]. In short, these updates mean that
+Publication service operators need to be aware of the normative updates to
+[@!RFC8182] specified in Section 3.1 of [@!RFC9674]. In short, these updates mean that
 all delta and snapshot URIs need to reside on the same host, i.e., HTTP
 redirects or references to other origins are not allowed and not followed by RPs.
 
 ## Endpoint Protection
 
-Repository operators SHOULD use access control to protect their RRDP endpoints.
+Repository operators SHOULD configure access control policies to protect their RRDP endpoints.
 For example, if the repository operator knows HTTP GET parameters are not used
 to provide service, then the operator can safely block any requests containing
 GET parameters.
 
 ## Bandwidth and Data Usage
 
-The bandwidth requirements for RRDP evolve over time and depends on many factors,
+The bandwidth requirements for RRDP evolve over time and depend on many factors,
 consisting of three main groups:
 
    1. RRDP-specific repository properties, such as the size of notification,
@@ -327,11 +354,11 @@ consisting of three main groups:
    2. Properties of the CAs publishing through a particular server, such as the
       number of updates, number of objects, the length of the validity period,
       and size of objects.
-   3. Relying party behaviour, e.g. using HTTP compression, requiring timeouts or
-      minimum transfer speed for downloads, and using conditional HTTP requests.
+   3. RP behaviour, e.g., using HTTP compression, requiring timeouts or
+      minimum transfer speed for downloads, and using conditional HTTP requests (Section 13 of [@!RFC9110]).
 
-When an RRDP repository server is hosted behind a congested network link or
-otherwise overloaded (i.e. demand somehow exceeds available capacity), this can
+When an RRDP repository server is reacheable via a congested network link or
+otherwise overloaded (i.e., demand somehow exceeds available capacity), this can
 cause a cascading failure in which the aggregate load on the server continues to
 increase, resulting in degraded service for all RPs. For example, when an RP
 attempts to fetch one or more delta files, and one fails, it will typically try
@@ -340,18 +367,18 @@ also fails, the RP falls back to rsync. Furthermore, when the RP tries to use
 RRDP again on the next run, it typically starts by fetching the snapshot.
 
 A publication service operator SHOULD attempt to prevent these issues by closely
-monitoring performance metrics (e.g. consumed bandwidth, available memory, disk I/O,
+monitoring performance metrics (e.g., consumed capacity, available memory, disk I/O,
 expected functioning of a canary RP outside their network, watch logs for unexpected
-fallbacks to snapshot). Other than just increasing the capacity, several other
+fallbacks to snapshot). Other than increasing the capacity, several other
 measures to reduce demand for bandwidth are discussed in what follows.
 
 The RRDP XML container and the embedded Base64-encoded content are highly
 compressible. Compression can reduce transferred data by about 50%. Therefore,
 HTTP endpoints SHOULD support at the very least gzip content encoding as described
-in section 8.4.1.3 of [@!RFC9110], in addition to any other popular compression
+in Section 8.4.1.3 of [@!RFC9110], in addition to any other widely-used compression
 algorithms that the server can support.
 
-RRDP snapshots can be substantial in size (tens to hundreds of megabytes) and HTTP
+RRDP snapshots can be substantial in size (e.g., tens to hundreds of megabytes) and HTTP
 compression should not be unintentionally disabled due to large file sizes. This
 behavior has been observed in some CDNs where compression may not be used when the
 files exceed a certain size.
@@ -363,7 +390,7 @@ available.
 
 The RRDP snapshot and delta files SHOULD remain available for two hours after
 they have become unreferenced by the latest RRDP notification file. Not doing
-so could lead to files being not found due to race conditions or slow fetching
+so may lead to files being not found due to race conditions or slow fetching
 by RPs, and force RPs to fall back to full snapshot or rsync fetching.
 
 If possible, it is RECOMMENDED that a CDN is used to serve the RRDP content.
@@ -379,7 +406,7 @@ operator can instruct the CDN to purge cached information for the paths on which
 new files are published.
 
 Note that some organisations that run a publication server may be able to attain
-a similar level of availability themselves without the use of a third-party CDN.
+a similar level of availability themselves without the use of a third-party caching infrastructure.
 This document makes no specific recommendations on achieving this, as this is
 highly dependent on local circumstances and operational preferences.
 
@@ -394,24 +421,24 @@ provided by their RIR or NIR.
 
 ## Limit Notification File Size
 
-Most RP implementations use conditional requests (e.g. If-Modified-Since) when
+Most RP implementations use conditional requests (e.g., If-Modified-Since (Section 13.1.3 of [@!RFC9110])) when
 fetching notification files, as this reduces the traffic for repositories that
 do not often update relative to the resynchronisation frequency of RPs. On the
 other hand, for repositories that update frequently, the underlying snapshot and
 delta content accounts for most of the traffic. For example, for a large repository
 in January 2024, with a notification file with 144 deltas covering 14 hours, the
 requests for the notification file accounted for 251GB of traffic out of a total
-of 55.5TB (i.e. less than 0.5% of the total traffic during that period).
+of 55.5TB (i.e., less than 0.5% of the total traffic during that period).
 
-However, for some servers, this ratio may be different. [@!RFC8182] stipulates
-that the sum of the size of deltas MUST not exceed the snapshot size, in order to
+However, this ratio may be different for some servers. [@!RFC8182] stipulates
+that the sum of the size of deltas must not exceed the snapshot size, in order to
 avoid RPs downloading more data than necessary. However, this does not account for
 the size of the notification file that all RPs download. Keeping many deltas
 present may allow RPs to recover more efficiently if they are significantly out
 of sync. Still, including all such deltas can also increase the total data transfer,
 because it increases the size of the notification file.
 
-In order to mitigate potential problems here, the notification file size SHOULD
+In order to mitigate potential problems, the notification file size SHOULD
 be reduced by removing delta file entries from the notification file that already
 have been available for an extended period of time. Because some RP instances will
 only synchronize every 1-2 hours (observed in 2024), the RRDP server SHOULD include
@@ -432,14 +459,14 @@ delta files that RPs need to fetch and process.
 The manifest and CRL nextUpdate times and validity periods are determined by
 the issuing CA rather than the publication engine operator.
 
-From the CA's point of view, longer validity periods mean that there is more
+From the CA's perspective, longer validity periods mean that there is more
 time to resolve unforeseen operational issues, since the current RPKI objects
 will remain valid for longer. On the other hand, longer validity periods also
 increase the risk of a successful replay attack.
 
 From the publication engine's point of view, shorter update times result in more
 data churn due to manifest and CRL reissuance. While the choice is made by the
-CAs, in certain modes of operation (e.g. hosted RPKI services) it may be possible
+CAs, in certain modes of operation (e.g., hosted RPKI services) it may be possible
 to adjust the timing of manifest and CRL reissuance. In one large repository it was
 observed that increasing the reissuance cycle from once every 24 hours to once every
 48 hours reduced data usage by approximately 50%, this is because generally most
@@ -454,8 +481,8 @@ choice of the file naming scheme can positively or negatively impact publication
 point operations.
 
  * Because filenames are repeated multiple times throughout RPKI materials (e.g.,
-   in SIA fields, AIA fields, CRLDP fields, as part of in Manifest fileLists,
-   and in the uri field in RRDP publish elements, etc), use of shorter filenames
+   in Subject Information Access (SIA) fields, Authority Information Access (AIA) fields, CRL Distribution Points (CRLDP) fields, as part of in Manifest fileLists,
+   and in the uri field in RRDP publish elements), use of shorter filenames
    has a positive impact on storage & bandwidth required in the overall ecosystem.
    Therefore publishers are RECOMMENDED to use filenames shorter than 32 characters.
 
@@ -472,12 +499,12 @@ point operations.
 
 In summary, to conserve bandwidth, to improve reliability of object propagation,
 and to make debugging easier, publishers are RECOMMENDED use "one-time-use" EE
-certificates (section 3 of [@!RFC6487]) and to adhere to the guidelines for naming
-objects described in section 2.2 of [@!RFC6481].
+certificates (Section 3 of [@!RFC6487]) and to adhere to the guidelines for naming
+objects described in Section 2.2 of [@!RFC6481].
 
 ## ROA Prefix Aggregation
 
-The practice of issuing ROAs with only a single prefix per ROA ([@!RFC9455]) can
+The practice of issuing ROAs with only a single prefix per ROA [@!RFC9455] can
 lead to many ROA objects being published by a given CA. However, clustering multiple
 prefixes in a single ROA (per origin AS) can achieve a significant reduction in the
 number of objects and the total size of a repository. In order to reduce bandwidth 
@@ -487,8 +514,8 @@ cluster as many prefixes per ROA as possible, provided:
  - Fate sharing is not a concern, for example, when both the parent and issuing CA
    are controlled by the same entity.
  - The operational impact of publishing many ROAs outweighs the perceived fate
-   sharing risks, e.g. because it leads to excessive bandwidth demands on the
-   repository, or it's causing overly large manifest(s), or it leads to an excessive
+   sharing risks, e.g., because it leads to excessive bandwidth demands on the
+   repository, or it is causing overly large manifests, or it leads to an excessive
    amount of data or number of files for RPs.
 
 ## Consistent Load-Balancing
@@ -500,7 +527,7 @@ associated snapshot and delta files also are available.
 
 As a result, when using a load-balancing setup, special care SHOULD be taken to
 ensure that RPs that make multiple subsequent requests receive content from the
-same node (e.g. consistent hashing). This way, clients follow the timeline on one
+same node (e.g., consistent hashing). This way, clients follow the timeline on one
 node where the referenced snapshot and delta files are available. Alternatively,
 publication infrastructure SHOULD ensure a particular ordering of the
 visibility of the snapshot plus delta and notification file. All nodes should
@@ -516,10 +543,10 @@ Unfortunately, [@!RFC8182] does not specify RP behavior if the serial regresses.
 As a result, some RP implementations will fetch the snapshot to re-sync if a
 (substantial) serial regression is observed.
 
-### L4 Load-Balancing
+### Layer 4 Load-Balancing
 
-If an RRDP repository uses L4 load-balancing, some load balancer implementations
-will keep in the pool connections to a node that is no longer active (e.g. one
+If an RRDP repository uses Layer 4 load-balancing, some load balancer implementations
+will keep in the pool connections to a node that is no longer active (e.g., one
 that is disabled because of maintenance). Due to HTTP keepalive, requests from
 an RP (or CDN edge) may continue to try to use the disabled node for an extended
 period.  This issue is more pronounced with CDNs that use HTTP proxies internally
@@ -552,7 +579,7 @@ while RPs are transferring files. Even when the repository is consistent from
 the repository server's point of view, clients may read an internally
 inconsistent set of files. Clients may get a combination of newer and older
 objects. This "phantom read" can lead to unpredictable and unreliable results.
-While modern RPs will treat such inconsistencies as a "Failed Fetch" ([@!RFC9286]),
+While modern RPs will treat such inconsistencies as a "Failed Fetch" [@!RFC9286],
 it is best to avoid this situation altogether, since a failed fetch for one
 repository can cause the rejection of delegated certificates and/or RPKI signed
 objects for a sub-CA when resources change.
@@ -564,13 +591,13 @@ repository publication.
 
 Following this process, when an update is published:
 
-  1. write the complete updated repository into a new directory
-  2. fix-up the timestamps of files (see next section)
-  3. change the symlink to point to the new directory
+  1. write the complete updated repository into a new directory,
+  2. fix-up the timestamps of files (see {{sec-ts}}), and
+  3. change the symlink to point to the new directory.
 
-Most modern day implementations follow the above process (e.g. [@krill-sync],
-[@rpki-core], [@rsyncit], the rpki.apnic.net repository implementation,
-and [@rsync-move]).
+> Implementation Note: Several implementations follow the above process (e.g. [@krill-sync],
+> [@rpki-core], or [@rsyncit], the 'rpki.apnic.net' repository implementation,
+> and [@rsync-move]).
 
 Because rsyncd resolves this symlink when it `chdir`s into the module directory
 when a client connects, any connected RPs can read a consistent state for the
@@ -589,25 +616,25 @@ remove old versions of repositories after two hours. It is RECOMMENDED to monito
 for "file has vanished" (or similar) lines in the rsync log file to detect how
 many clients are affected by the cleanup process timing parameters.
 
-## Deterministic Timestamps
+## Deterministic Timestamps {#sec-ts}
 
 By default, rsync implementations use the modification time and file size to
 determine if it should transfer a file. Therefore, throughout a file's lifetime,
 the modification time SHOULD NOT change -- unless the file's content changes.
 
-The following deterministic heuristics are RECOMMEND as the file's timestamp
+The following deterministic heuristics are RECOMMENDED as the file's timestamp
 when writing objects to disk:
 
   - For CRLs, use the value of thisUpdate.
-  - For RPKI Signed Objects, use the CMS signing-time (see ([@!RFC9589])).
+  - For RPKI Signed Objects, use the Cryptographic Message Syntax (CMS) signing-time value [@!RFC9589].
   - For CA and BGPsec Router Certificates, use the value of notBefore.
   - For directories, use any constant value.
 
-## Load Balancing and Testing
+## Load-Balancing and Testing
 
-To increase availability during both regular maintenance and exceptional
+To increase availability during both planned maintenance and exceptional
 situations, a rsync repository that strives for high availability should be
-deployed on multiple nodes load-balanced by an L4 load balancer.  Because rsync
+deployed on multiple nodes load-balanced by a Layer 4 load balancer.  Because rsync
 sessions use a single TCP connection per synchronisation attempt, there is no
 need for consistent load-balancing between multiple rsync servers as long as
 they each provide a consistent view.
@@ -639,9 +666,7 @@ This document does not make any request to IANA.
 
 # Security Considerations
 
-This document does not introduce any new security issues.
-
-Readers are encouraged to review the Security Considerations in [@!RFC8181],
+This document does not introduce any new security issues beyond those already discussed in the Security Considerations of [@!RFC8181],
 [@!RFC8182], [@!RFC9589], and [@!RFC9674].
 
 # Acknowledgments
