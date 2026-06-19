@@ -98,34 +98,20 @@ this document are to be interpreted as described in BCP 14 [@!RFC2119]
 
 This document makes use of the following terms:
 
-Publication engine:
-: Synonym of publication server [@!RFC8181].
-
-Publisher: 
-: Certification Authority (CA) (client of publication server).
-
-RRDP server:
-: Public-facing RRDP server [@!RFC8182].
-
-rsync server:
-:Public-facing rsync server [@!RFC5781].
-
-rsyncd:
-: A software daemon package providing rsync service.
+-------------------|---------------------------------------------------------------
+Publication engine | Synonym of publication server [@!RFC8181].
+Publisher          | Certification Authority (CA) (client of publication server).
+RRDP server        | Public-facing RRDP server [@!RFC8182].
+rsync server       | Public-facing rsync server [@!RFC5781].
+rsyncd             | A software daemon package providing rsync service.
 
 ## Acronyms
 
-RIR:
-:Regional Internet Registry
-
-RRDP:
-:Repository Delta Protocol
-
-RP:
-: Relying Party
-
-NIR:
-: National Internet Registry
+--------|------------------------------
+RP      | Relying Party
+RRDP    | Repository Delta Protocol
+RIR     | Regional Internet Registry
+NIR     | National Internet Registry
 
 # Publication Server
 
