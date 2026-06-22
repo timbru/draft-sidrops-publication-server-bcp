@@ -422,9 +422,9 @@ because it increases the size of the notification file.
 
 In order to mitigate potential problems, the notification file size SHOULD
 be reduced by removing delta file entries from the notification file that already
-have been available for an extended period of time. Because some RP instances will
-only synchronize every 1-2 hours (observed in 2024), the RRDP server SHOULD include
-deltas for at least 4 hours.
+have been available for an extended period of time. Because some RP instances 
+may only sunchronize every 1-2 hours, the RRDP server SHOULD include deltas for at
+least 4 hours.
 
 Furthermore, it is RECOMMENDED that publication engines do not produce RRDP delta
 files more frequently than once per minute. A possible approach for this is that
