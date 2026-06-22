@@ -107,9 +107,10 @@ rsyncd             | A software daemon package providing rsync service.
 
 ## Acronyms
 
---------|------------------------------
+--------|-----------------------------------
+RPKI    | Resource Public Key Infrastructure
 RP      | Relying Party
-RRDP    | Repository Delta Protocol
+RRDP    | RPKI Repository Delta Protocol
 RIR     | Regional Internet Registry
 NIR     | National Internet Registry
 
