@@ -358,11 +358,7 @@ expected functioning of a canary RP outside their network, watch logs for unexpe
 fallbacks to snapshot). Other than increasing the capacity, several other
 measures to reduce demand for bandwidth are discussed in what follows.
 
-The RRDP XML container and the embedded Base64-encoded content are highly
-compressible. Compression can reduce transferred data by about 50%. Therefore,
-HTTP endpoints SHOULD support at the very least gzip content encoding as described
-in Section 8.4.1.3 of [@!RFC9110], in addition to any other widely-used compression
-algorithms that the server can support.
+The RRDP XML container and its embedded Base64-encoded content are highly compressible; compression typically reduces the volume of transferred data by approximately 50%. Therefore, RRDP endpoints SHOULD support compression. At a minimum, gzip content coding (see Section 8.4.1.3 of [@!RFC9110]) SHOULD be supported due to its widespread deployment. Additionally, servers are RECOMMENDED to support other widely used compression algorithms where feasible.
 
 RRDP snapshots can be substantial in size (e.g., tens to hundreds of megabytes) and HTTP
 compression should not be unintentionally disabled due to large file sizes. This
