@@ -267,7 +267,7 @@ every 10 minutes, unless otherwise agreed with the publication engine operator.
 # Hostnames
 
 It is RECOMMENDED that a different hostname is used in the public RRDP Server URI 
-from that of the [@!RFC8181] service_uri used by publishers, as well as that of
+from that of the [@!RFC8183] service_uri used by publishers, as well as that of
 any rsync URIs (i.e., `sia_base`) used by the relevant publication service.
 
 Using a unique hostname for the different components will allow an operator
