@@ -265,7 +265,9 @@ support for rate limiting or signaling requests to CAs to backoff. Therefore,
 publishers SHOULD NOT perform this resynchronisation more frequently than once
 every 10 minutes, unless otherwise agreed with the publication engine operator.
 
-# Hostnames
+# Common Repository Considerations
+
+## Hostnames
 
 It is RECOMMENDED that a different hostname is used in the public RRDP Server URI 
 from that of the [@!RFC8183] service_uri used by publishers, as well as that of
@@ -285,7 +287,7 @@ no deployment recommendation is provided here.
 Furthermore, it is RECOMMENDED that DNSSEC is used in accordance with best
 current practices as described in [@!RFC9364].
 
-# IP Reachability
+## IP Reachability
 
 To increase reachability, publication service operators SHOULD  make 
 their public-facing services and the publication engine available via 
@@ -293,7 +295,7 @@ both IPv4 and IPv6 at the same time. Publication services via both
 IP address families help bridge between publishers and RPs in case those 
 are constrained to different address families and no translation mechanism is in place (e.g., NAT64 [@?RFC6146]).
 
-# IP Address Space and Autonomous Systems
+## IP Address Space and Autonomous Systems
 
 To prevent failure scenarios that persist beyond remediation, the topological
 placement and reachability of publication servers in the global Internet routing
