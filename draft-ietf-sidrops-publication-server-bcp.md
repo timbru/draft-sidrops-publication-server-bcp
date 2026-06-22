@@ -312,7 +312,7 @@ dependent on those service endpoints.
 It is also RECOMMENDED to host RRDP and rsync services in ASes that
 are not subordinate to authorities publishing through those same endpoints.
 
-In addition, it is RECOMMENDED to host RRDP and rsync services in different networks.
+In addition, it is RECOMMENDED to host RRDP and rsync services on separate networks to avoid fate sharing if one of the services becomes unreachable.
 
 # RRDP Server
 
