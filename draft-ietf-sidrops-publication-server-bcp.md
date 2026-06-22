@@ -361,10 +361,9 @@ measures to reduce demand for bandwidth are discussed in what follows.
 
 The RRDP XML container and its embedded Base64-encoded content are highly compressible; compression typically reduces the volume of transferred data by approximately 50%. Therefore, RRDP endpoints SHOULD support compression. At a minimum, gzip content coding (see Section 8.4.1.3 of [@!RFC9110]) SHOULD be supported due to its widespread deployment. Additionally, servers are RECOMMENDED to support other widely used compression algorithms where feasible.
 
-RRDP snapshots can be substantial in size (e.g., tens to hundreds of megabytes) and HTTP
-compression should not be unintentionally disabled due to large file sizes. This
-behavior has been observed in some CDNs where compression may not be used when the
-files exceed a certain size.
+RRDP snapshots can be substantial in size (e.g., tens to hundreds of megabytes). Operators
+should be aware that some CDNs automatically turn off compression for very large files
+and override this if possible to avoid accidentally disabling compression.
 
 ## Content Availability
 
