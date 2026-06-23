@@ -119,12 +119,14 @@ NIR     | National Internet Registry
 The publication engine handles the server side of the publication
 protocol specified in [@!RFC8181]. That is, CAs interact with a publication engine. The publication
 engine also prepares the content for public consumption through RRDP and rsync.
+
 It is RECOMMENDED to deploy these engine functions on dedicated machines
-separate from those serving public requests via rsync and RRDP.
+separate from those serving public requests via rsync and RRDP to avoid that
+increased load on one function impacts other functions.
 
 ## Self-Hosted CA and Self-Hosted Repository Considerations
 
-The most common and RECOMMENDED approach for resource holders wishing to
+The most common approach for resource holders wishing to
 make use of the RPKI is to leverage a CA instance hosted and operated by
 the provider of those resources (e.g., a RIR or a NIR). However, in some
 specific circumstances (e.g., deployment policy), resource holders might instead choose to deploy
@@ -310,12 +312,16 @@ that repository.
 
 It is thus RECOMMENDED to use IP addresses for RRDP and rsync
 services from an IP address space which is not subordinate to authorities solely
-dependent on those service endpoints.
+dependent on those service endpoints, unless for example this is outweighed by the
+perceived risk of an operational dependency on IP space that is managed by another
+organisation.
 
 It is also RECOMMENDED to host RRDP and rsync services in ASes that
 are not subordinate to authorities publishing through those same endpoints.
+So long as doing so does not increase the risk surface in other ways.
 
-In addition, it is RECOMMENDED to host RRDP and rsync services on separate networks to avoid fate sharing if one of the services becomes unreachable.
+In addition, it is RECOMMENDED to host RRDP and rsync services on separate networks
+to avoid fate sharing if one of the services becomes unreachable.
 
 # RRDP Server
 
@@ -422,7 +428,7 @@ present may allow RPs to recover more efficiently if they are significantly out
 of sync. Still, including all such deltas can also increase the total data transfer,
 because it increases the size of the notification file.
 
-In order to mitigate potential problems, the notification file size SHOULD
+In order to mitigate potential problems, the notification file size MAY
 be reduced by removing delta file entries from the notification file that already
 have been available for an extended period of time. Because some RP instances 
 may only sunchronize every 1-2 hours, the RRDP server SHOULD include deltas for at
@@ -430,13 +436,11 @@ least 4 hours.
 
 Furthermore, it is RECOMMENDED that publication engines do not produce RRDP delta
 files more frequently than once per minute. A possible approach for this is that
-the publication engine SHOULD publish changes at a regular (one minute) interval.
+the publication engine publishes changes at a regular (one minute) interval.
 The RRDP server then makes available the new materials received from all Publishers
-in this interval in a single RRDP delta file.
-
-While the latter may not reduce the amount of data due to changed objects,
-this will result in shorter notification files, and will reduce the number of
-delta files that RPs need to fetch and process.
+in this interval in a single RRDP delta file. While this does not reduce the amount
+of data due to changed objects, this results in shorter notification files and reduces
+the number of delta files that RPs need to fetch and process.
 
 ## Manifest and CRL Update Times
 
@@ -596,7 +600,7 @@ a copy is when it was last "current", the time a client has to read a copy begin
 when it was last current (cf. the time when it was originally written).
 
 Empirical data suggests that rsync server operators MAY assume it is safe to
-remove old versions of repositories after two hours. It is RECOMMENDED to monitor
+remove old versions of repositories after two hours. It is recommended to monitor
 for "file has vanished" (or similar) lines in the rsync log file to detect how
 many clients are affected by the cleanup process timing parameters.
 
