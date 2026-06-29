@@ -71,15 +71,71 @@ RPKI Repository Delta Protocol (RRDP) (RFC 8182) repositories.
 
 # Introduction
 
-Resource Public Key Infrastructure (RPKI) material is created by Certification Authorities (CAs). This signed data
-is then submitted to a publication engine using the publication
-protocol specified in [@!RFC8181], and finally made available to RPKI Relying Parties (RPs) through
-publicly accessible rsync [@!RFC5781] and RPKI Repository Delta Protocol (RRDP) [@!RFC8182] repositories.
+Resource Public Key Infrastructure (RPKI) material is created by
+Certification Authorities (CAs). This signed data is then submitted
+to a publication engine using the publication protocol specified in
+[@!RFC8181], and finally made available to RPKI Relying Parties (RPs)
+through publicly accessible rsync [@!RFC5781] and RPKI Repository Delta
+Protocol (RRDP) [@!RFC8182] repositories.
 
-This document provides  best current practices for operating RPKI publication
-services at a scale suitable for use with the global Internet routing system.
-These recommendations are based on more than a decade of operational experience from
-several implementers and operators of both client and server sides.
+The following diagram attempt to convey how the components mentioned
+in the previous paragraph fit into the overall data flow between
+CAs and RPs:
+
+      +------+    +------+    +------+
+      |  CA  |    |  CA  |    |  CA  |
+      +------+    +------+    +------+
+          |           |           |
+          |           |           |  RFC 8181 Publication Protocol       
+          +-------+   |  +--------+
+                  |   |  |
+             +----v---v--v-----+
+             |                 |
+             |   Publication   |
+             |      Engine     |          
+             |                 |
+             +-----------------+
+              |               |
+     +--------v---+       +---v--------+
+     |   RRDP     |       |    rsync   |
+     | Repository |       | Repository |
+     |            |       |            |
+     |  RFC 8182  |       |   RFC 5781 |
+     |   HTTPS    |       |            |
+     +------------+       +------------+
+            |                  |
+     +------v------+           |
+     |   optional  |           |
+     | CDN/caching |           |
+     +-------------+           |
+            |                  |
+            |     preferred    | fallback
+            |                  |
+         +--v---- ---+---------v--+
+         |           |            |
+      +------+    +------+    +------+
+      |  RP  |    |  RP  |    |  RP  |
+      +------+    +------+    +------+
+
+Publication services operations t
+   
+This document provides best current practices for operating RPKI
+publication services at a scale suitable for use with the global
+Internet routing system. These services typically include the
+Publication Enging (backend) and the public facing repositories
+for RRDP and rsync functions.
+
+These functions may be combined in a single server, or divided over
+several servers for seperation of functions and/or load balancing.
+Caching infrastructure or CDNs are often used for scaling access
+to the RRDP repositories.
+
+In a addition some guidance is provided for CA operators in as far
+as CA operator choices relate to publication.
+
+These recommendations are based on more than a decade of operational
+experience from several implementers and operators of both client and
+server sides.
 
 # Terminology
 
