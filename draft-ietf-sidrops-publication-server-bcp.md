@@ -377,7 +377,7 @@ are not subordinate to authorities publishing through those same endpoints.
 So long as doing so does not increase the risk surface in other ways.
 
 In addition, it is RECOMMENDED to host RRDP and rsync services on separate networks
-to avoid fate sharing if one of the services becomes unreachable.
+to avoid fate sharing if one of the networks becomes unreachable.
 
 # RRDP Server
 
@@ -628,6 +628,8 @@ it is best to avoid this situation altogether, since a failed fetch for one
 repository can cause the rejection of delegated certificates and/or RPKI signed
 objects for a sub-CA when resources change.
 
+Up until version 3.4.3 of rsync 
+
 One way to ensure that rsyncd serves its connected clients (RPs) with a consistent
 view of the repository is by configuring the rsyncd 'module' path to a path
 that contains a symlink that the repository-writing process updates for every
@@ -718,6 +720,16 @@ This document does not introduce any new security issues beyond those already di
 The authors wish to thank Mike Hollyman and Theodor-Fedor Vompe for editorial suggestions.
 
 {backmatter}
+
+<reference anchor='rsync' target='https://rsync.samba.org/'>
+    <front>
+        <title>rsync</title>
+        <author initials='J.' surname='Snijders' fullname='Job Snijders'>
+          <organization>BSD</organization>
+        </author>
+        <date year='2023'/>
+    </front>
+</reference>
 
 <reference anchor='rsync-move' target='https://www.bsd.nl/publications/rpki-rsync-move.sh.txt'>
     <front>
