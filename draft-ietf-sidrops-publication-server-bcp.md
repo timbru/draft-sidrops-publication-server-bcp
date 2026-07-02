@@ -71,15 +71,71 @@ RPKI Repository Delta Protocol (RRDP) (RFC 8182) repositories.
 
 # Introduction
 
-Resource Public Key Infrastructure (RPKI) material is created by Certification Authorities (CAs). This signed data
-is then submitted to a publication engine using the publication
-protocol specified in [@!RFC8181], and finally made available to RPKI Relying Parties (RPs) through
-publicly accessible rsync [@!RFC5781] and RPKI Repository Delta Protocol (RRDP) [@!RFC8182] repositories.
+Resource Public Key Infrastructure (RPKI) material is created by
+Certification Authorities (CAs). This signed data is then submitted
+to a publication engine using the publication protocol specified in
+[@!RFC8181], and finally made available to RPKI Relying Parties (RPs)
+through publicly accessible rsync [@!RFC5781] and RPKI Repository Delta
+Protocol (RRDP) [@!RFC8182] repositories.
 
-This document provides  best current practices for operating RPKI publication
-services at a scale suitable for use with the global Internet routing system.
-These recommendations are based on more than a decade of operational experience from
-several implementers and operators of both client and server sides.
+The following diagram attempt to convey how the components mentioned
+in the previous paragraph fit into the overall data flow between
+CAs and RPs:
+
+      +------+    +------+    +------+
+      |  CA  |    |  CA  |    |  CA  |
+      +------+    +------+    +------+
+          |           |           |
+          |           |           |  RFC 8181 Publication Protocol       
+          +-------+   |  +--------+
+                  |   |  |
+             +----v---v--v-----+
+             |                 |
+             |   Publication   |
+             |      Engine     |          
+             |                 |
+             +-----------------+
+              |               |
+     +--------v---+       +---v--------+
+     |   RRDP     |       |    rsync   |
+     | Repository |       | Repository |
+     |            |       |            |
+     |  RFC 8182  |       |   RFC 5781 |
+     |   HTTPS    |       |            |
+     +------------+       +------------+
+            |                  |
+     +------v------+           |
+     |   optional  |           |
+     | CDN/caching |           |
+     +-------------+           |
+            |                  |
+            |     preferred    | fallback
+            |                  |
+         +--v---- ---+---------v--+
+         |           |            |
+      +------+    +------+    +------+
+      |  RP  |    |  RP  |    |  RP  |
+      +------+    +------+    +------+
+
+Publication services operations t
+   
+This document provides best current practices for operating RPKI
+publication services at a scale suitable for use with the global
+Internet routing system. These services typically include the
+Publication Enging (backend) and the public facing repositories
+for RRDP and rsync functions.
+
+These functions may be combined in a single server, or divided over
+several servers for seperation of functions and/or load balancing.
+Caching infrastructure or CDNs are often used for scaling access
+to the RRDP repositories.
+
+In a addition some guidance is provided for CA operators in as far
+as CA operator choices relate to publication.
+
+These recommendations are based on more than a decade of operational
+experience from several implementers and operators of both client and
+server sides.
 
 # Terminology
 
@@ -98,46 +154,35 @@ this document are to be interpreted as described in BCP 14 [@!RFC2119]
 
 This document makes use of the following terms:
 
-Publication engine:
-: Synonym of publication server [@!RFC8181].
-
-Publisher: 
-: Certification Authority (CA) (client of publication server).
-
-RRDP server:
-: Public-facing RRDP server [@!RFC8182].
-
-rsync server:
-:Public-facing rsync server [@!RFC5781].
-
-rsyncd:
-: A software daemon package providing rsync service.
+-------------------|---------------------------------------------------------------
+Publication engine | Synonym of publication server [@!RFC8181].
+Publisher          | Certification Authority (CA) (client of publication server).
+RRDP server        | Public-facing RRDP server [@!RFC8182].
+rsync server       | Public-facing rsync server [@!RFC5781].
+rsyncd             | A software daemon package providing rsync service.
 
 ## Acronyms
 
-RIR:
-:Regional Internet Registry
-
-RRDP:
-:Repository Delta Protocol
-
-RP:
-: Relying Party
-
-NIR:
-: National Internet Registry
+--------|-----------------------------------
+RPKI    | Resource Public Key Infrastructure
+RP      | Relying Party
+RRDP    | RPKI Repository Delta Protocol
+RIR     | Regional Internet Registry
+NIR     | National Internet Registry
 
 # Publication Server
 
 The publication engine handles the server side of the publication
 protocol specified in [@!RFC8181]. That is, CAs interact with a publication engine. The publication
 engine also prepares the content for public consumption through RRDP and rsync.
+
 It is RECOMMENDED to deploy these engine functions on dedicated machines
-separate from those serving public requests via rsync and RRDP.
+separate from those serving public requests via rsync and RRDP to avoid
+increased load on one service from impacting other services.
 
 ## Self-Hosted CA and Self-Hosted Repository Considerations
 
-The most common and RECOMMENDED approach for resource holders wishing to
+The most common approach for resource holders wishing to
 make use of the RPKI is to leverage a CA instance hosted and operated by
 the provider of those resources (e.g., a RIR or a NIR). However, in some
 specific circumstances (e.g., deployment policy), resource holders might instead choose to deploy
@@ -278,10 +323,12 @@ support for rate limiting or signaling requests to CAs to backoff. Therefore,
 publishers SHOULD NOT perform this resynchronisation more frequently than once
 every 10 minutes, unless otherwise agreed with the publication engine operator.
 
-# Hostnames
+# Common Repository Considerations
+
+## Hostnames
 
 It is RECOMMENDED that a different hostname is used in the public RRDP Server URI 
-from that of the [@!RFC8181] service_uri used by publishers, as well as that of
+from that of the [@!RFC8183] service_uri used by publishers, as well as that of
 any rsync URIs (i.e., `sia_base`) used by the relevant publication service.
 
 Using a unique hostname for the different components will allow an operator
@@ -298,7 +345,7 @@ no deployment recommendation is provided here.
 Furthermore, it is RECOMMENDED that DNSSEC is used in accordance with best
 current practices as described in [@!RFC9364].
 
-# IP Reachability
+## IP Reachability
 
 To increase reachability, publication service operators SHOULD  make 
 their public-facing services and the publication engine available via 
@@ -306,7 +353,7 @@ both IPv4 and IPv6 at the same time. Publication services via both
 IP address families help bridge between publishers and RPs in case those 
 are constrained to different address families and no translation mechanism is in place (e.g., NAT64 [@?RFC6146]).
 
-# IP Address Space and Autonomous Systems
+## IP Address Space and Autonomous Systems
 
 To prevent failure scenarios that persist beyond remediation, the topological
 placement and reachability of publication servers in the global Internet routing
@@ -321,12 +368,17 @@ that repository.
 
 It is thus RECOMMENDED to use IP addresses for RRDP and rsync
 services from an IP address space which is not subordinate to authorities solely
-dependent on those service endpoints.
+dependent on those service endpoints, unless for example this is outweighed by the
+perceived risk of an operational dependency on IP space that is managed by another
+organisation.
 
-It is also RECOMMENDED to host RRDP and rsync services in ASes that
-are not subordinate to authorities publishing through those same endpoints.
+It is also RECOMMENDED to host RRDP and rsync services in ASes that are not subordinate
+to authorities publishing through those same endpoints. As with IP address use, the
+benefits of hosting in accordance with this recommendation must be weighed against the
+potential risks of an operational dependency on ASes managed by another organisation.
 
-In addition, it is RECOMMENDED to host RRDP and rsync services in different networks.
+In addition, it is RECOMMENDED to host RRDP and rsync services on separate networks
+to avoid fate sharing if one of the networks becomes unreachable.
 
 # RRDP Server
 
@@ -372,16 +424,11 @@ expected functioning of a canary RP outside their network, watch logs for unexpe
 fallbacks to snapshot). Other than increasing the capacity, several other
 measures to reduce demand for bandwidth are discussed in what follows.
 
-The RRDP XML container and the embedded Base64-encoded content are highly
-compressible. Compression can reduce transferred data by about 50%. Therefore,
-HTTP endpoints SHOULD support at the very least gzip content encoding as described
-in Section 8.4.1.3 of [@!RFC9110], in addition to any other widely-used compression
-algorithms that the server can support.
+The RRDP XML container and its embedded Base64-encoded content are highly compressible; compression typically reduces the volume of transferred data by approximately 50%. Therefore, RRDP endpoints SHOULD support compression. At a minimum, gzip content coding (see Section 8.4.1.3 of [@!RFC9110]) SHOULD be supported due to its widespread deployment. Additionally, servers are RECOMMENDED to support other widely used compression algorithms where feasible.
 
-RRDP snapshots can be substantial in size (e.g., tens to hundreds of megabytes) and HTTP
-compression should not be unintentionally disabled due to large file sizes. This
-behavior has been observed in some CDNs where compression may not be used when the
-files exceed a certain size.
+RRDP snapshots can be substantial in size (e.g., tens to hundreds of megabytes). Operators
+should be aware that some CDNs automatically turn off compression for very large files
+and override this if possible to avoid accidentally disabling compression.
 
 ## Content Availability
 
@@ -438,21 +485,19 @@ present may allow RPs to recover more efficiently if they are significantly out
 of sync. Still, including all such deltas can also increase the total data transfer,
 because it increases the size of the notification file.
 
-In order to mitigate potential problems, the notification file size SHOULD
+In order to mitigate potential problems, the notification file size MAY
 be reduced by removing delta file entries from the notification file that already
-have been available for an extended period of time. Because some RP instances will
-only synchronize every 1-2 hours (observed in 2024), the RRDP server SHOULD include
-deltas for at least 4 hours.
+have been available for an extended period of time. Because some RP instances 
+may only synchronize every 1-2 hours, the RRDP server SHOULD include deltas for at
+least 4 hours.
 
 Furthermore, it is RECOMMENDED that publication engines do not produce RRDP delta
 files more frequently than once per minute. A possible approach for this is that
-the publication engine SHOULD publish changes at a regular (one minute) interval.
+the publication engine publishes changes at a regular (one minute) interval.
 The RRDP server then makes available the new materials received from all Publishers
-in this interval in a single RRDP delta file.
-
-While the latter may not reduce the amount of data due to changed objects,
-this will result in shorter notification files, and will reduce the number of
-delta files that RPs need to fetch and process.
+in this interval in a single RRDP delta file. While this does not reduce the amount
+of data due to changed objects, this results in shorter notification files and reduces
+the number of delta files that RPs need to fetch and process.
 
 ## Manifest and CRL Update Times
 
@@ -584,6 +629,8 @@ it is best to avoid this situation altogether, since a failed fetch for one
 repository can cause the rejection of delegated certificates and/or RPKI signed
 objects for a sub-CA when resources change.
 
+Up until version 3.4.3 of rsync 
+
 One way to ensure that rsyncd serves its connected clients (RPs) with a consistent
 view of the repository is by configuring the rsyncd 'module' path to a path
 that contains a symlink that the repository-writing process updates for every
@@ -612,7 +659,7 @@ a copy is when it was last "current", the time a client has to read a copy begin
 when it was last current (cf. the time when it was originally written).
 
 Empirical data suggests that rsync server operators MAY assume it is safe to
-remove old versions of repositories after two hours. It is RECOMMENDED to monitor
+remove old versions of repositories after two hours. It is recommended to monitor
 for "file has vanished" (or similar) lines in the rsync log file to detect how
 many clients are affected by the cleanup process timing parameters.
 
@@ -674,6 +721,16 @@ This document does not introduce any new security issues beyond those already di
 The authors wish to thank Mike Hollyman and Theodor-Fedor Vompe for editorial suggestions.
 
 {backmatter}
+
+<reference anchor='rsync' target='https://rsync.samba.org/'>
+    <front>
+        <title>rsync</title>
+        <author initials='J.' surname='Snijders' fullname='Job Snijders'>
+          <organization>BSD</organization>
+        </author>
+        <date year='2023'/>
+    </front>
+</reference>
 
 <reference anchor='rsync-move' target='https://www.bsd.nl/publications/rpki-rsync-move.sh.txt'>
     <front>
