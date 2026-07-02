@@ -177,8 +177,8 @@ protocol specified in [@!RFC8181]. That is, CAs interact with a publication engi
 engine also prepares the content for public consumption through RRDP and rsync.
 
 It is RECOMMENDED to deploy these engine functions on dedicated machines
-separate from those serving public requests via rsync and RRDP to avoid that
-increased load on one function impacts other functions.
+separate from those serving public requests via rsync and RRDP to avoid
+increased load on one service from impacting other services.
 
 ## Self-Hosted CA and Self-Hosted Repository Considerations
 
