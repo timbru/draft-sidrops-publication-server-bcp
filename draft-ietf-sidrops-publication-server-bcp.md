@@ -372,9 +372,10 @@ dependent on those service endpoints, unless for example this is outweighed by t
 perceived risk of an operational dependency on IP space that is managed by another
 organisation.
 
-It is also RECOMMENDED to host RRDP and rsync services in ASes that
-are not subordinate to authorities publishing through those same endpoints.
-So long as doing so does not increase the risk surface in other ways.
+It is also RECOMMENDED to host RRDP and rsync services in ASes that are not subordinate
+to authorities publishing through those same endpoints. As with IP address use, the
+benefits of hosting in accordance with this recommendation must be weighed against the
+potential risks of an operational dependency on ASes managed by another organisation.
 
 In addition, it is RECOMMENDED to host RRDP and rsync services on separate networks
 to avoid fate sharing if one of the networks becomes unreachable.
