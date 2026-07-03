@@ -629,8 +629,6 @@ it is best to avoid this situation altogether, since a failed fetch for one
 repository can cause the rejection of delegated certificates and/or RPKI signed
 objects for a sub-CA when resources change.
 
-Up until version 3.4.3 of rsync 
-
 One way to ensure that rsyncd serves its connected clients (RPs) with a consistent
 view of the repository is by configuring the rsyncd 'module' path to a path
 that contains a symlink that the repository-writing process updates for every
