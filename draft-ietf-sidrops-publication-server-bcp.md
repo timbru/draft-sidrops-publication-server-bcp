@@ -640,18 +640,23 @@ Following this process, when an update is published:
   2. fix-up the timestamps of files (see {{sec-ts}}), and
   3. change the symlink to point to the new directory.
 
-Because [@rsync] resolves this symlink when it `chdir`s into the module directory
-when a client connects, any connected RPs can read a consistent state for the
-duration of the connection.
+With this approach, if the rsync service resolves the relevant symbolic link at
+the time when the client connects, and then uses the target directory for the
+duration of that session, the client will read consistent state from the
+service.
 
-> Implementation Note:
+> Implementation Notes:
 >
 > Several implementations follow the above process for updates. E.g. [@krill-sync],
 > [@rpki-core], [@rsyncit], the 'rpki.apnic.net' repository implementation,
 > and [@rsync-move]).
 >
-> This have been verified to work with "Samba" [@rsync] as an rscynd server. For
-> versions 3.4.3 and above "chroot=yes" has to be used.
+> The original [@rsync] implementation through to version 3.4.2 (inclusive) resolves
+> module path symbolic links as required by this section, without special configuration
+> being required. For versions after that through to at least 3.4.4 (inclusive), the
+> default behaviour is instead that module path symbolic links are resolved multiple
+> times per session. One way to restore the original behaviour is by using the
+> "use chroot" configuration option
 
 To limit the amount of disk space a repository uses, a rsync server must clean up
 old copies of the repository; the timing of these removal operations involves balancing
