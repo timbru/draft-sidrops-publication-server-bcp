@@ -629,8 +629,6 @@ it is best to avoid this situation altogether, since a failed fetch for one
 repository can cause the rejection of delegated certificates and/or RPKI signed
 objects for a sub-CA when resources change.
 
-Up until version 3.4.3 of rsync 
-
 One way to ensure that rsyncd serves its connected clients (RPs) with a consistent
 view of the repository is by configuring the rsyncd 'module' path to a path
 that contains a symlink that the repository-writing process updates for every
@@ -642,16 +640,28 @@ Following this process, when an update is published:
   2. fix-up the timestamps of files (see {{sec-ts}}), and
   3. change the symlink to point to the new directory.
 
-> Implementation Note: Several implementations follow the above process (e.g. [@krill-sync],
-> [@rpki-core], or [@rsyncit], the 'rpki.apnic.net' repository implementation,
-> and [@rsync-move]).
+With this approach, if the rsync service resolves the relevant symbolic link at
+the time when the client connects, and then uses the target directory for the
+duration of that session, the client will read consistent state from the
+service.
 
-Because rsyncd resolves this symlink when it `chdir`s into the module directory
-when a client connects, any connected RPs can read a consistent state for the
-duration of the connection. To limit the amount of disk space a repository uses,
-a rsync server must clean up old copies of the repository; the timing of these
-removal operations involves balancing the provision of service to slow clients
-against the additional disk space required to support those clients.
+> Implementation Notes:
+>
+> Several implementations follow the above process for updates. E.g. [@krill-sync],
+> [@rpki-core], [@rsyncit], the 'rpki.apnic.net' repository implementation,
+> and [@rsync-move]).
+>
+> The original [@rsync] implementation through to version 3.4.2 (inclusive) resolves
+> module path symbolic links as required by this section, without special configuration
+> being required. For versions after that through to at least 3.4.4 (inclusive), the
+> default behaviour is instead that module path symbolic links are resolved multiple
+> times per session. One way to restore the original behaviour is by using the
+> "use chroot" configuration option
+
+To limit the amount of disk space a repository uses, a rsync server must clean up
+old copies of the repository; the timing of these removal operations involves balancing
+the provision of service to slow clients against the additional disk space required to
+support those clients.
 
 A repository can safely remove old hierarchies when no RP is still reading that
 data at a reasonable rate. Since the last moment an RP can start reading from
@@ -725,10 +735,9 @@ The authors wish to thank Mike Hollyman and Theodor-Fedor Vompe for editorial su
 <reference anchor='rsync' target='https://rsync.samba.org/'>
     <front>
         <title>rsync</title>
-        <author initials='J.' surname='Snijders' fullname='Job Snijders'>
-          <organization>BSD</organization>
+        <author fullname='Samba'>
+          <organization>Samba</organization>
         </author>
-        <date year='2023'/>
     </front>
 </reference>
 
