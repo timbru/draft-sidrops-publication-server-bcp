@@ -735,9 +735,9 @@ The authors wish to thank Mike Hollyman and Theodor-Fedor Vompe for editorial su
 <reference anchor='rsync' target='https://rsync.samba.org/'>
     <front>
         <title>rsync</title>
-        <author fullname='Samba'>
-          <organization>Samba</organization>
-        </author>
+        <author fullname="Andrew Tridgell"/>
+        <author fullname="Paul Mackerras"/>
+        <author fullname="Wayne Davison"/>
     </front>
 </reference>
 
