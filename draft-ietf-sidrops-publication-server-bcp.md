@@ -6,7 +6,7 @@ ipr = "trust200902"
 [seriesInfo]
 status = "bcp"
 name = "Internet-Draft"
-value = "draft-ietf-sidrops-publication-server-bcp-09"
+value = "draft-ietf-sidrops-publication-server-bcp-10"
 
 [[author]]
 initials="T."
