@@ -122,7 +122,7 @@ Publication services operations t
 This document provides best current practices for operating RPKI
 publication services at a scale suitable for use with the global
 Internet routing system. These services typically include the
-Publication Enging (backend) and the public facing repositories
+Publication Engine (backend) and the public facing repositories
 for RRDP and rsync functions.
 
 These functions may be combined in a single server, or divided over
@@ -728,7 +728,7 @@ This document does not introduce any new security issues beyond those already di
 
 # Acknowledgments
 
-The authors wish to thank Mike Hollyman and Theodor-Fedor Vompe for editorial suggestions.
+The authors wish to thank Mike Hollyman, Theodor-Fedor Vompe, and Magnus Westerlund for editorial suggestions.
 
 {backmatter}
 
