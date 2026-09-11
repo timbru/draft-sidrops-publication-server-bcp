@@ -394,9 +394,9 @@ AccessDescription are not allowed and not followed by RPs.
 ## Endpoint Protection
 
 Repository operators SHOULD configure access control policies to protect their RRDP endpoints.
-For example, if the repository operator knows HTTP GET parameters are not used
-to provide service, then the operator can safely block any requests containing
-GET parameters.
+For example, if the repository operator knows that the query component of
+the request's URI is not used to provide service, they can safely block requests
+containing a query component.
 
 ## Bandwidth and Data Usage
 
@@ -450,12 +450,13 @@ by RPs, and force RPs to fall back to full snapshot or rsync fetching.
 If possible, it is RECOMMENDED that a CDN is used to serve the RRDP content.
 Special care MUST be taken to ensure that the notification file is not cached
 for longer than 1 minute unless the backend RRDP server is unavailable, in which
-case it is RECOMMENDED that stale files are served.
+case it is RECOMMENDED that operators permit that stale files are served
+(see section 4.2.4 of [RFC9111]).
 
-Some CDN services might cache HTTP 404 responses for resources not found on the backend
+Some CDN services might cache HTTP 404 (Not Found) responses for resources not found on the backend
 server. Because of this, publication engines SHOULD use randomised unpredictable
 paths for snapshot and delta files, to avoid the intermediate CDN caching such
-HTTP 404 responses hampering future updates. Alternatively, the publication engine
+HTTP 404 (Not Found) responses hampering future updates. Alternatively, the publication engine
 operator can instruct the CDN to purge cached information for the paths on which
 new files are published.
 
@@ -599,7 +600,8 @@ As a result, some RP implementations will fetch the snapshot to re-sync if a
 
 If an RRDP repository uses Layer 4 load-balancing, some load balancer implementations
 will keep in the pool connections to a node that is no longer active (e.g., one
-that is disabled because of maintenance). Due to HTTP keepalive, requests from
+that is disabled because of maintenance). Due to HTTP persistent connections (see
+section 9.3 of [RFC9112]), requests from
 an RP (or CDN edge) may continue to try to use the disabled node for an extended
 period.  This issue is more pronounced with CDNs that use HTTP proxies internally
 when connecting to the origin while also load-balancing over multiple proxies.
@@ -609,7 +611,7 @@ Depending on the exact configuration - for example, nodes behind the load balanc
 may have different RRDP sessions - this can lead to clients observing an
 inconsistent RRDP repository state.
 
-Because of this issue, it is RECOMMENDED to, firstly, limit HTTP keepalive to a
+Because of this issue, it is RECOMMENDED to, firstly, limit HTTP persistent connections to a
 short period on the servers in the pool and, secondly, limit the number of HTTP
 requests per connection. When applying these recommendations, this issue is limited
 (and effectively less impactful when using a CDN due to caching) to a failover
