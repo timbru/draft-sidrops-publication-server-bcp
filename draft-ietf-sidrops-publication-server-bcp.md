@@ -109,15 +109,13 @@ CAs and RPs:
      | CDN/caching |           |
      +-------------+           |
             |                  |
-            |     preferred    | fallback
+        preferred           fallback
             |                  |
          +--v---- ---+---------v--+
          |           |            |
       +------+    +------+    +------+
       |  RP  |    |  RP  |    |  RP  |
       +------+    +------+    +------+
-
-Publication services operations t
    
 This document provides best current practices for operating RPKI
 publication services at a scale suitable for use with the global
@@ -126,11 +124,11 @@ Publication Engine (backend) and the public facing repositories
 for RRDP and rsync functions.
 
 These functions may be combined in a single server, or divided over
-several servers for seperation of functions and/or load balancing.
-Caching infrastructure or CDNs are often used for scaling access
-to the RRDP repositories.
+several servers for separation of functions and/or load balancing.
+Caching infrastructure or Content Delivery Networks (CDNs) are often
+used for scaling access to the RRDP repositories.
 
-In a addition some guidance is provided for CA operators in as far
+In addition some guidance is provided for CA operators in as far
 as CA operator choices relate to publication.
 
 These recommendations are based on more than a decade of operational
@@ -332,8 +330,8 @@ from that of the [@!RFC8183] service_uri used by publishers, as well as that of
 any rsync URIs (i.e., `sia_base`) used by the relevant publication service.
 
 Using a unique hostname for the different components will allow an operator
-to use dedicated infrastructures and/or a Content Delivery Network (CDN) for its
-RRDP content without interfering with the other functions.
+to use dedicated infrastructures and/or a CDN for its RRDP content without
+interfering with the other functions.
 
 If feasible, there is merit in using different Top-Level Domains (TLDs) (Section 2 of [@?RFC9499])  and/or subdomains for these
 hostnames, as DNS issues at any level could otherwise be a single point of failure
