@@ -196,10 +196,10 @@ operated by a RIR).
 
 If the resource holder chooses to self-host the repository, then they take on
 the responsibility for ensuring the high availability of their signed data via
-RRDP and rsync (further described in Sections 5 and 6 of this document).
+RRDP and rsync (further described in (#rrdp_server) and (#rsync_server) of this document).
 
 Because RPs are expected to make use of cached data from previous successful
-fetches (Section 6 of [@!RFC9286]), short outages on the server side do not need
+fetches ([@!RFC9286, section 6]), short outages on the server side do not need
 to be cause for immediate concern -- provided that the self-hosting operator restores
 access availability in a timely fashion, i.e., before objects become stale.
 
@@ -301,7 +301,7 @@ initiate a full resynchronisation.
 ## Publisher Repository Synchronisation
 
 It is RECOMMENDED that publishing CAs always perform a list query as described
-in Section 2.3 of [@!RFC8181] before submitting changes to the publication server.
+in [@!RFC8181, section 2.3] before submitting changes to the publication server.
 This approach means that any desynchronisation issue can be resolved at least as
 soon as the publisher is aware of updates that it needs to publish.
 
@@ -333,7 +333,7 @@ Using a unique hostname for the different components will allow an operator
 to use dedicated infrastructures and/or a CDN for its RRDP content without
 interfering with the other functions.
 
-If feasible, there is merit in using different Top-Level Domains (TLDs) (Section 2 of [@?RFC9499])  and/or subdomains for these
+If feasible, there is merit in using different Top-Level Domains (TLDs) ([@?RFC9499, section 2])  and/or subdomains for these
 hostnames, as DNS issues at any level could otherwise be a single point of failure
 affecting both RRDP and rsync services. Operators need to weigh this benefit against
 potential increased operational risk and the burden of maintaining multiple domains.
@@ -355,7 +355,7 @@ are constrained to different address families and no translation mechanism is in
 
 To prevent failure scenarios that persist beyond remediation, the topological
 placement and reachability of publication servers in the global Internet routing
-system need to be considered very carefully. Refer to Section 6 of [@!RFC7115] for
+system need to be considered very carefully. Refer to [@!RFC7115, section 6] for
 discussion on a trade-off in placement of an RPKI repository in address space
 for which the repository's content is authoritative.
 
@@ -378,12 +378,12 @@ potential risks of an operational dependency on ASes managed by another organisa
 In addition, it is RECOMMENDED to host RRDP and rsync services on separate networks
 to avoid fate sharing if one of the networks becomes unreachable.
 
-# RRDP Server
+# RRDP Server {#rrdp_server}
 
 ## Same Origin URIs
 
 Publication service operators need to be aware of the normative updates
-to [@!RFC8182] specified in Section 3.1 of [@!RFC9674]. In short, these
+to [@!RFC8182] specified in [@!RFC9674, section 3.1]. In short, these
 updates mean that all RRDP delta and snapshot resources need have the
 same origin, i.e., HTTP redirects or references to resources with a
 different origin compared to the referring RRDP SubjectInfoAccess
@@ -407,9 +407,9 @@ consisting of three main groups:
       number of updates, number of objects, the length of the validity period,
       and size of objects.
    3. RP behaviour, e.g., using HTTP compression, requiring timeouts or
-      minimum transfer speed for downloads, and using conditional HTTP requests (Section 13 of [@!RFC9110]).
+      minimum transfer speed for downloads, and using conditional HTTP requests ([@!RFC9110, section 13]).
 
-When an RRDP repository server is reacheable via a congested network link or
+When an RRDP repository server is reachable via a congested network link or
 otherwise overloaded (i.e., demand somehow exceeds available capacity), this can
 cause a cascading failure in which the aggregate load on the server continues to
 increase, resulting in degraded service for all RPs. For example, when an RP
@@ -425,11 +425,11 @@ fallbacks to snapshot). Other than increasing the capacity, several other
 measures to reduce demand for bandwidth are discussed in what follows.
 
 The RRDP XML container and its embedded Base64-encoded content are highly compressible; compression typically reduces the volume of transferred data by approximately 50%. RRDP endpoints SHOULD
-support compression through proactive content negotiation (see Section 12.1 of [RFC9110]).
-At a minimum, gzip content coding (see Section 8.4.1.3 of [RFC9110]) SHOULD be supported
+support compression through proactive content negotiation (see [@!RFC9110, section 12.1]).
+At a minimum, gzip content coding (see [@!RFC9110, section 8.4.1.3]) SHOULD be supported
 Additionally, servers are RECOMMENDED to support other widely used compression algorithms
 where feasible. Note that this implies that the Vary header field be sent on
-responses; see Section 12.5.5 of [RFC9110].
+responses; see [@!RFC9110, section 12.5.5].
 
 RRDP snapshots can be substantial in size (e.g., tens to hundreds of megabytes). Operators
 should be aware that some CDNs automatically turn off compression for very large files
@@ -449,7 +449,7 @@ If possible, it is RECOMMENDED that a CDN is used to serve the RRDP content.
 Special care MUST be taken to ensure that the notification file is not cached
 for longer than 1 minute unless the backend RRDP server is unavailable, in which
 case it is RECOMMENDED that operators permit that stale files are served
-(see section 4.2.4 of [RFC9111]).
+(see [@!RFC9111, section 4.2.4]).
 
 Some CDN services might cache HTTP 404 (Not Found) responses for resources not found on the backend
 server. Because of this, publication engines SHOULD use randomised unpredictable
@@ -474,7 +474,7 @@ provided by their RIR or NIR.
 
 ## Limit Notification File Size
 
-Most RP implementations use conditional requests (e.g., If-Modified-Since (Section 13.1.3 of [@!RFC9110])) when
+Most RP implementations use conditional requests (e.g., If-Modified-Since ([@!RFC9110, section 13.1.3])) when
 fetching notification files, as this reduces the traffic for repositories that
 do not often update relative to the resynchronisation frequency of RPs. On the
 other hand, for repositories that update frequently, the underlying snapshot and
@@ -550,8 +550,8 @@ point operations.
 
 In summary, to conserve bandwidth, to improve reliability of object propagation,
 and to make debugging easier, publishers are RECOMMENDED to use "one-time-use" EE
-certificates (Section 3 of [@!RFC6487]) and to adhere to the guidelines for naming
-objects described in Section 2.2 of [@!RFC6481].
+certificates ([@!RFC6487, section 3]) and to adhere to the guidelines for naming
+objects described in [@!RFC6481, section 2.2].
 
 ## ROA Prefix Aggregation
 
@@ -599,7 +599,7 @@ As a result, some RP implementations will fetch the snapshot to re-sync if a
 If an RRDP repository uses Layer 4 load-balancing, some load balancer implementations
 will keep in the pool connections to a node that is no longer active (e.g., one
 that is disabled because of maintenance). Due to HTTP persistent connections (see
-section 9.3 of [RFC9112]), requests from
+[@?RFC9112, section 9.3]), requests from
 an RP (or CDN edge) may continue to try to use the disabled node for an extended
 period.  This issue is more pronounced with CDNs that use HTTP proxies internally
 when connecting to the origin while also load-balancing over multiple proxies.
@@ -616,7 +616,7 @@ requests per connection. When applying these recommendations, this issue is limi
 between RRDP sessions, where clients also risk reading a notification file for
 which some of the content is unavailable.
 
-# Rsync Server
+# Rsync Server {#rsync_server}
 
 This section elaborates on the following topics:
 
