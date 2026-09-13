@@ -295,7 +295,7 @@ to an earlier state. This could result in a number of problems:
    be present.
 
 Therefore, the publication engine operator SHOULD notify its dependent CAs about
-any service affecting issues as soon as possible, so that affected CAs know to
+any service-affecting issues as soon as possible, so that affected CAs know to
 initiate a full resynchronisation.
 
 ## Publisher Repository Synchronisation
@@ -467,7 +467,7 @@ Also note that small repositories that serve a single CA, and which contain only
 small amount of RPKI material that does not change frequently, may attain high
 availability using a modest setup. Short downtime would not lead to immediate
 issues for the CA, provided that the service is restored before their manifest
-and CRL become stale. This may be acceptable to the CA operator, however,
+and CRL become stale. This may be acceptable to the CA operator; however,
 because connecting to many distinct publication points can negatively impact RP
 workload, it is RECOMMENDED that these CAs instead use a publication service
 provided by their RIR or NIR.
@@ -520,7 +520,7 @@ data churn due to manifest and CRL reissuance. While the choice is made by the
 CAs, in certain modes of operation (e.g., hosted RPKI services) it may be possible
 to adjust the timing of manifest and CRL reissuance. In one large repository it was
 observed that increasing the reissuance cycle from once every 24 hours to once every
-48 hours reduced data usage by approximately 50%, this is because generally most
+48 hours reduced data usage by approximately 50%. This is because generally most
 changes in the repository content are reissuance of manifests and CRLs, rather than
 newly issued ROAs and ASPAs.
 
@@ -549,7 +549,7 @@ point operations.
    containing filenames.
 
 In summary, to conserve bandwidth, to improve reliability of object propagation,
-and to make debugging easier, publishers are RECOMMENDED use "one-time-use" EE
+and to make debugging easier, publishers are RECOMMENDED to use "one-time-use" EE
 certificates (Section 3 of [@!RFC6487]) and to adhere to the guidelines for naming
 objects described in Section 2.2 of [@!RFC6481].
 
@@ -644,7 +644,7 @@ repository publication.
 Following this process, when an update is published:
 
   1. write the complete updated repository into a new directory,
-  2. fix-up the timestamps of files (see {{sec-ts}}), and
+  2. fix-up the timestamps of files (see (#sec-ts)), and
   3. change the symlink to point to the new directory.
 
 With this approach, if the rsync service resolves the relevant symbolic link at
@@ -654,16 +654,16 @@ service.
 
 > Implementation Notes:
 >
-> Several implementations follow the above process for updates. E.g. [@krill-sync],
+> Several implementations follow the above process for updates. E.g., [@krill-sync],
 > [@rpki-core], [@rsyncit], the 'rpki.apnic.net' repository implementation,
-> and [@rsync-move]).
+> and [@rsync-move].
 >
 > The original [@rsync] implementation through to version 3.4.2 (inclusive) resolves
 > module path symbolic links as required by this section, without special configuration
 > being required. For versions after that through to at least 3.4.4 (inclusive), the
 > default behaviour is instead that module path symbolic links are resolved multiple
 > times per session. One way to restore the original behaviour is by using the
-> "use chroot" configuration option
+> "use chroot" configuration option.
 
 To limit the amount of disk space a repository uses, a rsync server must clean up
 old copies of the repository; the timing of these removal operations involves balancing
@@ -717,7 +717,7 @@ It is RECOMMENDED to set the "max connections" to a value that allows a single
 node to handle simultaneous resynchronisation by that number of RPs, taking into
 account the amount of time that RP implementations usually allow for rsync
 resychronisation. Load-testing results show that machine memory is likely the
-limiting factor for large repositories that are not IO limited.
+limiting factor for large repositories that are not I/O-limited.
 
 The number of rsync servers needed depends on the number of RPs, their refresh
 rate, and the "max connections" used. These values are subject to change over
