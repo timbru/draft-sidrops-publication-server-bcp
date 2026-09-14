@@ -700,7 +700,7 @@ To increase availability during both planned maintenance and exceptional
 situations, a rsync repository that strives for high availability should be
 deployed on multiple nodes load-balanced by a Layer 4 load balancer.  Because rsync
 sessions use a single TCP connection per synchronisation attempt, there is no
-need for consistent load-balancing between multiple rsync servers as long as
+need for consistent sticky load-balancing between multiple rsync servers as long as
 they each provide a consistent view.
 
 It is RECOMMENDED that the rsync server is load tested to ensure that
