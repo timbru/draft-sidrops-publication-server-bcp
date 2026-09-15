@@ -739,7 +739,8 @@ This document does not introduce any new security issues beyond those already di
 # Acknowledgments
 
 The authors wish to thank Mike Hollyman, Theodor-Fedor Vompe, Magnus Westerlund, Patrik
-Fältström and Jasdip Singh for their feedback and suggestions.
+Fältström, Jasdip Singh, Behcet Sarikaya, and Mark Nottingham
+for their feedback and suggestions.
 
 {backmatter}
 
