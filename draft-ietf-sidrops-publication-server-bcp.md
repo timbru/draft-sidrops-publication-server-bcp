@@ -432,18 +432,21 @@ where feasible. Note that this implies that the Vary header field be sent on
 responses; see [@!RFC9110, section 12.5.5].
 
 RRDP snapshots can be substantial in size (e.g., tens to hundreds of megabytes). Operators
-should be aware that some CDNs automatically turn off compression for very large files
-and override this if possible to avoid accidentally disabling compression.
+should note that some CDNs disable compression by default for very large files, and
+should override this behavior if possible.
 
 ## Content Availability
 
 Publication service operators MUST ensure that their RRDP servers are highly
 available.
 
-The RRDP snapshot and delta files SHOULD remain available for two hours after
-they have become unreferenced by the latest RRDP notification file. Not doing
-so may lead to files being not found due to race conditions or slow fetching
-by RPs, and force RPs to fall back to full snapshot or rsync fetching.
+The RRDP snapshot and delta files SHOULD remain available for at least two hours after they
+have become unreferenced by the latest RRDP notification file. A two-hour period retention
+period helps ensure overlap with RPs following an hourly synchronisation schedule. Too short
+of a retention period might lead to files being not found by slow fetching RPs and can cause a
+time-of-check to time-of-use (TOCTOU) race condition resulting in RPs having to fetch a full
+RRDP snapshot or fall back to rsync-based synchronisation - both of which are resource-intensive
+operations.
 
 If possible, it is RECOMMENDED that a CDN is used to serve the RRDP content.
 Special care MUST be taken to ensure that the notification file is not cached
@@ -578,7 +581,7 @@ associated snapshot and delta files also are available.
 
 As a result, when using a load-balancing setup, special care SHOULD be taken to
 ensure that RPs that make multiple subsequent requests receive content from the
-same node (e.g., consistent hashing). This way, clients follow the timeline on one
+same node. This way, clients follow the timeline on one
 node where the referenced snapshot and delta files are available. Alternatively,
 publication infrastructure SHOULD ensure a particular ordering of the
 visibility of the snapshot plus delta and notification file. All nodes should
@@ -700,7 +703,7 @@ To increase availability during both planned maintenance and exceptional
 situations, a rsync repository that strives for high availability should be
 deployed on multiple nodes load-balanced by a Layer 4 load balancer.  Because rsync
 sessions use a single TCP connection per synchronisation attempt, there is no
-need for consistent load-balancing between multiple rsync servers as long as
+need for consistent sticky load-balancing between multiple rsync servers as long as
 they each provide a consistent view.
 
 It is RECOMMENDED that the rsync server is load tested to ensure that
@@ -735,7 +738,8 @@ This document does not introduce any new security issues beyond those already di
 
 # Acknowledgments
 
-The authors wish to thank Mike Hollyman, Theodor-Fedor Vompe, Magnus Westerlund, and Patrik Fältström for their feedback and suggestions.
+The authors wish to thank Mike Hollyman, Theodor-Fedor Vompe, Magnus Westerlund, Patrik
+Fältström and Jasdip Singh for their feedback and suggestions.
 
 {backmatter}
 
