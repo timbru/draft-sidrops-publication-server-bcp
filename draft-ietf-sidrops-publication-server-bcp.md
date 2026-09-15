@@ -432,7 +432,7 @@ where feasible. Note that this implies that the Vary header field be sent on
 responses; see [@!RFC9110, section 12.5.5].
 
 RRDP snapshots can be substantial in size (e.g., tens to hundreds of megabytes). Operators
-should note that some CDNs turn off compression by default for very large files, and
+should note that some CDNs disable compression by default for very large files, and
 should override this behavior if possible.
 
 ## Content Availability
