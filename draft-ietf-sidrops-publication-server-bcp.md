@@ -440,10 +440,13 @@ should override this behavior if possible.
 Publication service operators MUST ensure that their RRDP servers are highly
 available.
 
-The RRDP snapshot and delta files SHOULD remain available for two hours after
-they have become unreferenced by the latest RRDP notification file. Not doing
-so may lead to files being not found due to race conditions or slow fetching
-by RPs, and force RPs to fall back to full snapshot or rsync fetching.
+The RRDP snapshot and delta files SHOULD remain available for at least two hours after they
+have become unreferenced by the latest RRDP notification file. A two-hour period retention
+period helps ensure overlap with RPs following an hourly synchronisation schedule. Too short
+of a retention period might lead to files being not found by slow fetching RPs and can cause a
+time-of-check to time-of-use (TOCTOU) race condition resulting in RPs having to fetch a full
+RRDP snapshot or fall back to rsync-based synchronisation - both of which are resource-intensive
+operations.
 
 If possible, it is RECOMMENDED that a CDN is used to serve the RRDP content.
 Special care MUST be taken to ensure that the notification file is not cached
