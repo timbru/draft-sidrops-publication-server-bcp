@@ -578,7 +578,7 @@ associated snapshot and delta files also are available.
 
 As a result, when using a load-balancing setup, special care SHOULD be taken to
 ensure that RPs that make multiple subsequent requests receive content from the
-same node (e.g., consistent hashing). This way, clients follow the timeline on one
+same node. This way, clients follow the timeline on one
 node where the referenced snapshot and delta files are available. Alternatively,
 publication infrastructure SHOULD ensure a particular ordering of the
 visibility of the snapshot plus delta and notification file. All nodes should
