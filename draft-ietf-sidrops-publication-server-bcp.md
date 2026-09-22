@@ -64,7 +64,7 @@ organization = "BSD Software Development"
 .# Abstract
 
 This document describes best current practices for operating an RFC 8181 (A Publication Protocol for the Resource Public Key Infrastructure (RPKI))
-publication engine and its associated publicly accessible rsync (RFC 5781) and
+Publication Engine and its associated publicly accessible rsync (RFC 5781) and
 RPKI Repository Delta Protocol (RRDP) (RFC 8182) repositories.
 
 {mainmatter}
@@ -73,7 +73,7 @@ RPKI Repository Delta Protocol (RRDP) (RFC 8182) repositories.
 
 Resource Public Key Infrastructure (RPKI) material is created by
 Certification Authorities (CAs). This signed data is then submitted
-to a publication engine using the publication protocol specified in
+to a Publication Engine using the publication protocol specified in
 [@!RFC8181], and finally made available to RPKI Relying Parties (RPs)
 through publicly accessible rsync [@!RFC5781] and RPKI Repository Delta
 Protocol (RRDP) [@!RFC8182] repositories.
@@ -153,7 +153,7 @@ this document are to be interpreted as described in BCP 14 [@!RFC2119]
 This document makes use of the following terms:
 
 -------------------|---------------------------------------------------------------
-Publication engine | Synonym of publication server [@!RFC8181].
+Publication Engine | Synonym of publication server [@!RFC8181].
 Publisher          | Certification Authority (CA) (client of publication server).
 RRDP server        | Public-facing RRDP server [@!RFC8182].
 rsync server       | Public-facing rsync server [@!RFC5781].
@@ -168,11 +168,11 @@ RRDP    | RPKI Repository Delta Protocol
 RIR     | Regional Internet Registry
 NIR     | National Internet Registry
 
-# Publication Server
+# Publication Engine
 
-The publication engine handles the server side of the publication
-protocol specified in [@!RFC8181]. That is, CAs interact with a publication engine. The publication
-engine also prepares the content for public consumption through RRDP and rsync.
+The Publication Engine handles the server side of the publication
+protocol specified in [@!RFC8181]. That is, CAs interact with a Publication Engine. The Publication
+Engine also prepares the content for public consumption through RRDP and rsync.
 
 It is RECOMMENDED to deploy these engine functions on dedicated machines
 separate from those serving public requests via rsync and RRDP to avoid
@@ -189,7 +189,7 @@ to as a "self-hosted" or "delegated" CA.
 
 If the resource holder chooses to operate their CA in a self-hosted fashion,
 the holder must also decide how they make their RPKI material available to the
-public: the holder can either deploy and operate their own publication engine
+public: the holder can either deploy and operate their own Publication Engine
 and associated rsync and RRDP infrastructures (referred to as a "self-hosted
 repository") or make use a third-party operated publication service (e.g.,
 operated by a RIR).
@@ -239,17 +239,17 @@ implications of providing direct publication service to CA3 in this
 way: for example, CA3 may expect publication service technical support
 from CA1 directly.
 
-## Publication Server as a Service
+## Publication Engine as a Service
 
-The CA-facing publication engine and public-facing repository services have
+The CA-facing Publication Engine and public-facing repository services have
 different requirements on their availability and reachability. While the
-publication engine only needs to be accessed by publishers, the repository
+Publication Engine only needs to be accessed by publishers, the repository
 content MUST be highly-available to any RP worldwide. Depending on the specific
 setup, this may allow for additional access restrictions in this context: for
-example, the publication engine can limit access to known publisher source IP
+example, the Publication Engine can limit access to known publisher source IP
 addresses or apply rate limits.
 
-If the publication engine is unavailable for some reason, this will prevent
+If the Publication Engine is unavailable for some reason, this will prevent
 publishers from making new RPKI material available. The most immediate impact
 of such event is that the publisher cannot distribute new issuances and revocations of
 Route Origin Authorizations (ROAs) [@!RFC9582], Autonomous System Provider Authorizations (ASPAs) [@!I-D.ietf-sidrops-aspa-profile], and BGPsec Router
@@ -258,7 +258,7 @@ the resource holder cannot inform the world about changes to its routing
 intentions. If the outage persists for an extended period, then RPKI Manifests,
 Certificate Revocation Lists (CRLs), and Signed Objects cached by RPs will became stale, in turn hampering,
 for example, BGP Origin Validation [@?RFC6811]. For the aforementioned reasons,
-the publication engine MUST be highly-available.
+the Publication Engine MUST be highly-available.
 
 Research on RPKI material propagation time (e.g., [@rpki-time-in-flight]), specifically
 the delay period between issuance of ROAs and the eventual application of the
@@ -267,12 +267,12 @@ time ranged between 15 and 95 minutes for the CAs and associated repositories
 that were part of the study. The study highlighted how the delay between signing
 and publication can be a major contributor to long propagation times.
 
-It is RECOMMENDED to monitor the availability and latency of publication engines
+It is RECOMMENDED to monitor the availability and latency of Publication Engines
 in a round-trip fashion by keeping track of expected and observed appearance of
 re-issued objects.
 
-To make publishers aware of the probable root cause of disruption in the publication
-engine and allow them to plan accordingly ahead of time, maintenance windows
+To make publishers aware of the probable root cause of disruption in the Publication
+Engine and allow them to plan accordingly ahead of time, maintenance windows
 SHOULD be planned and communicated to publishers.
 
 ## Data Loss
@@ -294,7 +294,7 @@ to an earlier state. This could result in a number of problems:
    publishers may not be present, and recently removed publishers may still
    be present.
 
-Therefore, the publication engine operator SHOULD notify its dependent CAs about
+Therefore, the Publication Engine operator SHOULD notify its dependent CAs about
 any service-affecting issues as soon as possible, so that affected CAs know to
 initiate a full resynchronisation.
 
@@ -314,12 +314,12 @@ effect in an inconsistent fashion.
 In addition to the above, the publishing CA MAY perform regular planned
 synchronisation events where it issues an [@!RFC8181] list query and ensures
 that the publication server has the expected state, even if the CA has no new
-material to publish. For publication engines that serve a large number of CAs
+material to publish. For Publication Engines that serve a large number of CAs
 (e.g., thousands) this operation could become costly from a resource consumption
 perspective. Unfortunately, the publication protocol specified in [@!RFC8181] has no adequate
 support for rate limiting or signaling requests to CAs to backoff. Therefore,
 publishers SHOULD NOT perform this resynchronisation more frequently than once
-every 10 minutes, unless otherwise agreed with the publication engine operator.
+every 10 minutes, unless otherwise agreed with the Publication Engine operator.
 
 # Common Repository Considerations
 
@@ -346,7 +346,7 @@ current practices as described in [@!RFC9364].
 ## IP Reachability
 
 To increase reachability, publication service operators SHOULD  make 
-their public-facing services and the publication engine available via 
+their public-facing services and the Publication Engine available via 
 both IPv4 and IPv6 at the same time. Publication services via both 
 IP address families help bridge between publishers and RPs in case those 
 are constrained to different address families and no translation mechanism is in place (e.g., NAT64 [@?RFC6146]).
@@ -455,9 +455,9 @@ case it is RECOMMENDED that operators permit that stale files are served
 (see [@!RFC9111, section 4.2.4]).
 
 Some CDN services might cache HTTP 404 (Not Found) responses for resources not found on the backend
-server. Because of this, publication engines SHOULD use randomised unpredictable
+server. Because of this, Publication Engines SHOULD use randomised unpredictable
 paths for snapshot and delta files, to avoid the intermediate CDN caching such
-HTTP 404 (Not Found) responses hampering future updates. Alternatively, the publication engine
+HTTP 404 (Not Found) responses hampering future updates. Alternatively, the Publication Engine
 operator can instruct the CDN to purge cached information for the paths on which
 new files are published.
 
@@ -500,9 +500,9 @@ have been available for an extended period of time. Because some RP instances
 may only synchronize every 1-2 hours, the RRDP server SHOULD include deltas for at
 least 4 hours.
 
-Furthermore, it is RECOMMENDED that publication engines do not produce RRDP delta
+Furthermore, it is RECOMMENDED that Publication Engines do not produce RRDP delta
 files more frequently than once per minute. A possible approach for this is that
-the publication engine publishes changes at a regular (one minute) interval.
+the Publication Engine publishes changes at a regular (one minute) interval.
 The RRDP server then makes available the new materials received from all Publishers
 in this interval in a single RRDP delta file. While this does not reduce the amount
 of data due to changed objects, this results in shorter notification files and reduces
@@ -511,14 +511,14 @@ the number of delta files that RPs need to fetch and process.
 ## Manifest and CRL Update Times
 
 The manifest and CRL nextUpdate times and validity periods are determined by
-the issuing CA rather than the publication engine operator.
+the issuing CA rather than the Publication Engine operator.
 
 From the CA's perspective, longer validity periods mean that there is more
 time to resolve unforeseen operational issues, since the current RPKI objects
 will remain valid for longer. On the other hand, longer validity periods also
 increase the risk of a successful replay attack.
 
-From the publication engine's point of view, shorter update times result in more
+From the Publication Engine's point of view, shorter update times result in more
 data churn due to manifest and CRL reissuance. While the choice is made by the
 CAs, in certain modes of operation (e.g., hosted RPKI services) it may be possible
 to adjust the timing of manifest and CRL reissuance. In one large repository it was
@@ -530,7 +530,7 @@ newly issued ROAs and ASPAs.
 ## Using Short and Unique Filenames for each Issuance
 
 While the filenames of signed objects are determined by the issuing CA rather
-than the publication engine operator, publishers should be cognizant that their
+than the Publication Engine operator, publishers should be cognizant that their
 choice of the file naming scheme can positively or negatively impact publication
 point operations.
 
