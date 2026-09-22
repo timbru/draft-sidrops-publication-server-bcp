@@ -733,8 +733,13 @@ This document does not make any request to IANA.
 
 # Security Considerations
 
-This document does not introduce any new security issues beyond those already discussed in the Security Considerations of [@!RFC8181],
-[@!RFC8182], [@!RFC9589], and [@!RFC9674].
+Operators need to be aware that the use of a third party Content Delivery Network
+for RRDP implies that that party will be able to modify or withold content and
+gather information on Relying Party access.
+
+Other than that this document does not introduce any new security issues beyond
+those already discussed in the Security Considerations of [@!RFC8181], [@!RFC8182],
+[@!RFC9589], and [@!RFC9674].
 
 # Acknowledgments
 
