@@ -137,17 +137,6 @@ server sides.
 
 # Terminology
 
-## Requirements Language
-
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in
-this document are to be interpreted as described in BCP 14 [@!RFC2119]
-[@!RFC8174] when, and only when, they appear in all capitals, as shown here.
-
-> Note that the key words are used to stress importance for
-> operations; they are not required as a formal implementation
-> requirement.
-
 ## Definitions
 
 This document makes use of the following terms:
@@ -174,7 +163,7 @@ The Publication Engine handles the server side of the publication
 protocol specified in [@!RFC8181]. That is, CAs interact with a Publication Engine. The Publication
 Engine also prepares the content for public consumption through RRDP and rsync.
 
-It is RECOMMENDED to deploy these engine functions on dedicated machines
+It is recommended to deploy these engine functions on dedicated machines
 separate from those serving public requests via rsync and RRDP to avoid
 increased load on one service from impacting other services.
 
@@ -208,11 +197,11 @@ availability issues when compared with those provided by larger specialized
 organisations such as RIRs and NIRs. Additionally, the greater the number
 of distinct repositories, the more workload for RPs and greater the chance for
 negative impact on the overall ecosystem. Therefore, CAs that act as parents of
-other CAs are RECOMMENDED to provide a publication service for their child CAs,
-and CAs with a parent who offers a publication service are RECOMMENDED to use
+other CAs are recommended to provide a publication service for their child CAs,
+and CAs with a parent who offers a publication service are recommended to use
 that service (rather than self-hosting). If a CA's parent does not offer a
 publication service, but the CA operator is able to use another reliable
-third-party publication service, the CA operator SHOULD make use of that service
+third-party publication service, the CA operator should make use of that service
 in order to consolidate their data with other CAs and increase efficiency for
 RPs.
 
@@ -244,7 +233,7 @@ from CA1 directly.
 The CA-facing Publication Engine and public-facing repository services have
 different requirements on their availability and reachability. While the
 Publication Engine only needs to be accessed by publishers, the repository
-content MUST be highly-available to any RP worldwide. Depending on the specific
+content must be highly-available to any RP worldwide. Depending on the specific
 setup, this may allow for additional access restrictions in this context: for
 example, the Publication Engine can limit access to known publisher source IP
 addresses or apply rate limits.
@@ -258,7 +247,7 @@ the resource holder cannot inform the world about changes to its routing
 intentions. If the outage persists for an extended period, then RPKI Manifests,
 Certificate Revocation Lists (CRLs), and Signed Objects cached by RPs will became stale, in turn hampering,
 for example, BGP Origin Validation [@?RFC6811]. For the aforementioned reasons,
-the Publication Engine MUST be highly-available.
+the Publication Engine must be highly-available.
 
 Research on RPKI material propagation time (e.g., [@rpki-time-in-flight]), specifically
 the delay period between issuance of ROAs and the eventual application of the
@@ -267,19 +256,19 @@ time ranged between 15 and 95 minutes for the CAs and associated repositories
 that were part of the study. The study highlighted how the delay between signing
 and publication can be a major contributor to long propagation times.
 
-It is RECOMMENDED to monitor the availability and latency of Publication Engines
+It is recommended to monitor the availability and latency of Publication Engines
 in a round-trip fashion by keeping track of expected and observed appearance of
 re-issued objects.
 
 To make publishers aware of the probable root cause of disruption in the Publication
 Engine and allow them to plan accordingly ahead of time, maintenance windows
-SHOULD be planned and communicated to publishers.
+should be planned and communicated to publishers.
 
 ## Data Loss
 
-Publication service operators MUST aim to minimise data loss. If a server restore
+Publication service operators must aim to minimise data loss. If a server restore
 was needed and a content regression occurred (for example, due to restoration from
-a slightly out-of-date backup), then the server MUST perform an RRDP session reset.
+a slightly out-of-date backup), then the server must perform an RRDP session reset.
 
 CAs typically only check in with their publication server when they have produced
 changes in RPKI material that need to be shared with the world. As a result, the
@@ -294,38 +283,38 @@ to an earlier state. This could result in a number of problems:
    publishers may not be present, and recently removed publishers may still
    be present.
 
-Therefore, the Publication Engine operator SHOULD notify its dependent CAs about
+Therefore, the Publication Engine operator should notify its dependent CAs about
 any service-affecting issues as soon as possible, so that affected CAs know to
 initiate a full resynchronisation.
 
 ## Publisher Repository Synchronisation
 
-It is RECOMMENDED that publishing CAs always perform a list query as described
+It is recommended that publishing CAs always perform a list query as described
 in [@!RFC8181, section 2.3] before submitting changes to the publication server.
 This approach means that any desynchronisation issue can be resolved at least as
 soon as the publisher is aware of updates that it needs to publish.
 
-When publishing changes in material, CAs SHOULD send all their changes using
+When publishing changes in material, CAs should send all their changes using
 multiple PDUs contained within a single multi-element query message (described
 in Sections 2.2 and 3.7.1 of [@!RFC8181]). This approach reduces the risk
 of changesets that were intended to take effect as an atomic action from taking
 effect in an inconsistent fashion.
 
-In addition to the above, the publishing CA MAY perform regular planned
+In addition to the above, the publishing CA may perform regular planned
 synchronisation events where it issues an [@!RFC8181] list query and ensures
 that the publication server has the expected state, even if the CA has no new
 material to publish. For Publication Engines that serve a large number of CAs
 (e.g., thousands) this operation could become costly from a resource consumption
 perspective. Unfortunately, the publication protocol specified in [@!RFC8181] has no adequate
 support for rate limiting or signaling requests to CAs to backoff. Therefore,
-publishers SHOULD NOT perform this resynchronisation more frequently than once
+publishers should not perform this resynchronisation more frequently than once
 every 10 minutes, unless otherwise agreed with the Publication Engine operator.
 
 # Common Repository Considerations
 
 ## Hostnames
 
-It is RECOMMENDED that a different hostname is used in the public RRDP Server URI 
+It is recommended that a different hostname is used in the public RRDP Server URI 
 from that of the [@!RFC8183] service_uri used by publishers, as well as that of
 any rsync URIs (i.e., `sia_base`) used by the relevant publication service.
 
@@ -340,12 +329,12 @@ potential increased operational risk and the burden of maintaining multiple doma
 Because the usefulness of this approach is highly context-dependent,
 no deployment recommendation is provided here.
 
-Furthermore, it is RECOMMENDED that DNSSEC is used in accordance with best
+Furthermore, it is recommended that DNSSEC is used in accordance with best
 current practices as described in [@!RFC9364].
 
 ## IP Reachability
 
-To increase reachability, publication service operators SHOULD  make 
+To increase reachability, publication service operators should  make 
 their public-facing services and the Publication Engine available via 
 both IPv4 and IPv6 at the same time. Publication services via both 
 IP address families help bridge between publishers and RPs in case those 
@@ -364,18 +353,18 @@ a repository becomes invalid because of RPKI objects published in that
 repository. As a result, RPs may be unable to retrieve remediating updates from
 that repository.
 
-It is thus RECOMMENDED to use IP addresses for RRDP and rsync
+It is thus recommended to use IP addresses for RRDP and rsync
 services from an IP address space which is not subordinate to authorities solely
 dependent on those service endpoints, unless for example this is outweighed by the
 perceived risk of an operational dependency on IP space that is managed by another
 organisation.
 
-It is also RECOMMENDED to host RRDP and rsync services in ASes that are not subordinate
+It is also recommended to host RRDP and rsync services in ASes that are not subordinate
 to authorities publishing through those same endpoints. As with IP address use, the
 benefits of hosting in accordance with this recommendation must be weighed against the
 potential risks of an operational dependency on ASes managed by another organisation.
 
-In addition, it is RECOMMENDED to host RRDP and rsync services on separate networks
+In addition, it is recommended to host RRDP and rsync services on separate networks
 to avoid fate sharing if one of the networks becomes unreachable.
 
 # RRDP Server {#rrdp_server}
@@ -391,7 +380,7 @@ AccessDescription are not allowed and not followed by RPs.
 
 ## Endpoint Protection
 
-Repository operators SHOULD configure access control policies to protect their RRDP endpoints.
+Repository operators should configure access control policies to protect their RRDP endpoints.
 For example, if the repository operator knows that the query component of
 the request's URI is not used to provide service, they can safely block requests
 containing a query component.
@@ -418,16 +407,16 @@ to fetch the snapshot (which is a larger object than the failed delta). If this
 also fails, the RP falls back to rsync. Furthermore, when the RP tries to use
 RRDP again on the next run, it typically starts by fetching the snapshot.
 
-A publication service operator SHOULD attempt to prevent these issues by closely
+A publication service operator should attempt to prevent these issues by closely
 monitoring performance metrics (e.g., consumed capacity, available memory, disk I/O,
 expected functioning of a canary RP outside their network, watch logs for unexpected
 fallbacks to snapshot). Other than increasing the capacity, several other
 measures to reduce demand for bandwidth are discussed in what follows.
 
-The RRDP XML container and its embedded Base64-encoded content are highly compressible; compression typically reduces the volume of transferred data by approximately 50%. RRDP endpoints SHOULD
+The RRDP XML container and its embedded Base64-encoded content are highly compressible; compression typically reduces the volume of transferred data by approximately 50%. RRDP endpoints should
 support compression through proactive content negotiation (see [@!RFC9110, section 12.1]).
-At a minimum, gzip content coding (see [@!RFC9110, section 8.4.1.3]) SHOULD be supported
-Additionally, servers are RECOMMENDED to support other widely used compression algorithms
+At a minimum, gzip content coding (see [@!RFC9110, section 8.4.1.3]) should be supported
+Additionally, servers are recommended to support other widely used compression algorithms
 where feasible. Note that this implies that the Vary header field be sent on
 responses; see [@!RFC9110, section 12.5.5].
 
@@ -437,10 +426,10 @@ should override this behavior if possible.
 
 ## Content Availability
 
-Publication service operators MUST ensure that their RRDP servers are highly
+Publication service operators must ensure that their RRDP servers are highly
 available.
 
-The RRDP snapshot and delta files SHOULD remain available for at least two hours after they
+The RRDP snapshot and delta files should remain available for at least two hours after they
 have become unreferenced by the latest RRDP notification file. A two-hour period retention
 period helps ensure overlap with RPs following an hourly synchronisation schedule. Too short
 of a retention period might lead to files being not found by slow fetching RPs and can cause a
@@ -448,14 +437,14 @@ time-of-check to time-of-use (TOCTOU) race condition resulting in RPs having to 
 RRDP snapshot or fall back to rsync-based synchronisation - both of which are resource-intensive
 operations.
 
-If possible, it is RECOMMENDED that a CDN is used to serve the RRDP content.
-Special care MUST be taken to ensure that the notification file is not cached
+If possible, it is recommended that a CDN is used to serve the RRDP content.
+Special care must be taken to ensure that the notification file is not cached
 for longer than 1 minute unless the backend RRDP server is unavailable, in which
-case it is RECOMMENDED that operators permit that stale files are served
+case it is recommended that operators permit that stale files are served
 (see [@!RFC9111, section 4.2.4]).
 
 Some CDN services might cache HTTP 404 (Not Found) responses for resources not found on the backend
-server. Because of this, Publication Engines SHOULD use randomised unpredictable
+server. Because of this, Publication Engines should use randomised unpredictable
 paths for snapshot and delta files, to avoid the intermediate CDN caching such
 HTTP 404 (Not Found) responses hampering future updates. Alternatively, the Publication Engine
 operator can instruct the CDN to purge cached information for the paths on which
@@ -472,7 +461,7 @@ availability using a modest setup. Short downtime would not lead to immediate
 issues for the CA, provided that the service is restored before their manifest
 and CRL become stale. This may be acceptable to the CA operator; however,
 because connecting to many distinct publication points can negatively impact RP
-workload, it is RECOMMENDED that these CAs instead use a publication service
+workload, it is recommended that these CAs instead use a publication service
 provided by their RIR or NIR.
 
 ## Limit Notification File Size
@@ -494,13 +483,13 @@ present may allow RPs to recover more efficiently if they are significantly out
 of sync. Still, including all such deltas can also increase the total data transfer,
 because it increases the size of the notification file.
 
-In order to mitigate potential problems, the notification file size MAY
+In order to mitigate potential problems, the notification file size may
 be reduced by removing delta file entries from the notification file that already
 have been available for an extended period of time. Because some RP instances 
-may only synchronize every 1-2 hours, the RRDP server SHOULD include deltas for at
+may only synchronize every 1-2 hours, the RRDP server should include deltas for at
 least 4 hours.
 
-Furthermore, it is RECOMMENDED that Publication Engines do not produce RRDP delta
+Furthermore, it is recommended that Publication Engines do not produce RRDP delta
 files more frequently than once per minute. A possible approach for this is that
 the Publication Engine publishes changes at a regular (one minute) interval.
 The RRDP server then makes available the new materials received from all Publishers
@@ -538,7 +527,7 @@ point operations.
    in Subject Information Access (SIA) fields, Authority Information Access (AIA) fields, CRL Distribution Points (CRLDP) fields, as part of in Manifest fileLists,
    and in the uri field in RRDP publish elements), use of shorter filenames
    has a positive impact on storage & bandwidth required in the overall ecosystem.
-   Therefore publishers are RECOMMENDED to use filenames shorter than 32 characters.
+   Therefore publishers are recommended to use filenames shorter than 32 characters.
 
  * The algorithm most commonly used in the preparation phase of rsync transfers
    relies on the 3-tuple of filename, filesize, and last-modification timestamp
@@ -552,7 +541,7 @@ point operations.
    containing filenames.
 
 In summary, to conserve bandwidth, to improve reliability of object propagation,
-and to make debugging easier, publishers are RECOMMENDED to use "one-time-use" EE
+and to make debugging easier, publishers are recommended to use "one-time-use" EE
 certificates ([@!RFC6487, section 3]) and to adhere to the guidelines for naming
 objects described in [@!RFC6481, section 2.2].
 
@@ -562,7 +551,7 @@ The practice of issuing ROAs with only a single prefix per ROA [@!RFC9455] can
 lead to many ROA objects being published by a given CA. However, clustering multiple
 prefixes in a single ROA (per origin AS) can achieve a significant reduction in the
 number of objects and the total size of a repository. In order to reduce bandwidth 
-consumption and reduce the number of signatures, it is RECOMMENDED that issuing CAs
+consumption and reduce the number of signatures, it is recommended that issuing CAs
 cluster as many prefixes per ROA as possible, provided:
 
  - Fate sharing is not a concern, for example, when both the parent and issuing CA
@@ -576,20 +565,20 @@ cluster as many prefixes per ROA as possible, provided:
 
 ### Notification File Timing
 
-New RRDP notification files MUST NOT be made available to RPs before the
+New RRDP notification files must not be made available to RPs before the
 associated snapshot and delta files also are available.
 
-As a result, when using a load-balancing setup, special care SHOULD be taken to
+As a result, when using a load-balancing setup, special care should be taken to
 ensure that RPs that make multiple subsequent requests receive content from the
 same node. This way, clients follow the timeline on one
 node where the referenced snapshot and delta files are available. Alternatively,
-publication infrastructure SHOULD ensure a particular ordering of the
+publication infrastructure should ensure a particular ordering of the
 visibility of the snapshot plus delta and notification file. All nodes should
 receive the new snapshot and delta files before any node receives the new
 notification file.
 
-When using a load-balancing setup with multiple backends, each backend MUST
-provide a consistent view and MUST update more frequently than the typical
+When using a load-balancing setup with multiple backends, each backend must
+provide a consistent view and must update more frequently than the typical
 refresh rate for rsync repositories used by RPs. When these conditions hold,
 RPs observe the same RRDP session with the serial monotonically increasing.
 
@@ -612,7 +601,7 @@ Depending on the exact configuration - for example, nodes behind the load balanc
 may have different RRDP sessions - this can lead to clients observing an
 inconsistent RRDP repository state.
 
-Because of this issue, it is RECOMMENDED to, firstly, limit HTTP persistent connections to a
+Because of this issue, it is recommended to, firstly, limit HTTP persistent connections to a
 short period on the servers in the pool and, secondly, limit the number of HTTP
 requests per connection. When applying these recommendations, this issue is limited
 (and effectively less impactful when using a CDN due to caching) to a failover
@@ -678,7 +667,7 @@ data at a reasonable rate. Since the last moment an RP can start reading from
 a copy is when it was last "current", the time a client has to read a copy begins
 when it was last current (cf. the time when it was originally written).
 
-Empirical data suggests that rsync server operators MAY assume it is safe to
+Empirical data suggests that rsync server operators may assume it is safe to
 remove old versions of repositories after two hours. It is recommended to monitor
 for "file has vanished" (or similar) lines in the rsync log file to detect how
 many clients are affected by the cleanup process timing parameters.
@@ -687,9 +676,9 @@ many clients are affected by the cleanup process timing parameters.
 
 By default, rsync implementations use the modification time and file size to
 determine if it should transfer a file. Therefore, throughout a file's lifetime,
-the modification time SHOULD NOT change -- unless the file's content changes.
+the modification time should not change -- unless the file's content changes.
 
-The following deterministic heuristics are RECOMMENDED as the file's timestamp
+The following deterministic heuristics are recommended as the file's timestamp
 when writing objects to disk:
 
   - For CRLs, use the value of thisUpdate.
@@ -706,17 +695,17 @@ sessions use a single TCP connection per synchronisation attempt, there is no
 need for consistent sticky load-balancing between multiple rsync servers as long as
 they each provide a consistent view.
 
-It is RECOMMENDED that the rsync server is load tested to ensure that
+It is recommended that the rsync server is load tested to ensure that
 it can handle simultaneous requests from all RPs, in case those RPs
 need to fall back from using RRDP (as is currently preferred).
 
-It is RECOMMENDED to serve rsync repositories from local storage, so that the
+It is recommended to serve rsync repositories from local storage, so that the
 host operating system can optimally use its I/O cache. Using network storage is
-NOT RECOMMENDED, because it may not benefit from this cache. For example, when
+not recommended, because it may not benefit from this cache. For example, when
 using NFS, the operating system might not be able to cache the directory
 listing(s) of the repository.
 
-It is RECOMMENDED to set the "max connections" to a value that allows a single
+It is recommended to set the "max connections" to a value that allows a single
 node to handle simultaneous resynchronisation by that number of RPs, taking into
 account the amount of time that RP implementations usually allow for rsync
 resychronisation. Load-testing results show that machine memory is likely the
@@ -725,7 +714,7 @@ limiting factor for large repositories that are not I/O-limited.
 The number of rsync servers needed depends on the number of RPs, their refresh
 rate, and the "max connections" used. These values are subject to change over
 time, so it is hard to give clear recommendations here except to restate that it
-is RECOMMENDED to load-test rsync service and reevaluating parameters over time.
+is recommended to load-test rsync service and reevaluating parameters over time.
 
 # IANA Considerations
 
