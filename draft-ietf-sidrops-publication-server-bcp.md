@@ -733,7 +733,7 @@ those already discussed in the Security Considerations of [@!RFC8181], [@!RFC818
 # Acknowledgments
 
 The authors wish to thank Mike Hollyman, Theodor-Fedor Vompe, Magnus Westerlund, Patrik
-Fältström, Jasdip Singh, Behcet Sarikaya, and Mark Nottingham
+Faltstrom, Jasdip Singh, Behcet Sarikaya, and Mark Nottingham
 for their feedback and suggestions.
 
 {backmatter}
