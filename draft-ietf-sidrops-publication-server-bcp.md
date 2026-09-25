@@ -264,16 +264,13 @@ To make publishers aware of the probable root cause of disruption in the Publica
 Engine and allow them to plan accordingly ahead of time, maintenance windows
 should be planned and communicated to publishers.
 
-## Data Loss
+## Publication Engine Data Loss
 
 Publication service operators must aim to minimise data loss. If a server restore
 was needed and a content regression occurred (for example, due to restoration from
 a slightly out-of-date backup), then the server must perform an RRDP session reset.
 
-CAs typically only check in with their publication server when they have produced
-changes in RPKI material that need to be shared with the world. As a result, the
-CA may not be aware whether the server performed a restore and their content regressed
-to an earlier state. This could result in a number of problems:
+This could result in a number of problems:
 
  - The currently published ROAs no longer reflect the CA's intentions.
  - The CA might not reissue their Manifest or CRL in time, because they
@@ -286,6 +283,9 @@ to an earlier state. This could result in a number of problems:
 Therefore, the Publication Engine operator should notify its dependent CAs about
 any service-affecting issues as soon as possible, so that affected CAs know to
 initiate a full resynchronisation.
+
+In addition, it is recommended that publishing CAs perform regular automated
+repository synchronisation events as described in the next section.
 
 ## Publisher Repository Synchronisation
 
@@ -300,15 +300,20 @@ in Sections 2.2 and 3.7.1 of [@!RFC8181]). This approach reduces the risk
 of changesets that were intended to take effect as an atomic action from taking
 effect in an inconsistent fashion.
 
-In addition to the above, the publishing CA may perform regular planned
-synchronisation events where it issues an [@!RFC8181] list query and ensures
-that the publication server has the expected state, even if the CA has no new
-material to publish. For Publication Engines that serve a large number of CAs
-(e.g., thousands) this operation could become costly from a resource consumption
-perspective. Unfortunately, the publication protocol specified in [@!RFC8181] has no adequate
-support for rate limiting or signaling requests to CAs to backoff. Therefore,
-publishers should not perform this resynchronisation more frequently than once
-every 10 minutes, unless otherwise agreed with the Publication Engine operator.
+In addition to the above, it is recommended that the publishing CA performs
+regular automated synchronisation events where it issues an [@!RFC8181] list query
+and ensures that the publication server has the expected state, even if the CA
+has no new material to publish.
+
+If this would lead to overloading, Publication Engines should respond with an
+429 (Too Many Requests) response (see section 4 of [RFC6585]), or with
+a 503 (Service Unavailable) response with Retry-After (see section 10.2.3
+of [RFC9110]).
+
+However, since there is no guarantee that Publication Engines implement
+this, and that publishers support these responses, publishers should not
+perform this automated resynchronisation more frequently than once every 10 minutes,
+unless otherwise agreed with the publication engine operator.
 
 # Common Repository Considerations
 
