@@ -699,11 +699,11 @@ It is recommended that the rsync server is load tested to ensure that
 it can handle simultaneous requests from all RPs, in case those RPs
 need to fall back from using RRDP (as is currently preferred).
 
-It is recommended to serve rsync repositories from local storage, so that the
-host operating system can optimally use its I/O cache. Using network storage is
-not recommended, because it may not benefit from this cache. For example, when
-using NFS, the operating system might not be able to cache the directory
-listing(s) of the repository.
+It is recommended to choose a storage backing that minimizes I/O
+overhead and allows the host operating system to fully leverage its
+filesystem cache. Operators should be aware that certain Network File
+System (NFS) configurations can prevent the host OS from caching
+repository directory listing(s), leading to performance degradation.
 
 It is recommended to set the "max connections" to a value that allows a single
 node to handle simultaneous resynchronisation by that number of RPs, taking into
