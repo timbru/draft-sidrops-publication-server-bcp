@@ -551,19 +551,27 @@ objects described in [@!RFC6481, section 2.2].
 
 ## ROA Prefix Aggregation
 
-The practice of issuing ROAs with only a single prefix per ROA [@!RFC9455] can
-lead to many ROA objects being published by a given CA. However, clustering multiple
-prefixes in a single ROA (per origin AS) can achieve a significant reduction in the
-number of objects and the total size of a repository. In order to reduce bandwidth 
-consumption and reduce the number of signatures, it is recommended that issuing CAs
-cluster as many prefixes per ROA as possible, provided:
+Section 4 of [@!RFC9455] says that "Unless the CA has good reasons to the contrary,
+an issued ROA SHOULD contain a single IP prefix." without specifying what those
+reasons might be.
+
+Operational experience has led us to conclude that using sinlge prefix ROAs can
+lead to many ROA objects being published by a given CA to a point where this can
+impact the repository and RP operations.
+
+So, a good reason for clustering multiple prefixes in a single ROA (per origin AS)
+instead is that this can achieve a significant reduction in the number of objects and
+the total size of a repository. Therefore, in order to reduce bandwidth consumption
+and reduce the number of signatures, it is recommended that issuing CAs cluster as
+many prefixes per ROA as possible, provided that:
 
  - Fate sharing is not a concern, for example, when both the parent and issuing CA
    are controlled by the same entity.
- - The operational impact of publishing many ROAs outweighs the perceived fate
-   sharing risks, e.g., because it leads to excessive bandwidth demands on the
-   repository, or it is causing overly large manifests, or it leads to an excessive
-   amount of data or number of files for RPs.
+ - The parent and issuing CA are not controlled by the same entity, but the risk
+   of fate sharing is outweighed by the operational impact of publishing many ROAs,
+   e.g. because it leads to excessive bandwidth demands on the repository, or it is
+   causing overly large manifests, or it leads to an excessive amount of data or
+   number of files for RPs.
 
 ## Consistent Load-Balancing
 
