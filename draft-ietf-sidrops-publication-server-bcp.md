@@ -287,7 +287,7 @@ initiate a full resynchronisation.
 In addition, it is recommended that publishing CAs perform regular automated
 repository synchronisation events as described in the next section.
 
-## Publisher Repository Synchronisation
+## Publisher Repository Synchronisation {#sec-pub-rep-sync}
 
 It is recommended that publishing CAs always perform a list query as described
 in [@!RFC8181, section 2.3] before submitting changes to the publication server.
