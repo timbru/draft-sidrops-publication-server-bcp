@@ -306,8 +306,8 @@ and ensures that the publication server has the expected state, even if the CA
 has no new material to publish.
 
 If this would lead to overloading, Publication Engines should respond with an
-429 (Too Many Requests) response (see section 4 of [RFC6585]), or with
-a 503 (Service Unavailable) response with Retry-After (see section 10.2.3
+HTTP 429 (Too Many Requests) response (see section 4 of [RFC6585]), or with
+an HTTP 503 (Service Unavailable) response with Retry-After (see section 10.2.3
 of [RFC9110]).
 
 However, since there is no guarantee that Publication Engines implement
