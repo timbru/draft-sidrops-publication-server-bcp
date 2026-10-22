@@ -307,8 +307,7 @@ has no new material to publish.
 
 If this would lead to overloading, Publication Engines should respond with an
 HTTP 429 (Too Many Requests) response (see {{Section 4 of RFC6585}}), or with
-an HTTP 503 (Service Unavailable) response with Retry-After (see section 10.2.3
-of [RFC9110]).
+an HTTP 503 (Service Unavailable) response with Retry-After (see {{Section 10.2.3 of RFC9110}}).
 
 However, since there is no guarantee that Publication Engines implement
 this, and that publishers support these responses, publishers should not
