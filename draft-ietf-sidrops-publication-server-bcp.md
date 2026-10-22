@@ -285,7 +285,7 @@ any service-affecting issues as soon as possible, so that affected CAs know to
 initiate a full resynchronisation.
 
 In addition, it is recommended that publishing CAs perform regular automated
-repository synchronisation events as described in the next section.
+repository synchronisation events as described in {{sec-pub-rep-sync}}.
 
 ## Publisher Repository Synchronisation {#sec-pub-rep-sync}
 
