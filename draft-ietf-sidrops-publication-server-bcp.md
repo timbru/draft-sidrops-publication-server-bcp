@@ -167,7 +167,7 @@ It is recommended to deploy these engine functions on dedicated machines
 separate from those serving public requests via rsync and RRDP to avoid
 increased load on one service from impacting other services.
 
-## Self-Hosted CA and Self-Hosted Repository Considerations
+## Self-Hosted CA and Self-Hosted Repository Considerations {#sec_sellhost_repo}
 
 The most common approach for resource holders wishing to
 make use of the RPKI is to leverage a CA instance hosted and operated by
@@ -431,7 +431,19 @@ should override this behavior if possible.
 ## Content Availability
 
 Publication service operators must ensure that their RRDP servers are highly
-available.
+available. A multi-site deployment is recommended to mitigate the risk of a
+temporary datacenter outage. Each site should have sufficient bandwidth to
+handle the full load of relying parties (RPs) resynchronizing, for example,
+after a session reset. Where feasible, sites should be geographically distributed
+to reduce latency for RPs worldwide.
+
+Meeting these goals can be challenging. Using a third-party CDN may help address
+these requirements. However, operators need to be aware that there RRDP has specific
+configuration requirements that not be enabled by default, as described in this
+document. In addition, the CDN itself must not become a single-point-of-failure.
+When using a CDN, operators are therefore recommended to maintain and regularly test
+the ability to switch to another CDN provider or serve RRDP data directly without
+a CDN.
 
 The RRDP snapshot and delta files should remain available for at least two hours after they
 have become unreferenced by the latest RRDP notification file. A two-hour period retention
@@ -441,14 +453,13 @@ time-of-check to time-of-use (TOCTOU) race condition resulting in RPs having to 
 RRDP snapshot or fall back to rsync-based synchronisation - both of which are resource-intensive
 operations.
 
-If possible, it is recommended that a CDN is used to serve the RRDP content.
 Special care must be taken to ensure that the notification file is not cached
 for longer than 1 minute unless the backend RRDP server is unavailable, in which
 case it is recommended that operators permit that stale files are served
 (see [@!RFC9111, section 4.2.4]).
 
 Some CDN services might cache HTTP 404 (Not Found) responses for resources not found on the backend
-server. Because of this, Publication Engines should use randomised unpredictable
+server. Because of this, Publication Engines that rely on CDNs should use randomised unpredictable
 paths for snapshot and delta files, to avoid the intermediate CDN caching such
 HTTP 404 (Not Found) responses hampering future updates. Alternatively, the Publication Engine
 operator can instruct the CDN to purge cached information for the paths on which
