@@ -432,9 +432,9 @@ should override this behavior if possible.
 
 Publication service operators must ensure that their RRDP servers are highly
 available. A multi-site deployment is recommended to mitigate the risk of a
-temporary datacenter outage. Each site should have sufficient bandwidth to
+single datacenter outage. Each site should have sufficient bandwidth to
 handle the full load of relying parties (RPs) resynchronizing, for example,
-after a session reset. Where feasible, sites should be geographically distributed
+after a session reset. If feasible, sites should be geographically distributed
 to reduce latency for RPs worldwide.
 
 Meeting these goals can be challenging. Using a third-party CDN may help address
