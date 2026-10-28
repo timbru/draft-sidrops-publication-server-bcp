@@ -438,11 +438,11 @@ after a session reset. If feasible, sites should be geographically distributed
 to reduce latency for RPs worldwide.
 
 Meeting these goals can be challenging. Using a third-party CDN may help address
-these requirements. However, operators need to be aware that there RRDP has specific
-configuration requirements that not be enabled by default, as described in this
-document. In addition, the CDN itself must not become a single-point-of-failure.
-When using a CDN, operators are therefore recommended to maintain and regularly test
-the ability to switch to another CDN provider or serve RRDP data directly without
+these requirements. However, operators need to be aware that when using a third-party
+CDN, RRDP has specific configuration requirements that may not be enabled by default, as
+described in this document. In addition, the CDN itself must not become a single point of
+failure. When using a CDN, operators are therefore recommended to maintain and regularly
+test the ability to switch to another CDN provider or serve RRDP data directly without
 a CDN.
 
 The RRDP snapshot and delta files should remain available for at least two hours after they
@@ -459,7 +459,7 @@ case it is recommended that operators permit that stale files are served
 (see [@!RFC9111, section 4.2.4]).
 
 Some CDN services might cache HTTP 404 (Not Found) responses for resources not found on the backend
-server. Because of this, Publication Engines that rely on CDNs should use randomised unpredictable
+server. Because of this, Publication Engines should use randomised unpredictable
 paths for snapshot and delta files, to avoid the intermediate CDN caching such
 HTTP 404 (Not Found) responses hampering future updates. Alternatively, the Publication Engine
 operator can instruct the CDN to purge cached information for the paths on which
