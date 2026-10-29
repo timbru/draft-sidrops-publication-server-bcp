@@ -432,8 +432,8 @@ should override this behavior if possible.
 
 Publication service operators must ensure that their RRDP servers are highly
 available. To mitigate the risk of a single datacenter outage, a multi-site
-deployment is recommended, with each site capable of supporting the service
-on its own. Each site should have sufficient bandwidth to handle the full load
+deployment is recommended, with the other sites capable of supporting the service
+if one site is unavailable. Each site should have sufficient bandwidth to handle the full load
 of relying parties (RPs) resynchronizing, for example, after a session reset.
 If feasible, sites should be geographically distributed to reduce latency for
 RPs worldwide.
