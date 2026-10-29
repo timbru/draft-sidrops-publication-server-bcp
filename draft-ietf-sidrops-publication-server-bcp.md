@@ -431,11 +431,12 @@ should override this behavior if possible.
 ## Content Availability
 
 Publication service operators must ensure that their RRDP servers are highly
-available. A multi-site deployment is recommended to mitigate the risk of a
-single datacenter outage. Each site should have sufficient bandwidth to
-handle the full load of relying parties (RPs) resynchronizing, for example,
-after a session reset. If feasible, sites should be geographically distributed
-to reduce latency for RPs worldwide.
+available. To mitigate the risk of a single datacenter outage, a multi-site
+deployment is recommended, with each site capable of supporting the service
+on its own. Each site should have sufficient bandwidth to handle the full load
+of relying parties (RPs) resynchronizing, for example, after a session reset.
+If feasible, sites should be geographically distributed to reduce latency for
+RPs worldwide.
 
 Meeting these goals can be challenging. Using a third-party CDN may help address
 these requirements. However, operators need to be aware that when using a third-party
