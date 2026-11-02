@@ -335,7 +335,7 @@ Because the usefulness of this approach is highly context-dependent,
 no deployment recommendation is provided here.
 
 Furthermore, it is recommended that DNSSEC is used in accordance with best
-current practices as described in [@!9364].
+current practices as described in [@?RFC9364].
 
 ## IP Reachability
 
