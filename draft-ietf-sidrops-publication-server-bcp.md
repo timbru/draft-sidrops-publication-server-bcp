@@ -754,6 +754,19 @@ Other than that this document does not introduce any new security issues beyond
 those already discussed in the Security Considerations of [@!RFC8181], [@!RFC8182],
 [@!RFC9589], and [@!RFC9674].
 
+# Operational Considerations
+
+The recommendations in this document represent established operational experience
+and address common deployment challenges, edge cases, and failure modes observed
+across RPKI publication infrastructure.
+
+These guidelines are not intended to be exhaustive or prescriptive of a single
+operational architecture. Local deployment constraints, operational requirements,
+and architectural trade-offs may vary. Operators may adopt alternative mechanisms
+provided they achieve comparable levels of stability, resilience, and high availability.
+Deviations from these recommendations that preserve these operational objectives
+therefore do not constitute non-compliance with this document.
+
 # Acknowledgments
 
 The authors wish to thank Mike Hollyman, Theodor-Fedor Vompe, Magnus Westerlund, Patrik
