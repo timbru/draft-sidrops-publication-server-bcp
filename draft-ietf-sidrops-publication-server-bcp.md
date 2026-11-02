@@ -459,7 +459,7 @@ operations.
 Special care must be taken to ensure that the notification file is not
 cached for longer than 1 minute, unless the backend RRDP server is
 unavailable, in which case it is recommended that operators permit that
-stale files are served for up to 15 minutes (see [@!RFC9111, section 4.2.4], [@?5861, section 4]).
+stale files are served for up to 15 minutes (see [@!RFC9111, section 4.2.4], [@?RFC5861, section 4]).
 For example, for notification files, responses could include directives like `Cache-Control: max-age=60, stale-if-error=900`.
 For snapshot and delta files, responses could include a directive like `Cache-Control: public, max-age=86400, immutable`.
 
