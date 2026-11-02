@@ -563,22 +563,28 @@ objects described in [@!RFC6481, section 2.2].
 
 ## ROA Prefix Aggregation
 
-Section 4 of [@!RFC9455] says that "Unless the CA has good reasons to the contrary,
-an issued ROA SHOULD contain a single IP prefix." without specifying what those
-reasons might be.
+ROAs incur a fixed overhead from the EE certificate and RSA signatures,
+regardless of prefix count. In a single-prefix ROA, the eContent only
+makes up about 2% of the ROA's total size. Operational experience has
+shown that exclusively issuing single-prefix ROAs can lead to so many
+ROAs being published by a CA that this can cause negative impact on
+repository and RP operations.
 
-Operational experience has led us to conclude that using sinlge prefix ROAs can
-lead to many ROA objects being published by a given CA to a point where this can
-impact the repository and RP operations.
+Section 4 of [@!RFC9455] is underspecified in the sense that it states
+"Unless the CA has good reasons to the contrary, an issued ROA SHOULD
+contain a single IP prefix." without specifying what those reasons might
+be.
 
-So, a good reason for clustering multiple prefixes in a single ROA (per origin AS)
-instead is that this can achieve a significant reduction in the number of objects and
-the total size of a repository. Therefore, in order to reduce bandwidth consumption
-and reduce the number of signatures, it is recommended that issuing CAs cluster as
-many prefixes per ROA as possible, provided that:
+A good reason for aggregating multiple prefixes into a single ROA is
+that this generally helps achieve a significant reduction in the number
+of objects, the size of the associated manifest, and consequently the
+total size of a repository. Therefore, in order to reduce bandwidth
+consumption and reduce the number of hash and signature verifications
+required, it is recommended that issuing CAs aggregate as many prefixes
+per ROA as possible, provided that:
 
  - Fate sharing is not a concern, for example, when both the parent and issuing CA
-   are controlled by the same entity.
+   are operated by the same entity.
  - The parent and issuing CA are not controlled by the same entity, but the risk
    of fate sharing is outweighed by the operational impact of publishing many ROAs,
    e.g. because it leads to excessive bandwidth demands on the repository, or it is
