@@ -285,7 +285,7 @@ any service-affecting issues as soon as possible, so that affected CAs know to
 initiate a full resynchronisation.
 
 In addition, it is recommended that publishing CAs perform regular automated
-repository synchronisation events as described in {{sec-pub-rep-sync}}.
+repository synchronisation events as described in (#sec-pub-rep-sync).
 
 ## Publisher Repository Synchronisation {#sec-pub-rep-sync}
 
@@ -296,8 +296,8 @@ soon as the publisher is aware of updates that it needs to publish.
 
 When publishing changes in material, CAs should send all their changes
 using multiple PDUs contained within a single multi-element query
-message (described in [@!RFC8181, sections 2.2] and [@!RFC8182, section
-3.7.1]). This approach reduces the risk of changesets that were intended
+message (described in [@!RFC8181, sections 2.2] and [@!RFC8182, section 3.7.1]).
+This approach reduces the risk of changesets that were intended
 to take effect as an atomic action from taking effect in an inconsistent
 fashion.
 
