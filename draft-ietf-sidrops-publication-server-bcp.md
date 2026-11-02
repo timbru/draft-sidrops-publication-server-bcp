@@ -335,7 +335,7 @@ Because the usefulness of this approach is highly context-dependent,
 no deployment recommendation is provided here.
 
 Furthermore, it is recommended that DNSSEC is used in accordance with best
-current practices as described in [@!BCP237].
+current practices as described in [@!9364].
 
 ## IP Reachability
 
@@ -459,8 +459,9 @@ operations.
 Special care must be taken to ensure that the notification file is not
 cached for longer than 1 minute, unless the backend RRDP server is
 unavailable, in which case it is recommended that operators permit that
-stale files are served for up to 15 minutes (see [@!RFC9111, section 4.2.4], [@5861, section 4]).
-For notification files responses could include a directive like `Cache-Control: max-age=60, stale-if-error=900`.
+stale files are served for up to 15 minutes (see [@!RFC9111, section 4.2.4], [@?5861, section 4]).
+For example, for notification files, responses could include directives like `Cache-Control: max-age=60, stale-if-error=900`.
+For snapshot and delta files, responses could include a directive like `Cache-Control: public, max-age=86400, immutable`.
 
 Some CDN services might cache HTTP 404 (Not Found) responses for resources not found on the backend
 server. Because of this, Publication Engines should use randomised unpredictable
@@ -573,7 +574,7 @@ shown that exclusively issuing single-prefix ROAs can lead to so many
 ROAs being published by a CA that this can cause negative impact on
 repository and RP operations.
 
-Section 4 of [@!BCP238] is underspecified in the sense that it states
+Section 4 of [@!RFC9455] is underspecified in the sense that it states
 "Unless the CA has good reasons to the contrary, an issued ROA SHOULD
 contain a single IP prefix." without specifying what those reasons might
 be.
