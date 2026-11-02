@@ -128,8 +128,8 @@ several servers for separation of functions and/or load balancing.
 Caching infrastructure or Content Delivery Networks (CDNs) are often
 used for scaling access to the RRDP repositories.
 
-In addition some guidance is provided for CA operators in as far
-as CA operator choices relate to publication.
+In addition to the above, some guidance is provided for CA operators in
+as far as CA operator choices relate to publication.
 
 These recommendations are based on more than a decade of operational
 experience from several implementers and operators of both client and
@@ -180,7 +180,7 @@ If the resource holder chooses to operate their CA in a self-hosted fashion,
 the holder must also decide how they make their RPKI material available to the
 public: the holder can either deploy and operate their own Publication Engine
 and associated rsync and RRDP infrastructures (referred to as a "self-hosted
-repository") or make use a third-party operated publication service (e.g.,
+repository") or make use a third-party-operated publication service (e.g.,
 operated by a RIR).
 
 If the resource holder chooses to self-host the repository, then they take on
@@ -209,13 +209,13 @@ For the case of a 'grandchild' CA, where CA1 is a CA, CA2 is a child
 CA of CA1, and CA3 is a child CA of CA2, there are several options for
 providing publication service to CA3:
 
- 1. [@!RFC8183] defines a 'referral' mechanism as part of the out-of-band
+ 1. [@?RFC8183] defines a 'referral' mechanism as part of the out-of-band
  CA setup protocol. For example, if supported by CA1 and CA2, then this simplifies
  the process of registering CA3 as a direct publication client of CA1.
 
  2. CA1 may support the registration of multiple publishers by CA2, by
  using the <publisher_request/>/<repository_response/> XML exchange defined
- in [@!RFC8183]. CA2 would then be able to register a separate publisher
+ in [@?RFC8183]. CA2 would then be able to register a separate publisher
  on behalf of CA3.
 
  3. CA2 may operate a publication proxy service (e.g., [@rpki-publication-proxy]),
@@ -241,13 +241,13 @@ addresses or apply rate limits.
 If the Publication Engine is unavailable for some reason, this will prevent
 publishers from making new RPKI material available. The most immediate impact
 of such event is that the publisher cannot distribute new issuances and revocations of
-Route Origin Authorizations (ROAs) [@!RFC9582], Autonomous System Provider Authorizations (ASPAs) [@!I-D.ietf-sidrops-aspa-profile], and BGPsec Router
-Certificates [@!RFC8209] for the duration of this outage. Thus, in effect,
+Route Origin Authorizations (ROAs) [@?RFC9582], Autonomous System Provider Authorizations (ASPAs) [@?I-D.ietf-sidrops-aspa-profile], and BGPsec Router
+Certificates [@?RFC8209] for the duration of this outage. Thus, in effect,
 the resource holder cannot inform the world about changes to its routing
 intentions. If the outage persists for an extended period, then RPKI Manifests,
-Certificate Revocation Lists (CRLs), and Signed Objects cached by RPs will became stale, in turn hampering,
-for example, BGP Origin Validation [@?RFC6811]. For the aforementioned reasons,
-the Publication Engine must be highly-available.
+Certificate Revocation Lists (CRLs), and Signed Objects cached by RPs will become
+stale, in turn hampering, for example, BGP Origin Validation [@?RFC6811]. For the
+aforementioned reasons, the Publication Engine must be highly-available.
 
 Research on RPKI material propagation time (e.g., [@rpki-time-in-flight]), specifically
 the delay period between issuance of ROAs and the eventual application of the
@@ -320,7 +320,7 @@ publication engine operator.
 ## Hostnames
 
 It is recommended that a different hostname is used in the public RRDP Server URI 
-from that of the [@!RFC8183] service_uri used by publishers, as well as that of
+from that of the [@?RFC8183] service_uri used by publishers, as well as that of
 any rsync URIs (i.e., `sia_base`) used by the relevant publication service.
 
 Using a unique hostname for the different components will allow an operator
@@ -335,7 +335,7 @@ Because the usefulness of this approach is highly context-dependent,
 no deployment recommendation is provided here.
 
 Furthermore, it is recommended that DNSSEC is used in accordance with best
-current practices as described in [@!RFC9364].
+current practices as described in [@!RFC9364@BCP237].
 
 ## IP Reachability
 
@@ -349,7 +349,7 @@ are constrained to different address families and no translation mechanism is in
 
 To prevent failure scenarios that persist beyond remediation, the topological
 placement and reachability of publication servers in the global Internet routing
-system need to be considered very carefully. Refer to [@!RFC7115, section 6] for
+system need to be considered very carefully. Refer to [@?RFC7115, section 6] for
 discussion on a trade-off in placement of an RPKI repository in address space
 for which the repository's content is authoritative.
 
@@ -420,14 +420,15 @@ measures to reduce demand for bandwidth are discussed in what follows.
 
 The RRDP XML container and its embedded Base64-encoded content are highly compressible; compression typically reduces the volume of transferred data by approximately 50%. RRDP endpoints should
 support compression through proactive content negotiation (see [@!RFC9110, section 12.1]).
-At a minimum, gzip content coding (see [@!RFC9110, section 8.4.1.3]) should be supported
+At a minimum, gzip content coding (see [@!RFC9110, section 8.4.1.3]) should be supported.
 Additionally, servers are recommended to support other widely used compression algorithms
 where feasible. Note that this implies that the Vary header field be sent on
 responses; see [@!RFC9110, section 12.5.5].
 
-RRDP snapshots can be substantial in size (e.g., tens to hundreds of megabytes). Operators
-should note that some CDNs disable compression by default for very large files, and
-should override this behavior if possible.
+RRDP snapshots can be very large (e.g., tens to hundreds of megabytes).
+Operators should note that some CDNs by default do not offer on-the-fly
+compression for large files, and that behavior should be overriden, if
+possible.
 
 ## Content Availability
 
@@ -455,10 +456,11 @@ time-of-check to time-of-use (TOCTOU) race condition resulting in RPs having to 
 RRDP snapshot or fall back to rsync-based synchronisation - both of which are resource-intensive
 operations.
 
-Special care must be taken to ensure that the notification file is not cached
-for longer than 1 minute unless the backend RRDP server is unavailable, in which
-case it is recommended that operators permit that stale files are served
-(see [@!RFC9111, section 4.2.4]).
+Special care must be taken to ensure that the notification file is not
+cached for longer than 1 minute, unless the backend RRDP server is
+unavailable, in which case it is recommended that operators permit that
+stale files are served for up to 15 minutes (see [@!RFC9111, section 4.2.4], [@5861, section 4]).
+For notification files responses could include a directive like `Cache-Control: max-age=60, stale-if-error=900`.
 
 Some CDN services might cache HTTP 404 (Not Found) responses for resources not found on the backend
 server. Because of this, Publication Engines should use randomised unpredictable
@@ -571,7 +573,7 @@ shown that exclusively issuing single-prefix ROAs can lead to so many
 ROAs being published by a CA that this can cause negative impact on
 repository and RP operations.
 
-Section 4 of [@!RFC9455] is underspecified in the sense that it states
+Section 4 of [@!RFC9455@BCP238] is underspecified in the sense that it states
 "Unless the CA has good reasons to the contrary, an issued ROA SHOULD
 contain a single IP prefix." without specifying what those reasons might
 be.
@@ -764,7 +766,7 @@ those already discussed in the Security Considerations of [@!RFC8181], [@!RFC818
 # Acknowledgments
 
 The authors wish to thank Mike Hollyman, Theodor-Fedor Vompe, Magnus Westerlund, Patrik
-Faltstrom, Jasdip Singh, Behcet Sarikaya, and Mark Nottingham
+Faltstrom, Jasdip Singh, Behcet Sarikaya, Mark Nottingham, and Mike Bishop
 for their feedback and suggestions.
 
 {backmatter}
