@@ -544,7 +544,7 @@ point operations.
    in Subject Information Access (SIA) fields, Authority Information Access (AIA) fields, CRL Distribution Points (CRLDP) fields, as part of in Manifest fileLists,
    and in the uri field in RRDP publish elements), use of shorter filenames
    has a positive impact on storage & bandwidth required in the overall ecosystem.
-   Therefore publishers are recommended to use filenames shorter than 32 characters.
+   Therefore, publishers are recommended to use filenames shorter than 32 characters.
 
  * The algorithm most commonly used in the preparation phase of rsync transfers
    relies on the 3-tuple of filename, filesize, and last-modification timestamp
