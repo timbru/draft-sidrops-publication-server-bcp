@@ -294,11 +294,12 @@ in [@!RFC8181, section 2.3] before submitting changes to the publication server.
 This approach means that any desynchronisation issue can be resolved at least as
 soon as the publisher is aware of updates that it needs to publish.
 
-When publishing changes in material, CAs should send all their changes using
-multiple PDUs contained within a single multi-element query message (described
-in Sections 2.2 and 3.7.1 of [@!RFC8181]). This approach reduces the risk
-of changesets that were intended to take effect as an atomic action from taking
-effect in an inconsistent fashion.
+When publishing changes in material, CAs should send all their changes
+using multiple PDUs contained within a single multi-element query
+message (described in [@!RFC8181, sections 2.2] and [@!RFC8182, section
+3.7.1]). This approach reduces the risk of changesets that were intended
+to take effect as an atomic action from taking effect in an inconsistent
+fashion.
 
 In addition to the above, it is recommended that the publishing CA performs
 regular automated synchronisation events where it issues an [@!RFC8181] list query
@@ -306,8 +307,8 @@ and ensures that the publication server has the expected state, even if the CA
 has no new material to publish.
 
 If this would lead to overloading, Publication Engines should respond with an
-HTTP 429 (Too Many Requests) response (see {{Section 4 of RFC6585}}), or with
-an HTTP 503 (Service Unavailable) response with Retry-After (see {{Section 10.2.3 of RFC9110}}).
+HTTP 429 (Too Many Requests) response (see [@RFC6585, section 4]) or with
+an HTTP 503 (Service Unavailable) response with Retry-After (see [@RFC9110, section 10.2.3]).
 
 However, since there is no guarantee that Publication Engines implement
 these responses, publishers should not perform this automated resynchronisation
