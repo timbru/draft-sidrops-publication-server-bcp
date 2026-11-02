@@ -335,7 +335,7 @@ Because the usefulness of this approach is highly context-dependent,
 no deployment recommendation is provided here.
 
 Furthermore, it is recommended that DNSSEC is used in accordance with best
-current practices as described in [@!RFC9364@BCP237].
+current practices as described in [@!BCP237].
 
 ## IP Reachability
 
@@ -573,7 +573,7 @@ shown that exclusively issuing single-prefix ROAs can lead to so many
 ROAs being published by a CA that this can cause negative impact on
 repository and RP operations.
 
-Section 4 of [@!RFC9455@BCP238] is underspecified in the sense that it states
+Section 4 of [@!BCP238] is underspecified in the sense that it states
 "Unless the CA has good reasons to the contrary, an issued ROA SHOULD
 contain a single IP prefix." without specifying what those reasons might
 be.
