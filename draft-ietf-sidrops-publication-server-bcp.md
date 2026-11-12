@@ -78,7 +78,7 @@ to a Publication Engine using the publication protocol specified in
 through publicly accessible rsync [@!RFC5781] and RPKI Repository Delta
 Protocol (RRDP) [@!RFC8182] repositories.
 
-The following diagram attempt to convey how the components mentioned
+The following diagram attempts to convey how the components mentioned
 in the previous paragraph fit into the overall data flow between
 CAs and RPs:
 
@@ -180,7 +180,7 @@ If the resource holder chooses to operate their CA in a self-hosted fashion,
 the holder must also decide how they make their RPKI material available to the
 public: the holder can either deploy and operate their own Publication Engine
 and associated rsync and RRDP infrastructures (referred to as a "self-hosted
-repository") or make use a third-party-operated publication service (e.g.,
+repository") or make use of a third-party-operated publication service (e.g.,
 operated by a RIR).
 
 If the resource holder chooses to self-host the repository, then they take on
@@ -275,7 +275,7 @@ This could result in a number of problems:
  - The currently published ROAs no longer reflect the CA's intentions.
  - The CA might not reissue their Manifest or CRL in time, because they
    operated under the assumption that the currently-published Manifest and CRL
-   have not yet became stale.
+   have not yet become stale.
  - Changes to publishers may not have been persisted. Newly registered
    publishers may not be present, and recently removed publishers may still
    be present.
@@ -378,10 +378,16 @@ to avoid fate sharing if one of the networks becomes unreachable.
 
 Publication service operators need to be aware of the normative updates
 to [@!RFC8182] specified in [@!RFC9674, section 3.1]. In short, these
-updates mean that all RRDP delta and snapshot resources need have the
+updates mean that all RRDP delta and snapshot resources need to have the
 same origin, i.e., HTTP redirects or references to resources with a
 different origin compared to the referring RRDP SubjectInfoAccess
 AccessDescription are not allowed and not followed by RPs.
+
+To achieve this the Publication Engine must use the exact same notation
+for the origin (see [@!RFC9110, Sectiom 4.3.1]) in the "rrdp_notification_uri"
+it uses in [@!RFC8183] Repository Responses it returns to Publishers and
+the "uri" attribute used in "delta" and "snaphshot" elements included
+in the RRDP Updatee Notification file (see [@!RFC8182, Section 3.5.1]).
 
 ## Endpoint Protection
 
@@ -544,7 +550,7 @@ choice of the file naming scheme can positively or negatively impact publication
 point operations.
 
  * Because filenames are repeated multiple times throughout RPKI materials (e.g.,
-   in Subject Information Access (SIA) fields, Authority Information Access (AIA) fields, CRL Distribution Points (CRLDP) fields, as part of in Manifest fileLists,
+   in Subject Information Access (SIA) fields, Authority Information Access (AIA) fields, CRL Distribution Points (CRLDP) fields, as part of Manifest fileLists,
    and in the uri field in RRDP publish elements), use of shorter filenames
    has a positive impact on storage & bandwidth required in the overall ecosystem.
    Therefore, publishers are recommended to use filenames shorter than 32 characters.
@@ -767,8 +773,8 @@ those already discussed in the Security Considerations of [@!RFC8181], [@!RFC818
 # Acknowledgments
 
 The authors wish to thank Mike Hollyman, Theodor-Fedor Vompe, Magnus Westerlund, Patrik
-Faltstrom, Jasdip Singh, Behcet Sarikaya, Mark Nottingham, and Mike Bishop
-for their feedback and suggestions.
+Faltstrom, Jasdip Singh, Behcet Sarikaya, Mark Nottingham, Mike Bishop and Mahesh
+Jethanandani for their feedback and suggestions.
 
 {backmatter}
 
