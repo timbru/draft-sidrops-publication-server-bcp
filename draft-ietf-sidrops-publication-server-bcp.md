@@ -383,6 +383,12 @@ same origin, i.e., HTTP redirects or references to resources with a
 different origin compared to the referring RRDP SubjectInfoAccess
 AccessDescription are not allowed and not followed by RPs.
 
+To achieve this the Publication Engine must use the exact same notation
+for the origin (see [@!RFC9110, Sectiom 4.3.1]) in the "rrdp_notification_uri"
+it uses in [@!RFC8183] Repository Responses it returns to Publishers and
+the "uri" attribute used in "delta" and "snaphshot" elements included
+in the RRDP Updatee Notification file (see [@!RFC8182, Section 3.5.1]).
+
 ## Endpoint Protection
 
 Repository operators should configure access control policies to protect their RRDP endpoints.
@@ -767,8 +773,8 @@ those already discussed in the Security Considerations of [@!RFC8181], [@!RFC818
 # Acknowledgments
 
 The authors wish to thank Mike Hollyman, Theodor-Fedor Vompe, Magnus Westerlund, Patrik
-Faltstrom, Jasdip Singh, Behcet Sarikaya, Mark Nottingham, and Mike Bishop
-for their feedback and suggestions.
+Faltstrom, Jasdip Singh, Behcet Sarikaya, Mark Nottingham, Mike Bishop and Mahesh
+Jethanandani for their feedback and suggestions.
 
 {backmatter}
 
