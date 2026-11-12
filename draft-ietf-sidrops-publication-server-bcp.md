@@ -378,7 +378,7 @@ to avoid fate sharing if one of the networks becomes unreachable.
 
 Publication service operators need to be aware of the normative updates
 to [@!RFC8182] specified in [@!RFC9674, section 3.1]. In short, these
-updates mean that all RRDP delta and snapshot resources need have the
+updates mean that all RRDP delta and snapshot resources need to have the
 same origin, i.e., HTTP redirects or references to resources with a
 different origin compared to the referring RRDP SubjectInfoAccess
 AccessDescription are not allowed and not followed by RPs.
